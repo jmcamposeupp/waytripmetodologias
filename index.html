@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WayTrip — Tu aventura peruana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<style>
+  :root {
+    --teal:#12a089; --teal-dark:#0d8a76; --teal-light:#e4f5f2;
+    --navy:#0c1a2e; --bg:#f4f2ee; --white:#fff;
+    --border:#e2dfd6; --text:#1a1a1a; --text-muted:#6b7280; --text-light:#9ca3af;
+    --orange:#e07020; --orange-light:#fff3e8;
+    --radius:10px; --radius-lg:14px;
+    --shadow:0 1px 4px rgba(0,0,0,0.07); --shadow-md:0 4px 16px rgba(0,0,0,0.1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  h1,h2,h3,h4,h5{font-family:'Outfit',sans-serif}
+  .screen{display:none}.screen.active{display:block}
+
+  /* NAV LANDING */
+  .nav-landing{background:var(--navy);display:flex;align-items:center;padding:0 2rem;height:60px;position:sticky;top:0;z-index:100}
+  .logo{display:flex;align-items:center;gap:8px;color:white;font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;cursor:pointer;text-decoration:none;margin-right:auto}
+  .logo-img{height:32px;width:auto;object-fit:contain;border-radius:4px}
+  .nav-btns{display:flex;gap:8px}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:none;font-family:'DM Sans',sans-serif}
+  .btn-white-outline{background:transparent;color:white;border:1.5px solid rgba(255,255,255,0.6)}
+  .btn-white-outline:hover{background:rgba(255,255,255,0.1)}
+  .btn-teal{background:var(--teal);color:white}
+  .btn-teal:hover{background:var(--teal-dark)}
+  .btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border)}
+  .btn-ghost:hover{background:var(--border);color:var(--text)}
+
+  /* HERO */
+  .hero{min-height:calc(100vh - 60px);background:linear-gradient(165deg,#0c1a2e 0%,#162840 45%,#1e3d5c 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 2rem 3rem;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 80%,rgba(18,160,137,0.12) 0%,transparent 70%)}
+  .hero-mountain{position:absolute;bottom:0;left:0;right:0;height:220px;opacity:0.18;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 220'%3E%3Cpath fill='%23ffffff' d='M0,220 L0,140 L180,60 L300,100 L420,30 L560,90 L680,20 L800,80 L920,10 L1040,70 L1160,30 L1280,85 L1440,40 L1440,220Z'/%3E%3C/svg%3E") bottom/cover no-repeat}
+  .hero-content{position:relative;z-index:2;max-width:680px}
+  .hero-content h1{font-size:clamp(2.2rem,5.5vw,3.6rem);font-weight:800;color:white;line-height:1.12;margin-bottom:1.2rem}
+  .hero-content h1 span{color:var(--teal)}
+  .hero-content p{color:rgba(255,255,255,0.75);font-size:17px;line-height:1.65;margin-bottom:2.2rem;max-width:500px;margin-left:auto;margin-right:auto}
+  .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn-hero{padding:14px 30px;font-size:15px;border-radius:12px;font-weight:700}
+  .btn-hero-outline{background:rgba(255,255,255,0.08);color:white;border:1.5px solid rgba(255,255,255,0.4);padding:14px 30px;font-size:15px;border-radius:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+  .btn-hero-outline:hover{background:rgba(255,255,255,0.15)}
+
+  /* INNER NAV */
+  .inner-nav{background:white;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.5rem;height:54px;position:sticky;top:0;z-index:100;gap:0}
+  .inner-nav .logo{color:var(--navy);margin-right:1.5rem}
+  .inner-nav .logo-img{height:26px}
+  .nav-item{display:flex;align-items:center;gap:5px;padding:0 14px;height:54px;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;text-decoration:none;transition:color .15s}
+  .nav-item:hover{color:var(--text)}
+  .nav-item.active{color:var(--teal);border-bottom-color:var(--teal)}
+  .nav-avatar{width:32px;height:32px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;color:white;font-size:13px;font-weight:700;margin-left:auto;cursor:pointer;font-family:'Outfit',sans-serif;transition:transform 0.15s;}
+  .nav-avatar:hover{transform:scale(1.05)}
+
+  /* DASHBOARD */
+  .page-content{padding:1.8rem 2rem;max-width:1200px;margin:0 auto}
+  .welcome-banner{background:var(--navy);border-radius:var(--radius-lg);padding:1.6rem 2rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;color:white}
+  .welcome-banner h2{font-size:1.6rem;font-weight:800;margin-bottom:4px}
+  .welcome-banner p{color:rgba(255,255,255,0.68);font-size:14px}
+  .user-chip{background:rgba(255,255,255,0.08);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px;min-width:190px;transition:background 0.15s;}
+  .user-chip:hover{background:rgba(255,255,255,0.12);}
+  .chip-avatar{width:38px;height:38px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+  .chip-info strong{font-size:13px;color:white;display:block}
+  .chip-info span{font-size:12px;color:rgba(255,255,255,0.58);display:block}
+  .chip-badge{background:rgba(255,255,255,0.12);border-radius:6px;padding:2px 8px;font-size:11px;color:rgba(255,255,255,0.8);margin-top:4px;display:inline-block}
+  .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+  .section-header h3{font-size:16px;font-weight:700;color:var(--navy)}
+  .section-header a{font-size:13px;color:var(--teal);cursor:pointer;text-decoration:none;font-weight:500}
+  .section-header a:hover{text-decoration:underline}
+  .dest-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .dest-card{background:white;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:var(--shadow)}
+  .dest-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+  .dest-card-img{height:130px;position:relative;background-size:cover;background-position:center;background-color:#ccc}
+  .dest-card-overlay{position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 100%)}
+  .badge-match{position:absolute;top:8px;left:8px;background:var(--teal);color:white;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;z-index:2}
+  .badge-rating{position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.55);color:#f5c842;font-size:11px;padding:3px 8px;border-radius:20px;z-index:2}
+  .dest-card-body{padding:10px 12px 12px}
+  .dest-region{font-size:11px;color:var(--text-muted);margin-bottom:3px}
+  .dest-name{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:7px;font-family:'Outfit',sans-serif}
+  .tags{display:flex;gap:5px;flex-wrap:wrap}
+  .tag{background:#f0ede6;color:#555;font-size:10px;padding:3px 8px;border-radius:20px;font-weight:500}
+  .fab{position:fixed;bottom:28px;right:28px;background:var(--orange);color:white;border:none;border-radius:14px;padding:13px 22px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;box-shadow:0 4px 20px rgba(224,112,32,0.35);transition:all .15s;font-family:'DM Sans',sans-serif;z-index:90}
+  .fab:hover{background:#c96010;transform:translateY(-2px)}
+
+  /* EXPLORE */
+  .explore-hero{background:linear-gradient(to bottom,var(--navy) 0%,#1a3050 100%);padding:3rem 2rem 2rem;text-align:center;color:white}
+  .explore-hero h2{font-size:2.2rem;font-weight:800;margin-bottom:6px}
+  .explore-hero p{color:rgba(255,255,255,0.68);margin-bottom:1.6rem;font-size:14px}
+  .search-bar{background:white;border-radius:30px;padding:11px 20px;display:flex;align-items:center;gap:8px;max-width:540px;margin:0 auto;box-shadow:0 4px 20px rgba(0,0,0,0.2)}
+  .search-bar input{border:none;outline:none;flex:1;font-size:14px;color:var(--text);font-family:'DM Sans',sans-serif}
+  .search-bar input::placeholder{color:#bbb}
+  .explore-body{padding:1.8rem 2rem;max-width:1200px;margin:0 auto}
+  .filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:1.6rem;flex-wrap:wrap}
+  .filter-label{font-size:13px;color:var(--text-muted);font-weight:500}
+  .filter-select{border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-size:13px;color:var(--text);background:white;cursor:pointer;font-family:'DM Sans',sans-serif;outline:none}
+  .filter-select:focus{border-color:var(--teal)}
+  .filter-count{margin-left:auto;font-size:13px;color:var(--text-muted);font-weight:500}
+  .explore-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .exp-card{background:white;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:var(--shadow)}
+  .exp-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+  .exp-card-img{height:170px;position:relative;background-size:cover;background-position:center;background-color:#ccc}
+  .exp-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,transparent 60%)}
+  .exp-zone{position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.5);color:white;font-size:11px;padding:3px 9px;border-radius:20px;font-weight:500;z-index:2}
+  .exp-rating{position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.5);color:#f5c842;font-size:11px;padding:3px 8px;border-radius:20px;z-index:2}
+  .exp-name{position:absolute;bottom:10px;left:12px;color:white;font-size:17px;font-weight:800;font-family:'Outfit',sans-serif;z-index:2}
+  .exp-card-body{padding:12px 14px}
+  .exp-icons{display:flex;align-items:center;gap:7px;margin-bottom:7px;font-size:14px}
+  .exp-count{color:var(--teal);font-size:12px;font-weight:700;margin-left:auto}
+  .exp-tags{display:flex;gap:5px;flex-wrap:wrap}
+  .exp-tag{background:#f0ede6;color:#555;font-size:10px;padding:3px 8px;border-radius:20px;font-weight:500}
+  .no-results{text-align:center;padding:3rem;color:var(--text-muted);font-size:15px;grid-column:1/-1}
+
+  /* DEST DETAIL */
+  .dest-detail-wrap{position:relative}
+  .back-btn{position:absolute;top:12px;left:12px;z-index:10;background:rgba(255,255,255,0.9);border:none;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;color:var(--navy);font-family:'DM Sans',sans-serif;transition:background .15s}
+  .back-btn:hover{background:white}
+  .dest-hero-banner{height:250px;position:relative;background-size:cover;background-position:center;background-color:#ccc}
+  .dest-hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 10%,rgba(0,0,0,0.8) 100%)}
+  .dest-hero-info{position:absolute;bottom:16px;left:20px;color:white;z-index:2}
+  .dest-hero-info h2{font-size:2.5rem;font-weight:800;margin-bottom:3px;text-shadow: 0 2px 4px rgba(0,0,0,0.3)}
+  .dest-hero-info p{font-size:14px;color:rgba(255,255,255,0.9);margin-bottom:7px;font-weight:500}
+  .dest-hero-tags{display:flex;gap:6px}
+  .dest-hero-tag{background:rgba(255,255,255,0.2);color:white;font-size:11px;padding:3px 10px;border-radius:20px;border:0.5px solid rgba(255,255,255,0.4);backdrop-filter: blur(4px)}
+  .dest-hero-meta{position:absolute;bottom:16px;right:20px;z-index:2;display:flex;gap:18px;align-items:center}
+  .dest-meta-item{text-align:center;color:white}
+  .dest-meta-item strong{display:block;font-size:20px;font-weight:800;text-shadow: 0 1px 3px rgba(0,0,0,0.4)}
+  .dest-meta-item span{font-size:11px;color:rgba(255,255,255,0.8);font-weight:500}
+  .dest-tabs{display:flex;background:white;border-bottom:1px solid var(--border);padding:0 16px;overflow-x:auto;gap:0}
+  .dest-tab{padding:11px 15px;font-size:12px;font-weight:500;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s}
+  .dest-tab:hover{color:var(--text)}
+  .dest-tab.active{color:var(--teal);border-bottom-color:var(--teal)}
+  .dest-body{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 54px - 250px - 42px)}
+  .dest-map{background:#d4e8d4;overflow:hidden;position:relative;}
+  .dest-map iframe{width:100%;height:100%;border:none;}
+  .dest-list{overflow-y:auto;background:#f9f8f5}
+  .dest-list-header{padding:11px 16px;background:white;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--navy);position:sticky;top:0;z-index:10}
+  .place-item{display:flex;gap:10px;padding:12px 16px;background:white;border-bottom:1px solid #f0ede6;cursor:pointer;transition:background .1s}
+  .place-item:hover{background:#fafaf7}
+  .place-thumb{width:64px;height:64px;border-radius:10px;flex-shrink:0;background-size:cover;background-position:center;background-color:#ddd;position:relative}
+  .place-thumb-icon{position:absolute;bottom:-4px;right:-4px;background:white;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+  .place-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}
+  .place-name{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:2px}
+  .place-type{font-size:11px;color:var(--teal);font-weight:600;margin-bottom:3px}
+  .place-desc{font-size:11px;color:#666;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .place-price{font-size:13px;font-weight:800;color:var(--navy);white-space:nowrap;flex-shrink:0;align-self:center}
+  .place-price.free{color:var(--teal)}
+
+  /* PLAN */
+  .plan-page{min-height:calc(100vh - 54px);background:var(--bg);display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem}
+  .plan-card{background:white;border-radius:var(--radius-lg);border:1px solid var(--border);padding:2rem;max-width:460px;width:100%;box-shadow:var(--shadow)}
+  .plan-logo{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:1.5rem}
+  .plan-logo-icon{background:var(--teal);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:15px}
+  .plan-logo span{font-family:'Outfit',sans-serif;font-weight:700;font-size:17px;color:var(--navy)}
+  .plan-card h2{text-align:center;font-size:1.4rem;font-weight:800;color:var(--navy);margin-bottom:4px}
+  .plan-subtitle{text-align:center;font-size:13px;color:var(--text-muted);margin-bottom:1.6rem}
+  .form-group{margin-bottom:1.1rem}
+  .form-label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--text);margin-bottom:7px}
+  .form-input{width:100%;border:1px solid var(--border);border-radius:var(--radius);padding:9px 13px;font-size:13px;color:var(--text);background:white;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .15s}
+  .form-input:focus{border-color:var(--teal)}
+  .form-input[readonly]{background-color: #f5f5f5; cursor: not-allowed;}
+  .date-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .date-label{font-size:11px;color:var(--text-muted);margin-bottom:4px}
+  .day-count{color:var(--teal);font-size:12px;font-weight:600;margin-top:4px}
+  .num-row{display:flex;align-items:center;gap:12px}
+  .num-btn{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--teal);background:white;color:var(--teal);font-size:17px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1}
+  .num-btn:hover{background:var(--teal);color:white}
+  .num-val{font-size:16px;font-weight:700;color:var(--navy);min-width:24px;text-align:center}
+  .num-lbl{font-size:12px;color:var(--text-muted)}
+  .budget-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+  .budget-chip{border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text-muted);cursor:pointer;background:white;transition:all .15s;font-family:'DM Sans',sans-serif}
+  .budget-chip.active,.budget-chip:hover{border-color:var(--teal);background:var(--teal-light);color:var(--teal);font-weight:600}
+  .transport-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:7px}
+  .transport-opt{border:1px solid var(--border);border-radius:9px;padding:9px 6px;text-align:center;cursor:pointer;font-size:11px;color:var(--text-muted);background:white;transition:all .15s;font-family:'DM Sans',sans-serif}
+  .transport-opt:hover,.transport-opt.active{border-color:var(--teal);background:var(--teal-light);color:var(--teal);font-weight:600}
+  .transport-opt .t-icon{font-size:1.3rem;display:block;margin-bottom:4px}
+  .rhythm-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-bottom:5px}
+  .rhythm-labels span.active{color:var(--teal);font-weight:700}
+  input[type=range]{width:100%;accent-color:var(--teal);cursor:pointer}
+  .rhythm-sub{display:flex;justify-content:space-between;font-size:10px;color:var(--text-light);margin-top:3px}
+  .plan-summary{background:var(--teal-light);border-radius:10px;padding:12px 16px;margin-top:1rem;border:1px solid rgba(18,160,137,0.2)}
+  .plan-summary-title{font-size:10px;font-weight:700;color:var(--text-muted);margin-bottom:9px;letter-spacing:.7px}
+  .summary-row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+  .summary-item{text-align:center}
+  .summary-lbl{font-size:9px;color:var(--text-muted);margin-bottom:2px;font-weight:500}
+  .summary-val{font-size:12px;font-weight:700;color:var(--navy)}
+  .btn-generate{width:100%;background:var(--teal);color:white;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;margin-top:1.5rem;display:flex;align-items:center;justify-content:center;gap:7px;font-family:'Outfit',sans-serif;transition:all .15s}
+  .btn-generate:hover{background:var(--teal-dark);transform:translateY(-1px)}
+
+  /* ITINERARY */
+  .itin-wrap{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 54px)}
+  .itin-map{background:#d4e8d4;overflow:hidden;position:relative;}
+  
+  /* CSS para los Pines Numerados de Leaflet */
+  .pin-number {
+    background-color: var(--teal);
+    color: white;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 13px;
+    border: 2.5px solid white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .custom-pin {
+    background: transparent;
+    border: none;
+  }
+
+  .itin-side{display:flex;flex-direction:column;overflow:hidden}
+  .itin-header{background:white;border-bottom:1px solid var(--border);padding:10px 16px;flex-shrink:0}
+  .itin-header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .itin-header-top h3{font-size:14px;font-weight:700;color:var(--navy)}
+  .itin-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-top:1px solid var(--border);padding-top:8px}
+  .itin-stat{text-align:center}
+  .itin-stat-lbl{font-size:10px;color:var(--text-muted)}
+  .itin-stat-val{font-size:12px;font-weight:700;color:var(--navy)}
+  .itin-body{flex:1;overflow-y:auto;background:#f9f8f5}
+  .itin-day{margin-bottom:6px}
+  .itin-day-header{background:white;padding:11px 16px;display:flex;align-items:center;justify-content:space-between}
+  .itin-day-header h4{font-size:13px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px}
+  .day-num{width:22px;height:22px;border-radius:50%;background:var(--teal);color:white;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .itin-day-sub{font-size:11px;color:var(--text-muted)}
+  .act-item{display:flex;gap:10px;padding:12px 16px;background:white;margin-bottom:1px}
+  .act-timeline{display:flex;flex-direction:column;align-items:center;padding-top:3px}
+  .act-dot{width:10px;height:10px;border-radius:50%;background:var(--teal);flex-shrink:0;border:2px solid white;box-shadow:0 0 0 1.5px var(--teal)}
+  .act-line{width:2px;background:#cde8e2;flex:1;margin-top:4px;min-height:30px}
+  .act-thumb{width:60px;height:60px;border-radius:10px;flex-shrink:0;background-size:cover;background-position:center;background-color:#eee}
+  .act-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}
+  .act-time{font-size:11px;color:var(--teal);font-weight:800;margin-bottom:3px;display:flex;align-items:center;gap:6px}
+  .badge-free{background:#e4f5f2;color:var(--teal);font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+  .badge-price{background:var(--orange-light);color:var(--orange);font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+  .act-name{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:3px}
+  .act-desc{font-size:11px;color:#666;line-height:1.4}
+  .act-transit{font-size:10px;color:#999;margin-top:5px;font-weight:500;display:flex;align-items:center;gap:4px}
+  .day-total{text-align:right;padding:9px 16px;font-size:12px;color:var(--text-muted);background:white;border-top:1px solid #f0ede6}
+  .day-total strong{color:var(--navy);font-weight:800;font-size:13px}
+
+  /* REGISTER / AUTH */
+  .reg-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 60px)}
+  .reg-left{background:var(--navy);padding:3rem 2.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem}
+  .reg-map-box{background:rgba(255,255,255,0.06);border-radius:16px;padding:1.5rem;width:100%;max-width:300px}
+  .reg-map-box svg{width:100%;height:auto}
+  .reg-left h3{color:white;font-size:1.35rem;font-weight:800;text-align:center}
+  .reg-left p{color:rgba(255,255,255,0.62);font-size:13px;text-align:center;line-height:1.6}
+  .reg-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .reg-chip{background:rgba(255,255,255,0.08);border:.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.8);border-radius:20px;padding:5px 14px;font-size:12px}
+  .reg-right{background:#fafaf7;padding:3rem;display:flex;flex-direction:column;justify-content:center}
+  .reg-logo{display:flex;align-items:center;gap:8px;margin-bottom:2rem}
+  .reg-logo-img{height:32px;width:auto;border-radius:4px}
+  .reg-logo span{font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;color:var(--navy)}
+  .reg-tabs{display:flex;background:#eeede8;border-radius:10px;padding:3px;margin-bottom:1.6rem}
+  .reg-tab{flex:1;padding:8px;text-align:center;font-size:13px;color:var(--text-muted);cursor:pointer;border-radius:8px;transition:all .15s;font-weight:500}
+  .reg-tab.active{background:white;color:var(--navy);font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,0.1)}
+  .reg-right h2{font-size:1.5rem;font-weight:800;color:var(--navy);margin-bottom:4px}
+  .reg-sub{font-size:13px;color:var(--text-muted);margin-bottom:1.5rem}
+  .reg-fg{margin-bottom:1rem}
+  .reg-label{font-size:13px;font-weight:600;color:var(--text);margin-bottom:5px;display:block}
+  .reg-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-size:14px;color:var(--text);background:white;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .15s}
+  .reg-input:focus{border-color:var(--teal)}
+  .reg-input::placeholder{color:#c0bdb6}
+  .reg-input.error{border-color:#e74c3c}
+  .pw-wrap{position:relative}
+  .pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text-muted);font-size:16px;background:none;border:none;padding:0}
+  .btn-continue{width:100%;background:var(--teal);color:white;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;margin-top:1rem;font-family:'Outfit',sans-serif;transition:all .15s}
+  .btn-continue:hover{background:var(--teal-dark)}
+  .btn-continue:disabled{background:#ccc;cursor:not-allowed}
+  .reg-terms{text-align:center;font-size:12px;color:var(--text-muted);margin-top:12px}
+  .reg-terms a{color:var(--teal);cursor:pointer;text-decoration:none}
+  .form-error{color:#e74c3c;font-size:12px;margin-top:4px;display:none}
+  .form-error.show{display:block}
+
+  /* ONBOARDING */
+  .onboard-page{min-height:calc(100vh - 60px);background:var(--bg);display:flex;flex-direction:column;align-items:center;padding:2.5rem 1rem}
+  .steps-bar{display:flex;align-items:center;gap:0;margin-bottom:2.5rem}
+  .step-item{display:flex;flex-direction:column;align-items:center;gap:5px}
+  .step-circ{width:30px;height:30px;border-radius:50%;border:2px solid #ccc;color:#ccc;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif}
+  .step-circ.active{background:var(--teal);border-color:var(--teal);color:white}
+  .step-lbl{font-size:10px;color:#bbb;letter-spacing:.6px;font-weight:600}
+  .step-lbl.active{color:var(--teal)}
+  .step-connector{width:64px;height:2px;background:#ddd;margin-bottom:20px}
+  .onboard-card{background:white;border-radius:var(--radius-lg);border:1px solid var(--border);padding:2rem;max-width:600px;width:100%;box-shadow:var(--shadow)}
+  .onboard-card h2{font-size:1.4rem;font-weight:800;color:var(--navy);text-align:center;margin-bottom:6px}
+  .onboard-card .sub{font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:1.5rem}
+  .interest-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .interest-item{border:1.5px solid var(--border);border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .15s}
+  .interest-item:hover{border-color:var(--teal)}
+  .interest-item.sel{border-color:var(--teal);background:var(--teal-light)}
+  .interest-icon{font-size:1.8rem;display:block;margin-bottom:6px}
+  .interest-name{font-size:12px;color:var(--text-muted);font-weight:500}
+  .interest-item.sel .interest-name{color:var(--teal);font-weight:700}
+  .onboard-footer{display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)}
+  .onboard-count{font-size:13px;color:var(--text-muted)}
+  .btn-siguiente{background:#ccc;color:white;border:none;border-radius:10px;padding:10px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s}
+  .btn-siguiente.on{background:var(--teal)}
+  .btn-siguiente.on:hover{background:var(--teal-dark)}
+
+  /* MIS VIAJES empty */
+  .empty-state{text-align:center;padding:5rem 2rem}
+  .empty-state .icon{font-size:4rem;margin-bottom:1rem}
+  .empty-state h2{font-size:1.5rem;color:var(--navy);margin-bottom:8px}
+  .empty-state p{color:var(--text-muted);margin-bottom:2rem}
+
+  ::-webkit-scrollbar{width:5px;height:5px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:#ccc;border-radius:10px}
+</style>
+</head>
+<body>
+
+<div id="screen-home" class="screen active">
+  <nav class="nav-landing">
+    <div class="logo"><img src="img/logo.png" alt="WayTrip" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="logo-icon" style="display:none;">🧭</div>WayTrip</div>
+    <div class="nav-btns">
+      <button class="btn btn-white-outline" onclick="go('register');switchRegTab('login')">Iniciar sesión</button>
+      <button class="btn btn-teal" onclick="go('register');switchRegTab('register')">Crear cuenta</button>
+    </div>
+  </nav>
+  <div class="hero">
+    <div class="hero-mountain"></div>
+    <div class="hero-content">
+      <h1>Tu próxima aventura<br>peruana, <span>planeada para ti</span></h1>
+      <p>Genera itinerarios personalizados según tus intereses, presupuesto y estilo de viaje. Descubre el Perú como nunca antes.</p>
+      <div class="hero-btns">
+        <button class="btn btn-teal btn-hero" onclick="go('register');switchRegTab('register')">Crear cuenta gratis →</button>
+        <button class="btn-hero-outline" onclick="go('register');switchRegTab('login')">Iniciar sesión</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="screen-register" class="screen">
+  <nav class="nav-landing">
+    <div class="logo" onclick="go('home')"><img src="img/logo.png" alt="WayTrip" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="logo-icon" style="display:none;">🧭</div>WayTrip</div>
+  </nav>
+  <div class="reg-wrap">
+    <div class="reg-left">
+      <div class="reg-map-box">
+        <svg viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg">
+          <path d="M75,18 L155,13 L198,38 L208,92 L188,132 L168,162 L138,182 L98,172 L68,142 L58,102 L68,62Z" fill="rgba(18,160,137,0.18)" stroke="rgba(18,160,137,0.5)" stroke-width="1.5"/>
+          <circle cx="108" cy="64" r="7" fill="#f5a623"/><text x="118" y="68" fill="rgba(255,255,255,0.85)" font-size="9" font-family="sans-serif">Lima</text>
+          <circle cx="92" cy="100" r="7" fill="#4a9ff5"/><text x="102" y="104" fill="rgba(255,255,255,0.85)" font-size="9" font-family="sans-serif">Ica</text>
+          <circle cx="138" cy="112" r="7" fill="#e74c3c"/><text x="148" y="116" fill="rgba(255,255,255,0.85)" font-size="9" font-family="sans-serif">Arequipa</text>
+          <circle cx="143" cy="137" r="7" fill="#1abc9c"/><text x="153" y="141" fill="rgba(255,255,255,0.85)" font-size="9" font-family="sans-serif">Cusco</text>
+          <circle cx="128" cy="160" r="7" fill="#9b59b6"/><text x="138" y="164" fill="rgba(255,255,255,0.85)" font-size="9" font-family="sans-serif">Puno</text>
+        </svg>
+      </div>
+      <h3>Explora el Perú como nunca antes</h3>
+      <p>Itinerarios personalizados, destinos curados y experiencias únicas para cada tipo de viajero.</p>
+      <div class="reg-chips" id="reg-dest-chips">
+        </div>
+    </div>
+    <div class="reg-right">
+      <div class="reg-logo"><img src="img/logo.png" alt="WayTrip" class="reg-logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="reg-logo-icon" style="display:none;">🧭</div><span>WayTrip</span></div>
+      <div class="reg-tabs">
+        <div class="reg-tab active" id="tab-register" onclick="switchRegTab('register')">Crear cuenta</div>
+        <div class="reg-tab" id="tab-login" onclick="switchRegTab('login')">Iniciar sesión</div>
+      </div>
+
+      <div id="form-register">
+        <h2>Bienvenido a WayTrip 👋</h2>
+        <p class="reg-sub">Crea tu cuenta y empieza a explorar el Perú.</p>
+        <div class="reg-fg">
+          <label class="reg-label">Nombre completo</label>
+          <input class="reg-input" id="r-name" placeholder="María García" type="text">
+          <div class="form-error" id="err-r-name">Ingresa tu nombre</div>
+        </div>
+        <div class="reg-fg">
+          <label class="reg-label">Correo electrónico</label>
+          <input class="reg-input" id="r-email" placeholder="maria@ejemplo.com" type="email">
+          <div class="form-error" id="err-r-email">Ingresa un correo válido</div>
+        </div>
+        <div class="reg-fg">
+          <label class="reg-label">Contraseña</label>
+          <div class="pw-wrap">
+            <input class="reg-input" id="r-pw" placeholder="Mínimo 6 caracteres" type="password" style="padding-right:40px">
+            <button class="pw-eye" onclick="togglePw('r-pw')">👁</button>
+          </div>
+          <div class="form-error" id="err-r-pw">La contraseña debe tener al menos 6 caracteres</div>
+        </div>
+        <button class="btn-continue" onclick="doRegister()">Continuar →</button>
+        <p class="reg-terms">Al registrarte, aceptas nuestros <a>Términos</a> y <a>Privacidad</a></p>
+      </div>
+
+      <div id="form-login" style="display:none">
+        <h2>Bienvenido de vuelta 👋</h2>
+        <p class="reg-sub">Ingresa con tu cuenta para continuar.</p>
+        <div class="reg-fg">
+          <label class="reg-label">Correo electrónico</label>
+          <input class="reg-input" id="l-email" placeholder="maria@ejemplo.com" type="email">
+          <div class="form-error" id="err-l-email">Correo o contraseña incorrectos</div>
+        </div>
+        <div class="reg-fg">
+          <label class="reg-label">Contraseña</label>
+          <div class="pw-wrap">
+            <input class="reg-input" id="l-pw" placeholder="Tu contraseña" type="password" style="padding-right:40px">
+            <button class="pw-eye" onclick="togglePw('l-pw')">👁</button>
+          </div>
+        </div>
+        <button class="btn-continue" onclick="doLogin()">Ingresar →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="screen-onboard" class="screen">
+  <nav class="nav-landing">
+    <div class="logo"><img src="img/logo.png" alt="WayTrip" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="logo-icon" style="display:none;">🧭</div>WayTrip</div>
+  </nav>
+  <div class="onboard-page">
+    <div class="steps-bar">
+      <div class="step-item"><div class="step-circ active">1</div><div class="step-lbl active">INTERESES</div></div>
+      <div class="step-connector"></div>
+      <div class="step-item"><div class="step-circ">2</div><div class="step-lbl">ESTILO</div></div>
+      <div class="step-connector"></div>
+      <div class="step-item"><div class="step-circ">3</div><div class="step-lbl">PERFIL</div></div>
+    </div>
+    <div class="onboard-card">
+      <h2>¿Qué te apasiona en un viaje?</h2>
+      <p class="sub">Selecciona todo lo que te llame la atención. Usaremos esto para personalizar tus recomendaciones.</p>
+      <div class="interest-grid">
+        <div class="interest-item" onclick="toggleInterest(this)"><span class="interest-icon">🍽️</span><span class="interest-name">Gastronomía</span></div>
+        <div class="interest-item" onclick="toggleInterest(this)"><span class="interest-icon">🏛️</span><span class="interest-name">Cultura</span></div>
+        <div class="interest-item" onclick="toggleInterest(this)"><span class="interest-icon">🎨</span><span class="interest-name">Arte y museos</span></div>
+        <div class="interest-item" onclick="toggleInterest(this)"><span class="interest-icon">🌿</span><span class="interest-name">Naturaleza</span></div>
+        <div class="interest-item" onclick="toggleInterest(this)"><span class="interest-icon">🏔️</span><span class="interest-name">Aventura</span></div>
+        <div class="interest-item" onclick="toggleInterest(this)"><span class="interest-icon">🎉</span><span class="interest-name">Fiestas y festivales</span></div>
+        <div class="interest-item" onclick="toggleInterest(this)"><span class="interest-icon">🏗️</span><span class="interest-name">Arquitectura</span></div>
+        <div class="interest-item" onclick="toggleInterest(this)"><span class="interest-icon">📷</span><span class="interest-name">Fotografía</span></div>
+        <div class="interest-item" onclick="toggleInterest(this)"><span class="interest-icon">🛍️</span><span class="interest-name">Compras locales</span></div>
+        <div class="interest-item" onclick="toggleInterest(this)"><span class="interest-icon">📜</span><span class="interest-name">Historia</span></div>
+      </div>
+      <div class="onboard-footer">
+        <span class="onboard-count" id="icount">0 seleccionados</span>
+        <button class="btn-siguiente" id="btn-sig" onclick="finishOnboard()">Siguiente ›</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="screen-dashboard" class="screen">
+  <nav class="inner-nav">
+    <div class="logo" style="color:var(--navy)" onclick="go('dashboard')"><img src="img/logo.png" alt="WayTrip" class="inner-nav logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="height:26px;"><div class="logo-icon" style="display:none; width:26px; height:26px; font-size:13px;">🧭</div>WayTrip</div>
+    <a class="nav-item active" onclick="go('dashboard')">🏠 Inicio</a>
+    <a class="nav-item" onclick="go('explore')">🗺 Explorar</a>
+    <a class="nav-item" onclick="go('mis-viajes')">⭐ Mis Viajes</a>
+    <div class="nav-avatar" id="dash-avatar" onclick="openProfileModal()">M</div>
+  </nav>
+  <div class="page-content">
+    <div class="welcome-banner">
+      <div>
+        <h2 id="dash-greeting">Bienvenida 👋</h2>
+        <p>¿A dónde vamos hoy? Descubre tu próximo destino.</p>
+      </div>
+      <div class="user-chip" onclick="openProfileModal()" style="cursor:pointer" title="Editar perfil">
+        <div class="chip-avatar" id="dash-chip-avatar">🏛️</div>
+        <div class="chip-info">
+          <strong id="dash-username">usuario</strong>
+          <span id="dash-email-display">—</span>
+          <span class="chip-badge" id="dash-interest-badge">Explorador</span>
+        </div>
+      </div>
+    </div>
+    <div class="section-header">
+      <h3>Destinos disponibles</h3>
+      <a onclick="go('explore')">Ver todos ›</a>
+    </div>
+    <div class="dest-grid" id="dash-dest-grid"></div>
+  </div>
+  <button class="fab" onclick="go('explore')">+ Nuevo itinerario</button>
+</div>
+
+<div id="screen-mis-viajes" class="screen">
+  <nav class="inner-nav">
+    <div class="logo" style="color:var(--navy)" onclick="go('dashboard')"><img src="img/logo.png" alt="WayTrip" class="inner-nav logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="height:26px;"><div class="logo-icon" style="display:none; width:26px; height:26px; font-size:13px;">🧭</div>WayTrip</div>
+    <a class="nav-item" onclick="go('dashboard')">🏠 Inicio</a>
+    <a class="nav-item" onclick="go('explore')">🗺 Explorar</a>
+    <a class="nav-item active">⭐ Mis Viajes</a>
+    <div class="nav-avatar" id="mv-avatar" onclick="openProfileModal()">M</div>
+  </nav>
+  <div class="page-content">
+    <div id="mv-empty-state" class="empty-state">
+      <div class="icon">🗺️</div>
+      <h2>Aún no tienes viajes guardados</h2>
+      <p>Crea tu primer itinerario y aparecerá aquí.</p>
+      <button class="btn btn-teal" style="padding:12px 28px;font-size:15px;border-radius:12px" onclick="go('explore')">+ Crear mi primer itinerario</button>
+    </div>
+    <div id="mv-trips-list" style="display:none; gap: 18px;" class="explore-grid"></div>
+  </div>
+</div>
+
+<div id="screen-explore" class="screen">
+  <nav class="inner-nav">
+    <div class="logo" style="color:var(--navy)" onclick="go('dashboard')"><img src="img/logo.png" alt="WayTrip" class="inner-nav logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="height:26px;"><div class="logo-icon" style="display:none; width:26px; height:26px; font-size:13px;">🧭</div>WayTrip</div>
+    <a class="nav-item" onclick="go('dashboard')">🏠 Inicio</a>
+    <a class="nav-item active">🗺 Explorar</a>
+    <a class="nav-item" onclick="go('mis-viajes')">⭐ Mis Viajes</a>
+    <div class="nav-avatar" id="exp-avatar" onclick="openProfileModal()">M</div>
+  </nav>
+  <div class="explore-hero">
+    <h2>Explora el Perú</h2>
+    <p id="explore-subtitle">Descubre destinos increíbles</p>
+    <div class="search-bar">
+      <span style="color:#bbb;font-size:16px">🔍</span>
+      <input id="search-input" placeholder="¿A dónde quieres ir? Busca un departamento..." oninput="applyFilters()">
+    </div>
+  </div>
+  <div class="explore-body">
+    <div class="filter-bar">
+      <span class="filter-label">Filtrar por:</span>
+      <select class="filter-select" id="filter-category" onchange="applyFilters()">
+        <option value="">Todos</option>
+        <option value="historia">Historia</option>
+        <option value="cultura">Cultura</option>
+        <option value="naturaleza">Naturaleza</option>
+        <option value="aventura">Aventura</option>
+        <option value="gastronomia">Gastronomía</option>
+        <option value="arquitectura">Arquitectura</option>
+        <option value="arte">Arte y museos</option>
+      </select>
+      <select class="filter-select" id="filter-region" onchange="applyFilters()">
+        <option value="">Región: Todas</option>
+        <option value="norte">Norte</option>
+        <option value="centro">Centro</option>
+        <option value="sur">Sur</option>
+        <option value="oriente">Oriente</option>
+      </select>
+      <select class="filter-select" id="filter-rating" onchange="applyFilters()">
+        <option value="">Rating: Todos</option>
+        <option value="4.8">⭐ 4.8+</option>
+        <option value="4.5">⭐ 4.5+</option>
+      </select>
+      <span class="filter-count" id="filter-count"></span>
+    </div>
+    <div class="explore-grid" id="explore-grid"></div>
+  </div>
+</div>
+
+<div id="screen-dest" class="screen">
+  <nav class="inner-nav">
+    <div class="logo" style="color:var(--navy)" onclick="go('dashboard')"><img src="img/logo.png" alt="WayTrip" class="inner-nav logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="height:26px;"><div class="logo-icon" style="display:none; width:26px; height:26px; font-size:13px;">🧭</div>WayTrip</div>
+    <a class="nav-item" onclick="go('dashboard')">🏠 Inicio</a>
+    <a class="nav-item" onclick="go('explore')">🗺 Explorar</a>
+    <a class="nav-item" onclick="go('mis-viajes')">⭐ Mis Viajes</a>
+    <div class="nav-avatar" id="dest-avatar" onclick="openProfileModal()">M</div>
+  </nav>
+  <div class="dest-detail-wrap">
+    <button class="back-btn" onclick="go('explore')">← Volver a explorar</button>
+    <div class="dest-hero-banner" id="dest-banner">
+      <div class="dest-hero-overlay"></div>
+      <div class="dest-hero-info">
+        <h2 id="dest-title">Cusco</h2>
+        <p id="dest-subtitle-txt">—</p>
+        <div class="dest-hero-tags" id="dest-tags"></div>
+      </div>
+      <div class="dest-hero-meta">
+        <div class="dest-meta-item"><strong id="dest-places-count">0</strong><span>Lugares</span></div>
+        <div class="dest-meta-item"><strong id="dest-rating">⭐ 4.9</strong><span>Rating</span></div>
+        <button class="btn btn-teal" onclick="go('plan')" style="padding:9px 18px;font-size:13px">📋 Planificar viaje</button>
+      </div>
+    </div>
+    <div class="dest-tabs" id="dest-tabs"></div>
+    <div class="dest-body">
+      <div class="dest-map" id="dest-map-container"></div>
+      <div class="dest-list">
+        <div class="dest-list-header" id="dest-list-header">Todos los lugares</div>
+        <div id="dest-places-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="screen-plan" class="screen">
+  <nav class="inner-nav">
+    <div class="logo" style="color:var(--navy)" onclick="go('dashboard')"><img src="img/logo.png" alt="WayTrip" class="inner-nav logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="height:26px;"><div class="logo-icon" style="display:none; width:26px; height:26px; font-size:13px;">🧭</div>WayTrip</div>
+    <a class="nav-item" onclick="go('dashboard')">🏠 Inicio</a>
+    <a class="nav-item" onclick="go('explore')">🗺 Explorar</a>
+    <a class="nav-item" onclick="go('mis-viajes')">⭐ Mis Viajes</a>
+    <div class="nav-avatar" id="plan-avatar" onclick="openProfileModal()">M</div>
+  </nav>
+  <div class="plan-page">
+    <div class="plan-card">
+      <div class="plan-logo"><img src="img/logo.png" alt="WayTrip" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="height:30px;"><div class="plan-logo-icon" style="display:none;">🧭</div><span>WayTrip</span></div>
+      <h2>Planifica tu viaje a <span id="plan-dest-title">Cusco</span></h2>
+      <p class="plan-subtitle">Cuéntanos los detalles y generaremos el itinerario perfecto para ti.</p>
+      <div class="form-group">
+        <div class="form-label">📅 Fechas del viaje</div>
+        <div class="date-row">
+          <div><div class="date-label">Fecha de llegada</div><input type="date" class="form-input" id="plan-arrival" value="2026-06-15" onchange="updateDays()"></div>
+          <div><div class="date-label">Fecha de salida</div><input type="date" class="form-input" id="plan-depart" value="2026-06-15" readonly onchange="updateDays()"></div>
+        </div>
+        <div class="day-count" id="day-count">1 día de viaje (Demo)</div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">👥 Número de personas</div>
+        <div class="num-row">
+          <button class="num-btn" onclick="changePeople(-1)">−</button>
+          <span class="num-val" id="p-val">2</span>
+          <button class="num-btn" onclick="changePeople(1)">+</button>
+          <span class="num-lbl" id="p-lbl">2 personas</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">💰 Presupuesto diario por persona</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px">ⓘ Gastos diarios estimados (comida, transporte local, actividades)</div>
+        <input type="number" class="form-input" id="budget-val" value="150" oninput="updateSummary()">
+        <div class="budget-chips">
+          <span class="budget-chip" onclick="setBudget(50,this)">S/ 50</span>
+          <span class="budget-chip active" onclick="setBudget(150,this)">S/ 150</span>
+          <span class="budget-chip" onclick="setBudget(300,this)">S/ 300</span>
+          <span class="budget-chip" onclick="setBudget(500,this)">S/ 500</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">🚗 Tipo de movilidad principal (Puedes elegir varias)</div>
+        <div class="transport-grid">
+          <div class="transport-opt active" onclick="selectTransport(this)"><span class="t-icon">🚌</span>Bus</div>
+          <div class="transport-opt" onclick="selectTransport(this)"><span class="t-icon">🚗</span>Auto propio</div>
+          <div class="transport-opt" onclick="selectTransport(this)"><span class="t-icon">🚕</span>Taxi / Uber</div>
+          <div class="transport-opt" onclick="selectTransport(this)"><span class="t-icon">🚶</span>A pie</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">⚡ Ritmo de viaje</div>
+        <div class="rhythm-labels">
+          <span id="rl-1">Relajado</span>
+          <span id="rl-2" class="active">Moderado</span>
+          <span id="rl-3">Intensivo</span>
+        </div>
+        <input type="range" min="1" max="3" value="2" id="rhythm-slider" oninput="updateRhythm()">
+        <div class="rhythm-sub"><span>4–5 act./día</span><span>5–7 act./día</span><span>8+ act./día</span></div>
+      </div>
+      <div class="plan-summary">
+        <div class="plan-summary-title">📋 RESUMEN DE TU VIAJE</div>
+        <div class="summary-row">
+          <div class="summary-item"><div class="summary-lbl">DURACIÓN</div><div class="summary-val" id="sum-days">1 día</div></div>
+          <div class="summary-item"><div class="summary-lbl">PERSONAS</div><div class="summary-val" id="sum-people">2</div></div>
+          <div class="summary-item"><div class="summary-lbl">TOTAL EST.</div><div class="summary-val" id="sum-budget">S/ 300</div></div>
+          <div class="summary-item" style="grid-column: span 2;"><div class="summary-lbl">RITMO</div><div class="summary-val" id="sum-rhythm">Moderado</div></div>
+        </div>
+      </div>
+      <button class="btn-generate" onclick="generateItinerary()">✨ Generar mi itinerario ✨</button>
+    </div>
+  </div>
+</div>
+
+<div id="screen-itinerary" class="screen">
+  <nav class="inner-nav">
+    <div class="logo" style="color:var(--navy)" onclick="go('dashboard')"><img src="img/logo.png" alt="WayTrip" class="inner-nav logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="height:26px;"><div class="logo-icon" style="display:none; width:26px; height:26px; font-size:13px;">🧭</div>WayTrip</div>
+    <div style="flex:1;text-align:center">
+      <div id="itin-title" style="font-size:14px;font-weight:700;color:var(--navy)">✈️ Cusco · 1 día  ·  <span style="font-weight:400;color:var(--text-muted)">15 Jun – 15 Jun</span></div>
+      <div id="itin-subtitle" style="font-size:11px;color:var(--text-muted)">S/ 385 presupuesto · 2 personas</div>
+    </div>
+    <button class="btn btn-ghost" style="font-size:12px;padding:6px 14px" onclick="go('plan')">✏️ Editar</button>
+  </nav>
+  <div class="itin-wrap">
+    <div class="itin-map" id="mapa-itinerario-contenedor"></div>
+    
+    <div class="itin-side">
+      <div class="itin-header">
+        <div class="itin-header-top"><h3 id="itin-header-title">✈️ Cusco · 1 día</h3></div>
+        <div class="itin-stats">
+          <div class="itin-stat"><div class="itin-stat-lbl">Días</div><div class="itin-stat-val" id="itin-stat-days">1</div></div>
+          <div class="itin-stat"><div class="itin-stat-lbl">Presupuesto</div><div class="itin-stat-val" id="itin-stat-budget">S/ 385</div></div>
+          <div class="itin-stat"><div class="itin-stat-lbl">Ritmo</div><div class="itin-stat-val" id="itin-stat-rhythm">Moderado</div></div>
+        </div>
+      </div>
+      <div class="itin-body">
+        </div>
+    </div>
+  </div>
+</div>
+
+<div id="profile-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(3px);">
+  <div style="background:white; padding:2rem; border-radius:var(--radius-lg); width:90%; max-width:340px; box-shadow:var(--shadow-md); text-align:center; font-family:'DM Sans',sans-serif;">
+    <h3 style="font-family:'Outfit',sans-serif; color:var(--navy); margin-bottom:1.5rem; font-size:1.4rem;">Editar Perfil</h3>
+    
+    <div style="position:relative; display:inline-block; margin-bottom:1.5rem;">
+      <div id="modal-avatar-preview" style="width:85px; height:85px; border-radius:50%; background:var(--teal); color:white; display:flex; align-items:center; justify-content:center; font-size:2.5rem; cursor:pointer; font-family:'Outfit',sans-serif; box-shadow:0 4px 10px rgba(0,0,0,0.15); transition:transform 0.15s;" onclick="document.getElementById('avatar-upload').click()" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">M</div>
+      <div style="position:absolute; bottom:0; right:0; background:var(--orange); color:white; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; cursor:pointer; pointer-events:none; border:2px solid white;">📷</div>
+    </div>
+    <input type="file" id="avatar-upload" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
+    
+    <div style="text-align:left; margin-bottom:1.5rem;">
+      <label style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:6px; display:block;">Nombre completo</label>
+      <input type="text" id="modal-name-input" class="form-input" style="font-weight:600; font-size:15px;">
+    </div>
+    
+    <div style="display:flex; gap:10px;">
+      <button class="btn btn-ghost" style="flex:1; justify-content:center;" onclick="closeProfileModal()">Cancelar</button>
+      <button class="btn btn-teal" style="flex:1; justify-content:center;" onclick="saveProfile()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+<script>
+// ═══════════════════════════════════════════
+//  DATA DE DESTINOS
+// ═══════════════════════════════════════════
+const DESTINATIONS = [
+  { id:'cusco',    name:'Cusco',    subtitle:'La capital histórica del Perú',       img:'https://images.unsplash.com/photo-1587595431973-160d0d94add1?auto=format&fit=crop&q=80&w=800', region:'sur',    rating:4.9, tags:['historia','cultura','gastronomia','arquitectura'] },
+  { id:'lima',     name:'Lima',     subtitle:'Capital gastronómica de América',     img:'https://images.unsplash.com/photo-1531968551466-417195979b9a?auto=format&fit=crop&q=80&w=800', region:'centro', rating:4.7, tags:['gastronomia','arte','cultura'] },
+  { id:'arequipa', name:'Arequipa', subtitle:'La Ciudad Blanca',                    img:'https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&q=80&w=800', region:'sur',    rating:4.8, tags:['arquitectura','historia','gastronomia'] },
+  { id:'ica',      name:'Ica',      subtitle:'Oasis y dunas en el desierto',        img:'https://images.unsplash.com/photo-1574488349195-2c8a14b53ca3?auto=format&fit=crop&q=80&w=800', region:'sur',    rating:4.6, tags:['aventura','naturaleza'] },
+  { id:'puno',     name:'Puno',     subtitle:'Capital folclórica del Perú',         img:'https://images.unsplash.com/photo-1533088924632-15f5fc8488e1?auto=format&fit=crop&q=80&w=800', region:'sur',    rating:4.7, tags:['cultura','naturaleza','historia'] },
+  { id:'loreto',   name:'Loreto',   subtitle:'Puerta a la Amazonía peruana',        img:'https://images.unsplash.com/photo-1518182170546-076616fd60cf?auto=format&fit=crop&q=80&w=800', region:'oriente',rating:4.8, tags:['naturaleza','aventura'] },
+  { id:'trujillo', name:'Trujillo', subtitle:'La ciudad de la eterna primavera',   img:'https://images.unsplash.com/photo-1624535313364-bbbb5c11099f?auto=format&fit=crop&q=80&w=800', region:'norte',  rating:4.7, tags:['historia','cultura','arquitectura'] },
+  { id:'huaraz',   name:'Huaraz',   subtitle:'Capital del andinismo peruano',       img:'https://images.unsplash.com/photo-1589410183861-554471f50a80?auto=format&fit=crop&q=80&w=800', region:'norte',  rating:4.8, tags:['aventura','naturaleza'] },
+];
+
+// Reemplazamos los lugares fijos por una variable vacía que se llenará desde el CSV
+let PLACES = {};
+
+// FUNCIÓN DE CARGA DE CSV
+function cargarLugares() {
+  fetch('data/lugares.csv')
+    .then(response => {
+      if(!response.ok) throw new Error("No se pudo cargar el archivo CSV.");
+      return response.text();
+    })
+    .then(csvData => {
+      Papa.parse(csvData, {
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+          // Llenamos el objeto PLACES con la data leída
+          results.data.forEach(fila => {
+            let idDestino = fila.destino_id;
+            if(!PLACES[idDestino]) PLACES[idDestino] = [];
+            
+            PLACES[idDestino].push({
+              name: fila.name,
+              type: fila.type,
+              desc: fila.desc,
+              price: fila.price,
+              free: (fila.free === 'true' || fila.free === 'VERDADERO'),
+              img: fila.img,
+              lat: parseFloat(fila.lat),
+              lng: parseFloat(fila.lng)
+            });
+          });
+          
+          // Solo después de que se cargue la info, llenamos los chips de registro y datos del UI inicial
+          fillRegChips();
+        }
+      });
+    })
+    .catch(error => {
+      console.error("Error al cargar la base de datos CSV:", error);
+      fillRegChips(); // Permite renderizar aunque falle (vacío)
+    });
+}
+
+// ═══════════════════════════════════════════
+//  AUTH & PROFILE
+// ═══════════════════════════════════════════
+let USERS = {};   
+let currentUser = null;  
+
+function doRegister() {
+  const name  = document.getElementById('r-name').value.trim();
+  const email = document.getElementById('r-email').value.trim().toLowerCase();
+  const pw    = document.getElementById('r-pw').value;
+  let ok = true;
+
+  document.getElementById('err-r-name').classList.remove('show');
+  document.getElementById('err-r-email').classList.remove('show');
+  document.getElementById('err-r-pw').classList.remove('show');
+  document.getElementById('r-name').classList.remove('error');
+  document.getElementById('r-email').classList.remove('error');
+  document.getElementById('r-pw').classList.remove('error');
+
+  if (!name) {
+    document.getElementById('err-r-name').classList.add('show');
+    document.getElementById('r-name').classList.add('error');
+    ok = false;
+  }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    document.getElementById('err-r-email').textContent = 'Ingresa un correo válido';
+    document.getElementById('err-r-email').classList.add('show');
+    document.getElementById('r-email').classList.add('error');
+    ok = false;
+  } else if (USERS[email]) {
+    document.getElementById('err-r-email').textContent = 'Este correo ya está registrado';
+    document.getElementById('err-r-email').classList.add('show');
+    document.getElementById('r-email').classList.add('error');
+    ok = false;
+  }
+  if (pw.length < 6) {
+    document.getElementById('err-r-pw').classList.add('show');
+    document.getElementById('r-pw').classList.add('error');
+    ok = false;
+  }
+  if (!ok) return;
+
+  USERS[email] = { name, password: pw, interests: [], trips: [], avatar: null };
+  currentUser = { name, email, interests: [], trips: [], avatar: null };
+  go('onboard');
+}
+
+function doLogin() {
+  const email = document.getElementById('l-email').value.trim().toLowerCase();
+  const pw    = document.getElementById('l-pw').value;
+  document.getElementById('err-l-email').classList.remove('show');
+
+  const user = USERS[email];
+  if (!user || user.password !== pw) {
+    document.getElementById('err-l-email').classList.add('show');
+    document.getElementById('l-email').classList.add('error');
+    document.getElementById('l-pw').classList.add('error');
+    return;
+  }
+  currentUser = { name: user.name, email, interests: user.interests, trips: user.trips || [], avatar: user.avatar || null };
+  loadDashboard();
+  go('dashboard');
+}
+
+function finishOnboard() {
+  if (!currentUser) return;
+  const selected = [...document.querySelectorAll('.interest-item.sel')].map(el =>
+    el.querySelector('.interest-name').textContent
+  );
+  currentUser.interests = selected;
+  if (USERS[currentUser.email]) USERS[currentUser.email].interests = selected;
+  loadDashboard();
+  go('dashboard');
+}
+
+function requireAuth(targetScreen) {
+  if (!currentUser) { go('register'); return false; }
+  return true;
+}
+
+// ═══════════════════════════════════════════
+//  PROFILE MODAL LOGIC
+// ═══════════════════════════════════════════
+let tempAvatarBase64 = null;
+
+function openProfileModal() {
+  if(!currentUser) return;
+  tempAvatarBase64 = currentUser.avatar || null;
+  document.getElementById('modal-name-input').value = currentUser.name;
+  updateModalAvatarPreview();
+  document.getElementById('profile-modal').style.display = 'flex';
+}
+
+function closeProfileModal() {
+  document.getElementById('profile-modal').style.display = 'none';
+}
+
+function handleAvatarUpload(e) {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    tempAvatarBase64 = event.target.result; 
+    updateModalAvatarPreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+function updateModalAvatarPreview() {
+  const prev = document.getElementById('modal-avatar-preview');
+  if(tempAvatarBase64) {
+    prev.style.backgroundImage = `url('${tempAvatarBase64}')`;
+    prev.style.backgroundSize = 'cover';
+    prev.style.backgroundPosition = 'center';
+    prev.textContent = '';
+  } else {
+    prev.style.backgroundImage = 'none';
+    prev.textContent = currentUser.name.charAt(0).toUpperCase();
+  }
+}
+
+function saveProfile() {
+  const newName = document.getElementById('modal-name-input').value.trim();
+  if(newName) {
+    currentUser.name = newName;
+    if(USERS[currentUser.email]) USERS[currentUser.email].name = newName;
+  }
+  
+  currentUser.avatar = tempAvatarBase64;
+  if(USERS[currentUser.email]) USERS[currentUser.email].avatar = tempAvatarBase64;
+  
+  closeProfileModal();
+  syncAvatars();
+  loadDashboard(); 
+}
+
+// ═══════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════
+let currentDest = 'cusco';
+
+function go(id) {
+  const protected_ = ['dashboard','mis-viajes','explore','dest','plan','itinerary'];
+  if (protected_.includes(id) && !currentUser) {
+    go('register');
+    return;
+  }
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+  
+  if (id === 'explore') applyFilters();
+  if (id === 'plan') updateSummary();
+  if (id === 'mis-viajes') renderMisViajes();
+  
+  syncAvatars();
+}
+
+function syncAvatars() {
+  if (!currentUser) return;
+  const initial = currentUser.name.charAt(0).toUpperCase();
+  ['dash-avatar','mv-avatar','exp-avatar','dest-avatar','plan-avatar'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { 
+      el.title = currentUser.name; 
+      if (currentUser.avatar) {
+        el.style.backgroundImage = `url('${currentUser.avatar}')`;
+        el.style.backgroundSize = 'cover';
+        el.style.backgroundPosition = 'center';
+        el.textContent = '';
+      } else {
+        el.style.backgroundImage = 'none';
+        el.textContent = initial; 
+      }
+    }
+  });
+}
+
+// ═══════════════════════════════════════════
+//  DASHBOARD LOAD
+// ═══════════════════════════════════════════
+function loadDashboard() {
+  if (!currentUser) return;
+  document.getElementById('dash-greeting').textContent = `Bienvenido/a, ${currentUser.name.split(' ')[0]} 👋`;
+  document.getElementById('dash-username').textContent = currentUser.name.split(' ')[0].toLowerCase() + '_viajero';
+  document.getElementById('dash-email-display').textContent = currentUser.email;
+
+  const chipAvatar = document.getElementById('dash-chip-avatar');
+  if (currentUser.avatar) {
+    chipAvatar.style.backgroundImage = `url('${currentUser.avatar}')`;
+    chipAvatar.style.backgroundSize = 'cover';
+    chipAvatar.style.backgroundPosition = 'center';
+    chipAvatar.textContent = '';
+  } else {
+    chipAvatar.style.backgroundImage = 'none';
+    chipAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+  }
+
+  const badge = currentUser.interests[0] || 'Explorador';
+  document.getElementById('dash-interest-badge').textContent = '🧭 ' + badge;
+
+  const grid = document.getElementById('dash-dest-grid');
+  grid.innerHTML = DESTINATIONS.slice(0,4).map(d => `
+    <div class="dest-card" onclick="openDest('${d.id}')">
+      <div class="dest-card-img" style="background-image: url('${d.img}');">
+        <div class="dest-card-overlay"></div>
+        <span class="badge-rating">⭐ ${d.rating}</span>
+      </div>
+      <div class="dest-card-body">
+        <div class="dest-region">📍 ${capitalize(d.region)} del Perú</div>
+        <div class="dest-name">${d.name}</div>
+        <div class="tags">${d.tags.slice(0,3).map(t=>`<span class="tag">${capitalize(t)}</span>`).join('')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════
+//  REG CHIPS
+// ═══════════════════════════════════════════
+function fillRegChips() {
+  const totalPlaces = Object.values(PLACES).reduce((s,p)=>s+p.length,0);
+  document.getElementById('reg-dest-chips').innerHTML = `
+    <span class="reg-chip">📍 ${DESTINATIONS.length} departamentos</span>
+    <span class="reg-chip">🗺 ${totalPlaces} lugares reales cargados</span>
+    <span class="reg-chip">👥 Colaborativo</span>
+  `;
+}
+
+// ═══════════════════════════════════════════
+//  EXPLORE FILTERS
+// ═══════════════════════════════════════════
+function applyFilters() {
+  const search    = (document.getElementById('search-input')?.value || '').toLowerCase();
+  const cat       = document.getElementById('filter-category')?.value || '';
+  const region    = document.getElementById('filter-region')?.value || '';
+  const minRating = parseFloat(document.getElementById('filter-rating')?.value || '0');
+
+  const filtered = DESTINATIONS.filter(d => {
+    if (search && !d.name.toLowerCase().includes(search) && !d.subtitle.toLowerCase().includes(search)) return false;
+    if (cat && !d.tags.includes(cat)) return false;
+    if (region && d.region !== region) return false;
+    if (minRating && d.rating < minRating) return false;
+    return true;
+  });
+
+  const n = filtered.length;
+  document.getElementById('filter-count').textContent = `${n} departamento${n!==1?'s':''} encontrado${n!==1?'s':''}`;
+  document.getElementById('explore-subtitle').textContent =
+    `${n} departamento${n!==1?'s':''} con lugares cuidadosamente seleccionados`;
+
+  const grid = document.getElementById('explore-grid');
+  if (n === 0) {
+    grid.innerHTML = `<div class="no-results">No se encontraron destinos con esos filtros.<br><span style="font-size:2rem;display:block;margin-top:8px">🔍</span></div>`;
+    return;
+  }
+  grid.innerHTML = filtered.map(d => `
+    <div class="exp-card" onclick="openDest('${d.id}')">
+      <div class="exp-card-img" style="background-image: url('${d.img}');">
+        <div class="exp-overlay"></div>
+        <span class="exp-zone">${capitalize(d.region)}</span>
+        <span class="exp-rating">⭐ ${d.rating}</span>
+        <span class="exp-name">${d.name}</span>
+      </div>
+      <div class="exp-card-body">
+        <div class="exp-icons">
+          ${d.tags.slice(0,3).map(t=>`<span>${tagEmoji(t)}</span>`).join('')}
+          <span class="exp-count">${(PLACES[d.id]||[]).length} lugares</span>
+        </div>
+        <div class="exp-tags">${d.tags.slice(0,3).map(t=>`<span class="exp-tag">${capitalize(t)}</span>`).join('')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════
+//  DESTINATION DETAIL
+// ═══════════════════════════════════════════
+function openDest(id) {
+  if (!requireAuth()) return;
+  currentDest = id;
+  const d = DESTINATIONS.find(x => x.id === id);
+  if (!d) return;
+
+  document.getElementById('dest-banner').style.backgroundImage = `url('${d.img}')`;
+  document.getElementById('dest-title').textContent = d.name;
+  document.getElementById('dest-subtitle-txt').textContent = d.subtitle;
+  document.getElementById('dest-rating').textContent = '⭐ ' + d.rating;
+  const places = PLACES[id] || [];
+  document.getElementById('dest-places-count').textContent = places.length;
+  document.getElementById('dest-tags').innerHTML = d.tags.map(t=>`<span class="dest-hero-tag">${capitalize(t)}</span>`).join('');
+  
+  document.getElementById('plan-dest-title').textContent = d.name;
+
+  const catMap = {'🍽️':'Restaurantes','🛒':'Mercados','🏯':'Arqueológico','🎨':'Arte','🏔️':'Naturaleza','🌅':'Naturaleza','🌞':'Templos','⛪':'Iglesias','💧':'Lagos','🏛️':'Histórico','🌟':'Destacado','🛍️':'Compras','🏺':'Museos','⛰️':'Montañas','🌾':'Islas','🧵':'Cultura','🚣':'Aventura','🏄':'Playas','🏂':'Aventura','✈️':'Arqueológico','🍷':'Gastronomía','🦭':'Fauna','🐧':'Fauna','🐬':'Fauna','🏙️':'Ciudades','🌿':'Naturaleza','🌊':'Lagos'};
+  const uniqCats = [...new Set(places.map(p=>(catMap[p.type.split(' ')[0]]||'Otros')))];
+  const tabsEl = document.getElementById('dest-tabs');
+  tabsEl.innerHTML = `<span class="dest-tab active" onclick="filterDestTab('all',this)">Todos</span>`;
+  uniqCats.slice(0,5).forEach(cat => {
+    tabsEl.innerHTML += `<span class="dest-tab" onclick="filterDestTab('${cat}',this)">${cat}</span>`;
+  });
+  renderDestMap(id);
+  renderDestPlaces(places);
+  document.getElementById('dest-list-header').textContent = `Todos los lugares (${places.length})`;
+  go('dest');
+}
+
+function filterDestTab(cat, el) {
+  document.querySelectorAll('#dest-tabs .dest-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const catMap = {'🍽️':'Restaurantes','🛒':'Mercados','🏯':'Arqueológico','🎨':'Arte','🏔️':'Naturaleza','🌅':'Naturaleza','🌞':'Templos','⛪':'Iglesias','💧':'Lagos','🏛️':'Histórico','🌟':'Destacado','🛍️':'Compras','🏺':'Museos','⛰️':'Montañas','🌾':'Islas','🧵':'Cultura','🚣':'Aventura','🏄':'Playas','🏂':'Aventura','✈️':'Arqueológico','🍷':'Gastronomía','🦭':'Fauna','🐧':'Fauna','🐬':'Fauna','🏙️':'Ciudades','🌿':'Naturaleza','🌊':'Lagos'};
+  const places = PLACES[currentDest] || [];
+  const filtered = cat==='all' ? places : places.filter(p=>(catMap[p.type.split(' ')[0]]||'Otros')===cat);
+  renderDestPlaces(filtered);
+  document.getElementById('dest-list-header').textContent = `${cat==='all'?'Todos los':cat} lugares (${filtered.length})`;
+}
+
+function renderDestPlaces(places) {
+  document.getElementById('dest-places-list').innerHTML = places.map(p=>`
+    <div class="place-item">
+      <div class="place-thumb" style="background-image: url('${p.img}')">
+        <div class="place-thumb-icon">${p.type.split(' ')[0]}</div>
+      </div>
+      <div class="place-info">
+        <div class="place-name">${p.name}</div>
+        <div class="place-type">${p.type}</div>
+        <div class="place-desc">${p.desc}</div>
+      </div>
+      <span class="place-price ${p.free?'free':''}">${p.price}</span>
+    </div>
+  `).join('');
+}
+
+function renderDestMap(id) {
+  const container = document.getElementById('dest-map-container');
+  const destName = DESTINATIONS.find(x=>x.id===id)?.name || '';
+  container.innerHTML = `
+    <iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" 
+      src="https://maps.google.com/maps?q=${encodeURIComponent(destName + ', Peru')}&t=&z=13&ie=UTF8&iwloc=&output=embed">
+    </iframe>`;
+}
+
+// ═══════════════════════════════════════════
+//  REGISTER HELPERS
+// ═══════════════════════════════════════════
+function switchRegTab(tab) {
+  document.getElementById('tab-register').classList.toggle('active', tab==='register');
+  document.getElementById('tab-login').classList.toggle('active', tab==='login');
+  document.getElementById('form-register').style.display = tab==='register' ? '' : 'none';
+  document.getElementById('form-login').style.display    = tab==='login'    ? '' : 'none';
+}
+
+function togglePw(id) {
+  const el = document.getElementById(id);
+  el.type = el.type==='password' ? 'text' : 'password';
+}
+
+// ═══════════════════════════════════════════
+//  ONBOARDING
+// ═══════════════════════════════════════════
+function toggleInterest(el) {
+  el.classList.toggle('sel');
+  const n = document.querySelectorAll('.interest-item.sel').length;
+  document.getElementById('icount').textContent = n + ' seleccionado' + (n!==1?'s':'');
+  document.getElementById('btn-sig').classList.toggle('on', n>0);
+}
+
+// ═══════════════════════════════════════════
+//  PLAN & MIS VIAJES
+// ═══════════════════════════════════════════
+let planPeople = 2;
+
+function updateDays() {
+  const arrivalInput = document.getElementById('plan-arrival');
+  const departInput = document.getElementById('plan-depart');
+  
+  departInput.value = arrivalInput.value;
+  document.getElementById('day-count').textContent = '1 día de viaje (Demo)';
+  updateSummary();
+}
+
+function changePeople(d) {
+  planPeople = Math.max(1, Math.min(12, planPeople+d));
+  document.getElementById('p-val').textContent  = planPeople;
+  document.getElementById('p-lbl').textContent  = planPeople + (planPeople===1?' persona':' personas');
+  document.getElementById('sum-people').textContent = planPeople;
+  updateSummary();
+}
+
+function setBudget(val, el) {
+  document.getElementById('budget-val').value = val;
+  document.querySelectorAll('.budget-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  updateSummary();
+}
+
+function updateSummary() {
+  const days = 1; 
+  const budgetPP = parseInt(document.getElementById('budget-val').value) || 0;
+  const total = budgetPP * planPeople * days;
+
+  document.getElementById('sum-budget').textContent = 'S/ ' + total;
+  document.getElementById('sum-days').textContent = '1 día';
+}
+
+function selectTransport(el) {
+  el.classList.toggle('active');
+}
+
+function updateRhythm() {
+  const v = parseInt(document.getElementById('rhythm-slider').value);
+  const names = ['','Relajado','Moderado','Intensivo'];
+  for (let i=1;i<=3;i++) {
+    const el = document.getElementById('rl-'+i);
+    if(el) el.className = i===v?'active':'';
+  }
+  document.getElementById('sum-rhythm').textContent = names[v];
+}
+
+function generateItinerary() {
+  if (!currentUser) return;
+  
+  const days = 1; 
+  const budgetPP = parseInt(document.getElementById('budget-val').value) || 0;
+  const totalBudget = budgetPP * planPeople * days;
+  const destObj = DESTINATIONS.find(x => x.id === currentDest) || DESTINATIONS[0];
+
+  const v = parseInt(document.getElementById('rhythm-slider').value);
+  const rhythms = ['','Relajado','Moderado','Intensivo'];
+  const rhythmText = rhythms[v];
+  const arrivalVal = document.getElementById('plan-arrival').value;
+
+  const newTrip = {
+    id: Date.now(),
+    destId: destObj.id,
+    destName: destObj.name,
+    img: destObj.img,
+    days: days,
+    people: planPeople,
+    totalBudget: totalBudget,
+    rhythm: rhythmText,
+    arrival: arrivalVal,
+    depart: arrivalVal
+  };
+
+  if(!currentUser.trips) currentUser.trips = [];
+  currentUser.trips.push(newTrip);
+  
+  if(USERS[currentUser.email]) USERS[currentUser.email].trips = currentUser.trips;
+
+  renderItineraryView(newTrip);
+  go('itinerary');
+}
+
+function renderMisViajes() {
+  const mvList = document.getElementById('mv-trips-list');
+  const mvEmpty = document.getElementById('mv-empty-state');
+  if (!currentUser || !currentUser.trips || currentUser.trips.length === 0) {
+    mvList.style.display = 'none';
+    mvEmpty.style.display = 'block';
+  } else {
+    mvEmpty.style.display = 'none';
+    mvList.style.display = 'grid';
+    mvList.innerHTML = currentUser.trips.map(t => `
+      <div class="exp-card" onclick="openTrip(${t.id})">
+        <div class="exp-card-img" style="background-image: url('${t.img}')">
+          <div class="exp-overlay"></div>
+          <span class="exp-name">${t.destName}</span>
+        </div>
+        <div class="exp-card-body">
+          <div style="font-size:14px; font-weight:700; color:var(--navy); margin-bottom:4px;">${t.days} día · ${t.people} personas</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">Presupuesto est: S/ ${t.totalBudget}</div>
+          <div style="font-size:12px; color:var(--text-muted);">📅 ${t.arrival}</div>
+        </div>
+      </div>
+    `).reverse().join('');
+  }
+}
+
+function openTrip(tripId) {
+    const t = currentUser.trips.find(x => x.id === tripId);
+    if(!t) return;
+    currentDest = t.destId;
+    renderItineraryView(t);
+    go('itinerary');
+}
+
+let itinMapInstance = null;
+
+function renderItineraryView(tripData) {
+  document.getElementById('itin-title').innerHTML = `✈️ ${tripData.destName} · 1 día  ·  <span style="font-weight:400;color:var(--text-muted)">${tripData.arrival}</span>`;
+  document.getElementById('itin-subtitle').textContent = `S/ ${tripData.totalBudget} presupuesto · ${tripData.people} personas`;
+  document.getElementById('itin-header-title').textContent = `✈️ ${tripData.destName} · 1 día`;
+  document.getElementById('itin-stat-days').textContent = tripData.days;
+  document.getElementById('itin-stat-budget').textContent = `S/ ${tripData.totalBudget}`;
+  document.getElementById('itin-stat-rhythm').textContent = tripData.rhythm;
+
+  const mapContainer = document.getElementById('mapa-itinerario-contenedor');
+  mapContainer.innerHTML = `<div id="real-map-div" style="width:100%; height:100%; z-index:1;"></div>`;
+
+  // Asegurarnos de que hay lugares en PLACES, si no, crear un array vacío
+  const lugaresDelDestino = PLACES[tripData.destId] || [];
+  const placesForTrip = lugaresDelDestino.slice(0, 4); 
+  
+  let actsHtml = placesForTrip.map((p, i) => {
+      let timeStr = (8 + i*3).toString().padStart(2, '0') + ':00';
+      let badge = p.free ? '<span class="badge-free">Gratis</span>' : `<span class="badge-price">${p.price}</span>`;
+      return `
+      <div class="act-item">
+          <div class="act-timeline">
+              <div class="act-dot"></div>
+              ${i < placesForTrip.length-1 ? '<div class="act-line"></div>' : ''}
+          </div>
+          <div class="act-thumb" style="background-image:url('${p.img}')"></div>
+          <div class="act-info">
+              <div class="act-time">${timeStr} ${badge}</div>
+              <div class="act-name">${i+1}. ${p.name}</div>
+              <div class="act-desc">${p.desc}</div>
+          </div>
+      </div>`;
+  }).join('');
+
+  if(actsHtml === '') {
+    actsHtml = `<div style="padding:20px;text-align:center;color:#666">No hay lugares cargados para este destino en el CSV.</div>`;
+  }
+
+  document.querySelector('.itin-body').innerHTML = `
+      <div class="itin-day">
+        <div class="itin-day-header">
+            <h4><span class="day-num">1</span>Día 1 — Descubriendo ${tripData.destName}</h4>
+            <div class="itin-day-sub">${placesForTrip.length} actividades</div>
+        </div>
+        ${actsHtml}
+      </div>
+      <div style="padding:1rem 16px;text-align:center;font-size:13px;color:var(--text-muted)">
+        Total del viaje estimado: <strong style="color:var(--navy)">S/ ${tripData.totalBudget}</strong>
+      </div>
+  `;
+
+  setTimeout(() => {
+      if (itinMapInstance) { 
+          itinMapInstance.remove(); 
+      }
+      
+      itinMapInstance = L.map('real-map-div');
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap'
+      }).addTo(itinMapInstance);
+
+      let bounds = []; 
+
+      placesForTrip.forEach((p, i) => {
+          if (!isNaN(p.lat) && !isNaN(p.lng)) {
+              bounds.push([p.lat, p.lng]);
+              let numIcon = L.divIcon({
+                  className: 'custom-pin',
+                  html: `<div class="pin-number">${i + 1}</div>`,
+                  iconSize: [26, 26],
+                  iconAnchor: [13, 13]
+              });
+              L.marker([p.lat, p.lng], {icon: numIcon})
+                  .addTo(itinMapInstance)
+                  .bindPopup(`<b>${i + 1}. ${p.name}</b><br>${p.desc}`);
+          }
+      });
+
+      if (bounds.length > 0) {
+          itinMapInstance.fitBounds(bounds, {padding: [40, 40]});
+      } else {
+          itinMapInstance.setView([-9.19, -75.01], 5);
+      }
+  }, 100);
+}
+
+// ═══════════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════════
+function capitalize(s) {
+  const m={historia:'Historia',cultura:'Cultura',naturaleza:'Naturaleza',aventura:'Aventura',gastronomia:'Gastronomía',arquitectura:'Arquitectura',arte:'Arte',norte:'Norte',sur:'Sur',centro:'Centro',oriente:'Oriente'};
+  return m[s] || s.charAt(0).toUpperCase()+s.slice(1);
+}
+function tagEmoji(t) {
+  const m={historia:'📜',cultura:'🏛️',naturaleza:'🌿',aventura:'🏔️',gastronomia:'🍽️',arquitectura:'🏗️',arte:'🎨'};
+  return m[t]||'📍';
+}
+
+// ═══════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════
+window.onload = function() {
+  cargarLugares(); // Inicia la lectura del CSV al abrir la página
+};
+</script>
+</body>
+</html>
