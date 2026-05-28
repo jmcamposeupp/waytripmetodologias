@@ -722,7 +722,6 @@ const DESTINATIONS = [
   { id:'huaraz',   name:'Huaraz',   subtitle:'Capital del andinismo peruano',       img:'https://images.unsplash.com/photo-1589410183861-554471f50a80?auto=format&fit=crop&q=80&w=800', region:'norte',  rating:4.8, tags:['aventura','naturaleza'] },
 ];
 
-// Reemplazamos los lugares fijos por una variable vacía que se llenará desde el CSV
 let PLACES = {};
 
 // FUNCIÓN DE CARGA DE CSV
@@ -737,7 +736,6 @@ function cargarLugares() {
         header: true,
         skipEmptyLines: true,
         complete: function(results) {
-          // Llenamos el objeto PLACES con la data leída
           results.data.forEach(fila => {
             let idDestino = fila.destino_id;
             if(!PLACES[idDestino]) PLACES[idDestino] = [];
@@ -753,15 +751,13 @@ function cargarLugares() {
               lng: parseFloat(fila.lng)
             });
           });
-          
-          // Solo después de que se cargue la info, llenamos los chips de registro y datos del UI inicial
           fillRegChips();
         }
       });
     })
     .catch(error => {
       console.error("Error al cargar la base de datos CSV:", error);
-      fillRegChips(); // Permite renderizar aunque falle (vacío)
+      fillRegChips(); 
     });
 }
 
@@ -990,7 +986,6 @@ function fillRegChips() {
   document.getElementById('reg-dest-chips').innerHTML = `
     <span class="reg-chip">📍 ${DESTINATIONS.length} departamentos</span>
     <span class="reg-chip">🗺 ${totalPlaces} lugares reales cargados</span>
-    <span class="reg-chip">👥 Colaborativo</span>
   `;
 }
 
@@ -1265,9 +1260,49 @@ function renderItineraryView(tripData) {
   const mapContainer = document.getElementById('mapa-itinerario-contenedor');
   mapContainer.innerHTML = `<div id="real-map-div" style="width:100%; height:100%; z-index:1;"></div>`;
 
-  // Asegurarnos de que hay lugares en PLACES, si no, crear un array vacío
+  // Asegurarnos de que hay lugares en PLACES
   const lugaresDelDestino = PLACES[tripData.destId] || [];
-  const placesForTrip = lugaresDelDestino.slice(0, 4); 
+  
+  // Filtramos lugares que sí tengan lat y lng válidos
+  let validPlaces = lugaresDelDestino.filter(p => !isNaN(p.lat) && !isNaN(p.lng));
+  let placesForTrip = validPlaces.slice(0, 4); 
+
+  // --- LÓGICA INTELIGENTE DE RUTAS ---
+  if (placesForTrip.length > 1) {
+      let maxDist = -1;
+      let startIdx = 0;
+      // 1. Encontrar los dos puntos más alejados para definir el inicio
+      for (let i = 0; i < placesForTrip.length; i++) {
+          for (let j = i + 1; j < placesForTrip.length; j++) {
+              let d = getDistance(placesForTrip[i].lat, placesForTrip[i].lng, placesForTrip[j].lat, placesForTrip[j].lng);
+              if (d > maxDist) {
+                  maxDist = d;
+                  startIdx = i; // Tomamos uno de los extremos como punto de partida
+              }
+          }
+      }
+
+      // 2. Algoritmo del "Vecino más cercano" (Nearest Neighbor)
+      let unvisited = [...placesForTrip];
+      let current = unvisited.splice(startIdx, 1)[0];
+      let sortedPlaces = [current];
+
+      while (unvisited.length > 0) {
+          let minDist = Infinity;
+          let nearestIdx = -1;
+          for (let i = 0; i < unvisited.length; i++) {
+              let d = getDistance(current.lat, current.lng, unvisited[i].lat, unvisited[i].lng);
+              if (d < minDist) {
+                  minDist = d;
+                  nearestIdx = i;
+              }
+          }
+          current = unvisited.splice(nearestIdx, 1)[0];
+          sortedPlaces.push(current);
+      }
+      placesForTrip = sortedPlaces;
+  }
+  // -----------------------------------
   
   let actsHtml = placesForTrip.map((p, i) => {
       let timeStr = (8 + i*3).toString().padStart(2, '0') + ':00';
@@ -1350,6 +1385,18 @@ function capitalize(s) {
 function tagEmoji(t) {
   const m={historia:'📜',cultura:'🏛️',naturaleza:'🌿',aventura:'🏔️',gastronomia:'🍽️',arquitectura:'🏗️',arte:'🎨'};
   return m[t]||'📍';
+}
+
+// Fórmula de Haversine para calcular distancia real en KM entre coordenadas
+function getDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Radio de la Tierra en km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c; 
 }
 
 // ═══════════════════════════════════════════
