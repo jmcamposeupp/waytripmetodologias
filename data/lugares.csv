@@ -13,7 +13,7 @@ lima,Larcomar,🛍️ Centro Comercial,Shopping sobre los acantilados.,Gratis,tr
 lima,Museo Larco,🏺 Museo,Colección arqueológica.,S/ 40,false,https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Lima_museo_larco.jpg/1920px-Lima_museo_larco.jpg,-12.0724,-77.0705
 lima,Barranco,🎨 Barrio,El barrio bohemio de Lima.,Gratis,true,https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/PUENTE_DE_LOS_SUSPIROS.jpg/960px-PUENTE_DE_LOS_SUSPIROS.jpg,-12.1481,-77.0212
 lima,Central Restaurante,🍽️ Restaurante,Alta gastronomía mundial.,"S/ 1,200",false,https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/84/70/bf/central-restaurante.jpg?w=1400&h=-1&s=1,-12.1416,-77.0223
-lima,Huaca Pucllana,🏺 Arqueología,Pirámide preínca en la ciudad.,S/ 15,false,a,-12.1111,-77.0336
+lima,Huaca Pucllana,🏺 Arqueología,Pirámide preínca en la ciudad.,S/ 15,false,https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Huaca_Pucllana_Miraflores.jpg/960px-Huaca_Pucllana_Miraflores.jpg,-12.1111,-77.0336
 arequipa,Plaza de Armas,🏛️ Plaza histórica,Edificios de sillar blanco.,Gratis,true,a,-16.3988,-71.5369
 arequipa,Monasterio Santa Catalina,⛪ Monasterio,Ciudad colonial en el centro.,S/ 45,false,a,-16.3958,-71.5372
 arequipa,Cañón del Colca,🏔️ Naturaleza,Hogar del cóndor andino.,S/ 70,false,a,-15.6094,-71.8694
@@ -23,8 +23,8 @@ ica,Líneas de Nazca (Vuelo),✈️ Arqueología,Sobrevuelo geoglifos.,S/ 350,fa
 ica,Reserva de Paracas,🦭 Naturaleza,Paisajes desérticos costeros.,S/ 11,false,a,-13.8828,-76.2514
 ica,Islas Ballestas,🐧 Islas,Fauna marina.,S/ 40,false,a,-13.7317,-76.3983
 puno,Lago Titicaca (Tour),💧 Lago,Lago navegable más alto.,S/ 25,false,https://www.chullostravelperu.com/blog/wp-content/uploads/2025/10/LAGO-TITICACA.jpg,-15.8402,-69.3381
-puno,Islas Flotantes Uros,🌾 Islas flotantes,Islas de totora.,S/ 15,false,a,-15.8206,-69.9678
-puno,Catedral de Puno,⛪ Catedral,Fachada mestiza barroca.,Gratis,true,a,-15.8406,-70.0278
+puno,Islas Flotantes Uros,🌾 Islas flotantes,Islas de totora.,S/ 15,false,https://www.civitatis.com/f/peru/puno/galeria/big/isla-uros.jpg,-15.8206,-69.9678
+puno,Catedral de Puno,⛪ Catedral,Fachada mestiza barroca.,Gratis,true,https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Bas%C3%ADlica_Catedral_de_Puno_08.jpg/960px-Bas%C3%ADlica_Catedral_de_Puno_08.jpg,-15.8406,-70.0278
 puno,Chullpas de Sillustani,🗿 Arqueología,Torres funerarias preíncas.,S/ 15,false,https://incalake.com/galeria/admin/short-slider/PUNO/SILLUSTANI/chullpas-de-sillustan.webp,-15.7225,-70.1583
 loreto,Ciudad de Iquitos,🏙️ Ciudad,Ciudad en la Amazonía.,Gratis,true,https://i0.wp.com/blog.howlanders.com/wp-content/uploads/2019/06/ciudad-de-iquitos.jpg?w=1200&ssl=1,-3.7491,-73.2538
 loreto,Reserva Pacaya Samiria,🌿 Reserva,Laberinto de ríos.,S/ 150,false,https://cms.ytuqueplanes.com/archivos/Blog/Notas%20blog%20viajero/InternaNota_1200%E2%80%8A%C3%97%E2%80%8A876%20(5).webp,-5.2631,-74.8364
