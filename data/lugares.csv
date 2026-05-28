@@ -1,5 +1,5 @@
 destino_id,name,type,desc,price,free,img,lat,lng
-cusco,Plaza de Armas,🏛️ Plaza histórica,El corazón de la ciudad.,Gratis,true,https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Plaza_de_Cusco_Allison_Bellido.jpg/960px-Plaza_de_Cusco_Allison_Bellido.jpg,-13.5167,-71.9787
+cusco,Plaza de Armas,🏛️ Plaza histórica,El corazón de la ciudad.,Gratis,true,https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Plaza_de_Cusco_Allison_Bellido.jpg/960px-Plaza_de_Cusco_Allison_Bellido.jpg,-13.5167,-71.97878
 cusco,Mercado San Pedro,🛒 Mercado,Lleno de colores locales.,Gratis entrada,true,https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/San_Pedro_Market.jpg/960px-San_Pedro_Market.jpg,-13.5198,-71.9825
 cusco,Sacsayhuamán,🏯 Arqueología,Imponente fortaleza inca.,S/ 70,false,https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Sacsayhuam%C3%A1n%2C_Cusco%2C_Per%C3%BA%2C_2015-07-31%2C_DD_01.JPG/1280px-Sacsayhuam%C3%A1n%2C_Cusco%2C_Per%C3%BA%2C_2015-07-31%2C_DD_01.JPG,-13.5085,-71.9816
 cusco,Qorikancha,🌞 Templo,Templo más importante del Imperio.,S/ 20,false,https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Cusco_Coricancha_Inti-Huasi_main_view.jpg/960px-Cusco_Coricancha_Inti-Huasi_main_view.jpg,-13.5204,-71.9745
@@ -11,7 +11,7 @@ lima,Plaza Mayor,🏛️ Plaza histórica,Centro histórico de la ciudad.,Gratis
 lima,Miraflores,🌊 Distrito,Malecón frente al Pacífico.,Gratis,true,https://www.gochile.cl/fotos/full/112290-willian-justen-de-vasconcellos-744176-unsplash@2x.jpg,-12.1219,-77.0305
 lima,Larcomar,🛍️ Centro Comercial,Shopping sobre los acantilados.,Gratis,true,https://viajandoalima.com/wp-content/uploads/2016/03/Larcomar-Lima.jpg,-12.132,-77.0305
 lima,Museo Larco,🏺 Museo,Colección arqueológica.,S/ 40,false,https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Lima_museo_larco.jpg/1920px-Lima_museo_larco.jpg,-12.0724,-77.0705
-lima,Barranco,🎨 Barrio,El barrio bohemio de Lima.,Gratis,true,a,-12.1481,-77.0212
+lima,Barranco,🎨 Barrio,El barrio bohemio de Lima.,Gratis,true,https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/PUENTE_DE_LOS_SUSPIROS.jpg/960px-PUENTE_DE_LOS_SUSPIROS.jpg,-12.1481,-77.0212
 lima,Central Restaurante,🍽️ Restaurante,Alta gastronomía mundial.,"S/ 1,200",false,https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/84/70/bf/central-restaurante.jpg?w=1400&h=-1&s=1,-12.1416,-77.0223
 lima,Huaca Pucllana,🏺 Arqueología,Pirámide preínca en la ciudad.,S/ 15,false,a,-12.1111,-77.0336
 arequipa,Plaza de Armas,🏛️ Plaza histórica,Edificios de sillar blanco.,Gratis,true,a,-16.3988,-71.5369
