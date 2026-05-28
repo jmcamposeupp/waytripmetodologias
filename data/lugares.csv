@@ -7,8 +7,8 @@ cusco,Barrio San Blas,🎨 Barrio,Bohemio con galerías de arte.,Gratis,true,htt
 cusco,Chicha por Gastón Acurio,🍽️ Restaurante,Gastronomía cusqueña top.,S/ 50+,false,https://media-cdn.tripadvisor.com/media/photo-s/19/60/7b/57/caption.jpg,-13.5173,-71.9806
 cusco,Valle Sagrado,🏔️ Valle,Pueblos y paisajes andinos.,S/ 70,false,https://images.unsplash.com/photo-1533088924632-15f5fc8488e1?auto=format&fit=crop&q=80&w=200,-13.305,-72.0131
 cusco,Machu Picchu,🌟 Maravilla,La ciudad inca perdida.,S/ 152,false,https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Machu_Picchu%2C_Peru_%282018%29.jpg/960px-Machu_Picchu%2C_Peru_%282018%29.jpg,-13.1631,-72.545
-lima,Plaza Mayor,🏛️ Plaza histórica,Centro histórico de la ciudad.,Gratis,true,a,-12.0464,-77.0305
-lima,Miraflores,🌊 Distrito,Malecón frente al Pacífico.,Gratis,true,a,-12.1219,-77.0305
+lima,Plaza Mayor,🏛️ Plaza histórica,Centro histórico de la ciudad.,Gratis,true,https://trexperienceperu.com/sites/default/files/plaza-mayor-lima-ahora.webp,-12.0464,-77.0305
+lima,Miraflores,🌊 Distrito,Malecón frente al Pacífico.,Gratis,true,https://www.gochile.cl/fotos/full/112290-willian-justen-de-vasconcellos-744176-unsplash@2x.jpg,-12.1219,-77.0305
 lima,Larcomar,🛍️ Centro Comercial,Shopping sobre los acantilados.,Gratis,true,a,-12.132,-77.0305
 lima,Museo Larco,🏺 Museo,Colección arqueológica.,S/ 40,false,a,-12.0724,-77.0705
 lima,Barranco,🎨 Barrio,El barrio bohemio de Lima.,Gratis,true,a,-12.1481,-77.0212
@@ -25,11 +25,11 @@ ica,Islas Ballestas,🐧 Islas,Fauna marina.,S/ 40,false,a,-13.7317,-76.3983
 puno,Lago Titicaca (Tour),💧 Lago,Lago navegable más alto.,S/ 25,false,https://www.chullostravelperu.com/blog/wp-content/uploads/2025/10/LAGO-TITICACA.jpg,-15.8402,-69.3381
 puno,Islas Flotantes Uros,🌾 Islas flotantes,Islas de totora.,S/ 15,false,a,-15.8206,-69.9678
 puno,Catedral de Puno,⛪ Catedral,Fachada mestiza barroca.,Gratis,true,a,-15.8406,-70.0278
-puno,Chullpas de Sillustani,🗿 Arqueología,Torres funerarias preíncas.,S/ 15,false,a,-15.7225,-70.1583
+puno,Chullpas de Sillustani,🗿 Arqueología,Torres funerarias preíncas.,S/ 15,false,https://incalake.com/galeria/admin/short-slider/PUNO/SILLUSTANI/chullpas-de-sillustan.webp,-15.7225,-70.1583
 loreto,Ciudad de Iquitos,🏙️ Ciudad,Ciudad en la Amazonía.,Gratis,true,a,-3.7491,-73.2538
 loreto,Reserva Pacaya Samiria,🌿 Reserva,Laberinto de ríos.,S/ 150,false,a,-5.2631,-74.8364
 loreto,Río Amazonas,🌊 Río,El río más caudaloso.,Gratis,true,a,-3.738,-73.2425
-loreto,Malecón Tarapacá,🌅 Malecón,Paseo frente al río.,Gratis,true,a,-3.7497,-73.2415
+loreto,Malecón Tarapacá,🌅 Malecón,Paseo frente al río.,Gratis,true,https://iquitosperu.net/uploads/large/malecon-tarapaca.jpg,-3.7497,-73.2415
 trujillo,Chan Chan,🏯 Arqueología,Ciudadela de barro.,S/ 11,false,https://bushop.com/wp-content/uploads/sites/10/Mascotte-of-Chan-Chan-Small.jpg,-8.1082,-79.0754
 trujillo,Huaca de la Luna,🌙 Arqueología,Templo moche con murales.,S/ 10,false,https://upload.wikimedia.org/wikipedia/commons/9/9e/Huaca_de_la_Luna_-_El_Dios_Degollador.jpg,-8.134,-78.9859
 trujillo,Huanchaco,🏄 Playa,Caballitos de totora.,Gratis,true,https://www.infobae.com/resizer/v2/H3RV262UBRDURITW4BLNTMOLJE.png?auth=bdbdce9b0fa266d3392e330e01dc3e41fa22a4f1b57698957e1a0406c1224d0a&smart=true&width=992&height=558&quality=85,-8.0811,-79.1197
