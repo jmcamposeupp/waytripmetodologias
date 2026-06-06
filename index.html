@@ -723,7 +723,28 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
-<script>
+<script type="module">
+
+// Importaciones de Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCxNDELr5wRDYEQzs5Pu8xDqs5daIJNYRc",
+  authDomain: "waytrip-8a5eb.firebaseapp.com",
+  projectId: "waytrip-8a5eb",
+  storageBucket: "waytrip-8a5eb.firebasestorage.app",
+  messagingSenderId: "307923805494",
+  appId: "1:307923805494:web:4dff192261d400b02c3f97",
+  measurementId: "G-5RG15J9YGX"
+};
+
+// Inicializamos Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
 // ═══════════════════════════════════════════
 //  DATA DE DESTINOS
 // ═══════════════════════════════════════════
@@ -739,12 +760,9 @@ const DESTINATIONS = [
 ];
 
 let PLACES = {};
-
-// Arreglos globales para mapear índices en el modal
 let currentRenderedPlaces = [];
 let currentItinPlaces = [];
 
-// FUNCIÓN DE CARGA DE CSV
 function cargarLugares() {
   fetch('data/lugares.csv')
     .then(response => {
@@ -752,7 +770,7 @@ function cargarLugares() {
       return response.text();
     })
     .then(csvData => {
-      Papa.parse(csvData, {
+      window.Papa.parse(csvData, {
         header: true,
         skipEmptyLines: true,
         complete: function(results) {
@@ -764,7 +782,7 @@ function cargarLugares() {
               name: fila.name,
               type: fila.type,
               desc: fila.desc,
-              more_info: fila.more_info || "", // NUEVO: Extrae la columna extra
+              more_info: fila.more_info || "",
               price: fila.price,
               free: (fila.free === 'true' || fila.free === 'VERDADERO'),
               img: fila.img,
@@ -777,9 +795,17 @@ function cargarLugares() {
       });
     })
     .catch(error => {
-      console.error("Error al cargar la base de datos CSV:", error);
+      console.error("Error al cargar CSV:", error);
       fillRegChips(); 
     });
+}
+
+function fillRegChips() {
+  const totalPlaces = Object.values(PLACES).reduce((s,p)=>s+p.length,0);
+  document.getElementById('reg-dest-chips').innerHTML = `
+    <span class="reg-chip">📍 ${DESTINATIONS.length} departamentos</span>
+    <span class="reg-chip">🗺 ${totalPlaces} lugares reales cargados</span>
+  `;
 }
 
 // ═══════════════════════════════════════════
@@ -811,7 +837,6 @@ function fillAndShowPlaceModal(p) {
     moreInfoEl.textContent = "No hay información adicional disponible para este lugar en este momento.";
     containerEl.style.display = 'block';
   }
-  
   document.getElementById('place-modal').style.display = 'flex';
 }
 
@@ -820,12 +845,11 @@ function closePlaceModal() {
 }
 
 // ═══════════════════════════════════════════
-//  AUTH & PROFILE
+//  AUTH & PROFILE (FIREBASE)
 // ═══════════════════════════════════════════
-let USERS = {};   
 let currentUser = null;  
 
-function doRegister() {
+async function doRegister() {
   const name  = document.getElementById('r-name').value.trim();
   const email = document.getElementById('r-email').value.trim().toLowerCase();
   const pw    = document.getElementById('r-pw').value;
@@ -848,11 +872,6 @@ function doRegister() {
     document.getElementById('err-r-email').classList.add('show');
     document.getElementById('r-email').classList.add('error');
     ok = false;
-  } else if (USERS[email]) {
-    document.getElementById('err-r-email').textContent = 'Este correo ya está registrado';
-    document.getElementById('err-r-email').classList.add('show');
-    document.getElementById('r-email').classList.add('error');
-    ok = false;
   }
   if (pw.length < 6) {
     document.getElementById('err-r-pw').classList.add('show');
@@ -861,49 +880,76 @@ function doRegister() {
   }
   if (!ok) return;
 
-  USERS[email] = { name, password: pw, interests: [], trips: [], avatar: null };
-  currentUser = { name, email, interests: [], trips: [], avatar: null };
-  go('onboard');
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, pw);
+    const user = userCredential.user;
+
+    currentUser = { name, email, interests: [], trips: [], avatar: null };
+
+    // Guardar en Firestore
+    await setDoc(doc(db, "users", user.uid), currentUser);
+    
+    go('onboard');
+  } catch (error) {
+    console.error(error);
+    document.getElementById('err-r-email').textContent = 'Ese correo ya está registrado o hubo un error.';
+    document.getElementById('err-r-email').classList.add('show');
+    document.getElementById('r-email').classList.add('error');
+  }
 }
 
-function doLogin() {
+async function doLogin() {
   const email = document.getElementById('l-email').value.trim().toLowerCase();
   const pw    = document.getElementById('l-pw').value;
   document.getElementById('err-l-email').classList.remove('show');
 
-  const user = USERS[email];
-  if (!user || user.password !== pw) {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, pw);
+    const userId = userCredential.user.uid;
+
+    const userDoc = await getDoc(doc(db, "users", userId));
+    if (userDoc.exists()) {
+       currentUser = userDoc.data();
+    } else {
+       currentUser = { name: "Viajero", email, interests: [], trips: [], avatar: null };
+    }
+    
+    loadDashboard();
+    go('dashboard');
+  } catch (error) {
+    console.error(error);
+    document.getElementById('err-l-email').textContent = 'Correo o contraseña incorrectos';
     document.getElementById('err-l-email').classList.add('show');
     document.getElementById('l-email').classList.add('error');
     document.getElementById('l-pw').classList.add('error');
-    return;
   }
-  currentUser = { name: user.name, email, interests: user.interests, trips: user.trips || [], avatar: user.avatar || null };
-  loadDashboard();
-  go('dashboard');
 }
 
-function logout() {
+async function logout() {
+  await signOut(auth);
   currentUser = null;
   closeProfileModal();
   go('home');
 }
 
-function finishOnboard() {
+async function finishOnboard() {
   if (!currentUser) return;
   const selected = [...document.querySelectorAll('.interest-item.sel')].map(el =>
     el.querySelector('.interest-name').textContent
   );
-  
-  if(selected.length === 0) return; // Validación de seguridad
+  if(selected.length === 0) return;
 
   currentUser.interests = selected;
-  if (USERS[currentUser.email]) USERS[currentUser.email].interests = selected;
+  
+  if (auth.currentUser) {
+    await updateDoc(doc(db, "users", auth.currentUser.uid), { interests: selected });
+  }
+
   loadDashboard();
   go('dashboard');
 }
 
-function requireAuth(targetScreen) {
+function requireAuth() {
   if (!currentUser) { go('register'); return false; }
   return true;
 }
@@ -949,15 +995,17 @@ function updateModalAvatarPreview() {
   }
 }
 
-function saveProfile() {
+async function saveProfile() {
   const newName = document.getElementById('modal-name-input').value.trim();
-  if(newName) {
-    currentUser.name = newName;
-    if(USERS[currentUser.email]) USERS[currentUser.email].name = newName;
-  }
-  
+  if(newName) { currentUser.name = newName; }
   currentUser.avatar = tempAvatarBase64;
-  if(USERS[currentUser.email]) USERS[currentUser.email].avatar = tempAvatarBase64;
+  
+  if (auth.currentUser) {
+    await updateDoc(doc(db, "users", auth.currentUser.uid), {
+       name: currentUser.name,
+       avatar: currentUser.avatar
+    });
+  }
   
   closeProfileModal();
   syncAvatars();
@@ -965,7 +1013,7 @@ function saveProfile() {
 }
 
 // ═══════════════════════════════════════════
-//  NAVIGATION
+//  NAVIGATION & UI
 // ═══════════════════════════════════════════
 let currentDest = 'cusco';
 
@@ -1006,9 +1054,6 @@ function syncAvatars() {
   });
 }
 
-// ═══════════════════════════════════════════
-//  DASHBOARD LOAD
-// ═══════════════════════════════════════════
 function loadDashboard() {
   if (!currentUser) return;
   document.getElementById('dash-greeting').textContent = `Bienvenido/a, ${currentUser.name.split(' ')[0]} 👋`;
@@ -1026,7 +1071,7 @@ function loadDashboard() {
     chipAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
   }
 
-  const badge = currentUser.interests[0] || 'Explorador';
+  const badge = currentUser.interests && currentUser.interests.length > 0 ? currentUser.interests[0] : 'Explorador';
   document.getElementById('dash-interest-badge').textContent = '🧭 ' + badge;
 
   const grid = document.getElementById('dash-dest-grid');
@@ -1045,20 +1090,6 @@ function loadDashboard() {
   `).join('');
 }
 
-// ═══════════════════════════════════════════
-//  REG CHIPS
-// ═══════════════════════════════════════════
-function fillRegChips() {
-  const totalPlaces = Object.values(PLACES).reduce((s,p)=>s+p.length,0);
-  document.getElementById('reg-dest-chips').innerHTML = `
-    <span class="reg-chip">📍 ${DESTINATIONS.length} departamentos</span>
-    <span class="reg-chip">🗺 ${totalPlaces} lugares reales cargados</span>
-  `;
-}
-
-// ═══════════════════════════════════════════
-//  EXPLORE FILTERS
-// ═══════════════════════════════════════════
 function applyFilters() {
   const search    = (document.getElementById('search-input')?.value || '').toLowerCase();
   const cat       = document.getElementById('filter-category')?.value || '';
@@ -1102,9 +1133,6 @@ function applyFilters() {
   `).join('');
 }
 
-// ═══════════════════════════════════════════
-//  DESTINATION DETAIL
-// ═══════════════════════════════════════════
 function openDest(id) {
   if (!requireAuth()) return;
   currentDest = id;
@@ -1145,7 +1173,7 @@ function filterDestTab(cat, el) {
 }
 
 function renderDestPlaces(places) {
-  currentRenderedPlaces = places; // Guardar el arreglo actual para referenciarlo en el modal
+  currentRenderedPlaces = places;
   document.getElementById('dest-places-list').innerHTML = places.map((p, i)=>`
     <div class="place-item" onclick="openPlaceModal(${i})">
       <div class="place-thumb" style="background-image: url('${p.img}')">
@@ -1170,9 +1198,6 @@ function renderDestMap(id) {
     </iframe>`;
 }
 
-// ═══════════════════════════════════════════
-//  REGISTER HELPERS
-// ═══════════════════════════════════════════
 function switchRegTab(tab) {
   document.getElementById('tab-register').classList.toggle('active', tab==='register');
   document.getElementById('tab-login').classList.toggle('active', tab==='login');
@@ -1185,9 +1210,6 @@ function togglePw(id) {
   el.type = el.type==='password' ? 'text' : 'password';
 }
 
-// ═══════════════════════════════════════════
-//  ONBOARDING
-// ═══════════════════════════════════════════
 function toggleInterest(el) {
   el.classList.toggle('sel');
   const n = document.querySelectorAll('.interest-item.sel').length;
@@ -1195,7 +1217,7 @@ function toggleInterest(el) {
   
   const btnSig = document.getElementById('btn-sig');
   btnSig.classList.toggle('on', n>0);
-  btnSig.disabled = n === 0; // Habilita o deshabilita el botón según la selección
+  btnSig.disabled = n === 0;
 }
 
 // ═══════════════════════════════════════════
@@ -1206,7 +1228,6 @@ let planPeople = 2;
 function updateDays() {
   const arrivalInput = document.getElementById('plan-arrival');
   const departInput = document.getElementById('plan-depart');
-  
   departInput.value = arrivalInput.value;
   document.getElementById('day-count').textContent = '1 día de viaje (Demo)';
   updateSummary();
@@ -1231,14 +1252,11 @@ function updateSummary() {
   const days = 1; 
   const budgetPP = parseInt(document.getElementById('budget-val').value) || 0;
   const total = budgetPP * planPeople * days;
-
   document.getElementById('sum-budget').textContent = 'S/ ' + total;
   document.getElementById('sum-days').textContent = '1 día';
 }
 
-function selectTransport(el) {
-  el.classList.toggle('active');
-}
+function selectTransport(el) { el.classList.toggle('active'); }
 
 function updateRhythm() {
   const v = parseInt(document.getElementById('rhythm-slider').value);
@@ -1250,17 +1268,14 @@ function updateRhythm() {
   document.getElementById('sum-rhythm').textContent = names[v];
 }
 
-function generateItinerary() {
+async function generateItinerary() {
   if (!currentUser) return;
-  
   const days = 1; 
   const budgetPP = parseInt(document.getElementById('budget-val').value) || 0;
   const totalBudget = budgetPP * planPeople * days;
   const destObj = DESTINATIONS.find(x => x.id === currentDest) || DESTINATIONS[0];
-
   const v = parseInt(document.getElementById('rhythm-slider').value);
   const rhythms = ['','Relajado','Moderado','Intensivo'];
-  const rhythmText = rhythms[v];
   const arrivalVal = document.getElementById('plan-arrival').value;
 
   const newTrip = {
@@ -1271,7 +1286,7 @@ function generateItinerary() {
     days: days,
     people: planPeople,
     totalBudget: totalBudget,
-    rhythm: rhythmText,
+    rhythm: rhythms[v],
     arrival: arrivalVal,
     depart: arrivalVal
   };
@@ -1279,7 +1294,9 @@ function generateItinerary() {
   if(!currentUser.trips) currentUser.trips = [];
   currentUser.trips.push(newTrip);
   
-  if(USERS[currentUser.email]) USERS[currentUser.email].trips = currentUser.trips;
+  if (auth.currentUser) {
+    await updateDoc(doc(db, "users", auth.currentUser.uid), { trips: currentUser.trips });
+  }
 
   renderItineraryView(newTrip);
   go('itinerary');
@@ -1313,11 +1330,13 @@ function renderMisViajes() {
   }
 }
 
-function deleteTrip(e, tripId) {
+async function deleteTrip(e, tripId) {
   e.stopPropagation();
   if (confirm("¿Estás seguro de que deseas eliminar este plan de viaje?")) {
     currentUser.trips = currentUser.trips.filter(t => t.id !== tripId);
-    if(USERS[currentUser.email]) USERS[currentUser.email].trips = currentUser.trips;
+    if (auth.currentUser) {
+      await updateDoc(doc(db, "users", auth.currentUser.uid), { trips: currentUser.trips });
+    }
     renderMisViajes();
   }
 }
@@ -1343,33 +1362,25 @@ function renderItineraryView(tripData) {
   const mapContainer = document.getElementById('mapa-itinerario-contenedor');
   mapContainer.innerHTML = `<div id="real-map-div" style="width:100%; height:100%; z-index:1;"></div>`;
 
-  // Asegurarnos de que hay lugares en PLACES
   const lugaresDelDestino = PLACES[tripData.destId] || [];
-  
-  // Filtramos lugares que sí tengan lat y lng válidos
   let validPlaces = lugaresDelDestino.filter(p => !isNaN(p.lat) && !isNaN(p.lng));
   let placesForTrip = validPlaces.slice(0, 4); 
 
-  // --- LÓGICA INTELIGENTE DE RUTAS ---
   if (placesForTrip.length > 1) {
       let maxDist = -1;
       let startIdx = 0;
-      // 1. Encontrar los dos puntos más alejados para definir el inicio
       for (let i = 0; i < placesForTrip.length; i++) {
           for (let j = i + 1; j < placesForTrip.length; j++) {
               let d = getDistance(placesForTrip[i].lat, placesForTrip[i].lng, placesForTrip[j].lat, placesForTrip[j].lng);
               if (d > maxDist) {
                   maxDist = d;
-                  startIdx = i; // Tomamos uno de los extremos como punto de partida
+                  startIdx = i; 
               }
           }
       }
-
-      // 2. Algoritmo del "Vecino más cercano" (Nearest Neighbor)
       let unvisited = [...placesForTrip];
       let current = unvisited.splice(startIdx, 1)[0];
       let sortedPlaces = [current];
-
       while (unvisited.length > 0) {
           let minDist = Infinity;
           let nearestIdx = -1;
@@ -1385,36 +1396,26 @@ function renderItineraryView(tripData) {
       }
       placesForTrip = sortedPlaces;
   }
-  // -----------------------------------
   
-  currentItinPlaces = placesForTrip; // Guardar el arreglo actual para referenciarlo en el modal
+  currentItinPlaces = placesForTrip; 
 
   let actsHtml = placesForTrip.map((p, i) => {
       let timeStr = (8 + i*3).toString().padStart(2, '0') + ':00';
       let badge = p.free ? '<span class="badge-free">Gratis</span>' : `<span class="badge-price">${p.price}</span>`;
-      
-      // Calcular tránsito estimado si no es el último punto
       let transitHtml = '';
       if (i < placesForTrip.length - 1) {
           let nextP = placesForTrip[i+1];
           let distKm = getDistance(p.lat, p.lng, nextP.lat, nextP.lng);
-          
-          // Asumimos un tránsito urbano mixto (caminando o auto corto) de ~15 km/h prom
-          // Si es menos de 1 km asumimos ritmo de caminata (12 mins por km)
-          // Si es mayor, ritmo vehicular urbano (5 mins por km)
           let minsPerKm = distKm < 1 ? 12 : 5; 
           let timeMins = Math.round(distKm * minsPerKm);
           if (timeMins < 1) timeMins = 1;
-
           let distStr = distKm < 1 ? Math.round(distKm * 1000) + ' m' : distKm.toFixed(1) + ' km';
           let iconTr = distKm < 1 ? '🚶' : '🚕';
-
           transitHtml = `
           <div class="act-transit">
               ${iconTr} ~${timeMins} min de tránsito (${distStr}) al siguiente destino
           </div>`;
       }
-
       return `
       <div class="act-item" onclick="openItinPlaceModal(${i})">
           <div class="act-timeline">
@@ -1449,33 +1450,26 @@ function renderItineraryView(tripData) {
   `;
 
   setTimeout(() => {
-      if (itinMapInstance) { 
-          itinMapInstance.remove(); 
-      }
-      
-      itinMapInstance = L.map('real-map-div');
-      
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      if (itinMapInstance) { itinMapInstance.remove(); }
+      itinMapInstance = window.L.map('real-map-div');
+      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '© OpenStreetMap'
       }).addTo(itinMapInstance);
-
       let bounds = []; 
-
       placesForTrip.forEach((p, i) => {
           if (!isNaN(p.lat) && !isNaN(p.lng)) {
               bounds.push([p.lat, p.lng]);
-              let numIcon = L.divIcon({
+              let numIcon = window.L.divIcon({
                   className: 'custom-pin',
                   html: `<div class="pin-number">${i + 1}</div>`,
                   iconSize: [26, 26],
                   iconAnchor: [13, 13]
               });
-              L.marker([p.lat, p.lng], {icon: numIcon})
+              window.L.marker([p.lat, p.lng], {icon: numIcon})
                   .addTo(itinMapInstance)
                   .bindPopup(`<b>${i + 1}. ${p.name}</b><br>${p.desc}`);
           }
       });
-
       if (bounds.length > 0) {
           itinMapInstance.fitBounds(bounds, {padding: [40, 40]});
       } else {
@@ -1484,9 +1478,6 @@ function renderItineraryView(tripData) {
   }, 100);
 }
 
-// ═══════════════════════════════════════════
-//  UTILS
-// ═══════════════════════════════════════════
 function capitalize(s) {
   const m={historia:'Historia',cultura:'Cultura',naturaleza:'Naturaleza',aventura:'Aventura',gastronomia:'Gastronomía',arquitectura:'Arquitectura',arte:'Arte',norte:'Norte',sur:'Sur',centro:'Centro',oriente:'Oriente'};
   return m[s] || s.charAt(0).toUpperCase()+s.slice(1);
@@ -1495,10 +1486,8 @@ function tagEmoji(t) {
   const m={historia:'📜',cultura:'🏛️',naturaleza:'🌿',aventura:'🏔️',gastronomia:'🍽️',arquitectura:'🏗️',arte:'🎨'};
   return m[t]||'📍';
 }
-
-// Fórmula de Haversine para calcular distancia real en KM entre coordenadas
 function getDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371; // Radio de la Tierra en km
+  const R = 6371; 
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
   const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -1509,11 +1498,40 @@ function getDistance(lat1, lon1, lat2, lon2) {
 }
 
 // ═══════════════════════════════════════════
-//  INIT
+// EXPOSICIÓN DE FUNCIONES A WINDOW
 // ═══════════════════════════════════════════
-window.onload = function() {
-  cargarLugares(); // Inicia la lectura del CSV al abrir la página
-};
+// Al usar type="module", debemos hacer globales las funciones llamadas desde HTML
+window.go = go;
+window.switchRegTab = switchRegTab;
+window.togglePw = togglePw;
+window.doRegister = doRegister;
+window.doLogin = doLogin;
+window.logout = logout;
+window.toggleInterest = toggleInterest;
+window.finishOnboard = finishOnboard;
+window.openProfileModal = openProfileModal;
+window.closeProfileModal = closeProfileModal;
+window.handleAvatarUpload = handleAvatarUpload;
+window.saveProfile = saveProfile;
+window.applyFilters = applyFilters;
+window.openDest = openDest;
+window.filterDestTab = filterDestTab;
+window.updateDays = updateDays;
+window.changePeople = changePeople;
+window.setBudget = setBudget;
+window.updateSummary = updateSummary;
+window.selectTransport = selectTransport;
+window.updateRhythm = updateRhythm;
+window.generateItinerary = generateItinerary;
+window.deleteTrip = deleteTrip;
+window.openTrip = openTrip;
+window.openPlaceModal = openPlaceModal;
+window.openItinPlaceModal = openItinPlaceModal;
+window.closePlaceModal = closePlaceModal;
+
+// Inicialización de la app
+cargarLugares();
+
 </script>
 </body>
 </html>
