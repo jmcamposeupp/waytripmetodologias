@@ -410,6 +410,14 @@
           </div>
           <div class="form-error" id="err-r-pw">La contraseña debe tener al menos 6 caracteres</div>
         </div>
+        <div class="reg-fg">
+          <label class="reg-label">Confirmar Contraseña</label>
+          <div class="pw-wrap">
+            <input class="reg-input" id="r-pw-confirm" placeholder="Repite tu contraseña" type="password" style="padding-right:40px">
+            <button class="pw-eye" onclick="togglePw('r-pw-confirm')">👁</button>
+          </div>
+          <div class="form-error" id="err-r-pw-confirm">Las contraseñas no coinciden</div>
+        </div>
         <button class="btn-continue" onclick="doRegister()">Continuar →</button>
       </div>
 
@@ -696,7 +704,7 @@
 </div>
 
 <div id="profile-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(3px);">
-  <div style="background:white; padding:2rem; border-radius:var(--radius-lg); width:90%; max-width:340px; box-shadow:var(--shadow-md); text-align:center; font-family:'DM Sans',sans-serif;">
+  <div style="background:white; padding:2rem; border-radius:var(--radius-lg); width:90%; max-width:340px; max-height:85vh; overflow-y:auto; box-shadow:var(--shadow-md); text-align:center; font-family:'DM Sans',sans-serif;">
     <h3 style="font-family:'Outfit',sans-serif; color:var(--dark); margin-bottom:1.5rem; font-size:1.4rem;">Editar Perfil</h3>
     
     <div style="position:relative; display:inline-block; margin-bottom:1.5rem;">
@@ -714,8 +722,25 @@
       <button class="btn btn-ghost" style="flex:1; justify-content:center;" onclick="closeProfileModal()">Cancelar</button>
       <button class="btn btn-primary" style="flex:1; justify-content:center;" onclick="saveProfile()">Guardar</button>
     </div>
-    <div style="display:flex; gap:10px; margin-top:10px;">
-      <button class="btn btn-ghost" style="flex:1; justify-content:center; color:#e74c3c; border-color:#e74c3c;" onclick="logout()">Cerrar sesión</button>
+
+    <hr style="border:0; border-top:1px solid var(--border); margin: 1.5rem 0;">
+    <h4 style="font-size:13px; color:var(--dark); font-weight:800; text-transform:uppercase; margin-bottom:10px; text-align:left;">Seguridad</h4>
+
+    <div id="sec-buttons" style="display:flex; flex-direction:column; gap:8px;">
+        <button class="btn btn-ghost" style="width:100%; justify-content:center;" onclick="showSecurityForm('password')">🔒 Cambiar contraseña</button>
+        <button class="btn btn-ghost" style="width:100%; justify-content:center; color:#e74c3c; border-color:#f5b7b1; background:#fdedec;" onclick="showSecurityForm('delete')">🗑️ Eliminar cuenta definitivamente</button>
+        <button class="btn btn-ghost" style="width:100%; justify-content:center; margin-top:8px;" onclick="logout()">Cerrar sesión</button>
+    </div>
+
+    <div id="sec-form" style="display:none; text-align:left; background:#f9f8f5; padding:12px; border-radius:8px; margin-top:10px;">
+        <div id="sec-form-title" style="font-size:12px; font-weight:700; margin-bottom:8px; color:var(--dark);">Acción</div>
+        <input type="password" id="sec-current-pw" class="form-input" placeholder="Contraseña actual" style="margin-bottom:8px;">
+        <input type="password" id="sec-new-pw" class="form-input" placeholder="Nueva contraseña" style="display:none; margin-bottom:8px;">
+        <div class="form-error" id="err-sec" style="margin-bottom:8px;"></div>
+        <div style="display:flex; gap:8px;">
+            <button class="btn btn-ghost" style="flex:1; padding:6px; font-size:12px; justify-content:center;" onclick="hideSecurityForm()">Cancelar</button>
+            <button class="btn btn-primary" id="btn-sec-confirm" style="flex:1; padding:6px; font-size:12px; justify-content:center;" onclick="executeSecurityAction()">Confirmar</button>
+        </div>
     </div>
   </div>
 </div>
@@ -727,8 +752,8 @@
 
 // Importaciones de Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, EmailAuthProvider, reauthenticateWithCredential, updatePassword, deleteUser } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCxNDELr5wRDYEQzs5Pu8xDqs5daIJNYRc",
@@ -853,14 +878,17 @@ async function doRegister() {
   const name  = document.getElementById('r-name').value.trim();
   const email = document.getElementById('r-email').value.trim().toLowerCase();
   const pw    = document.getElementById('r-pw').value;
+  const pwConfirm = document.getElementById('r-pw-confirm').value; // Nueva validación
   let ok = true;
 
   document.getElementById('err-r-name').classList.remove('show');
   document.getElementById('err-r-email').classList.remove('show');
   document.getElementById('err-r-pw').classList.remove('show');
+  document.getElementById('err-r-pw-confirm').classList.remove('show');
   document.getElementById('r-name').classList.remove('error');
   document.getElementById('r-email').classList.remove('error');
   document.getElementById('r-pw').classList.remove('error');
+  document.getElementById('r-pw-confirm').classList.remove('error');
 
   if (!name) {
     document.getElementById('err-r-name').classList.add('show');
@@ -878,6 +906,12 @@ async function doRegister() {
     document.getElementById('r-pw').classList.add('error');
     ok = false;
   }
+  if (pw !== pwConfirm) {
+    document.getElementById('err-r-pw-confirm').classList.add('show');
+    document.getElementById('r-pw-confirm').classList.add('error');
+    ok = false;
+  }
+
   if (!ok) return;
 
   try {
@@ -955,15 +989,17 @@ function requireAuth() {
 }
 
 // ═══════════════════════════════════════════
-//  PROFILE MODAL LOGIC
+//  PROFILE MODAL LOGIC & SECURITY
 // ═══════════════════════════════════════════
 let tempAvatarBase64 = null;
+let currentSecurityAction = null;
 
 function openProfileModal() {
   if(!currentUser) return;
   tempAvatarBase64 = currentUser.avatar || null;
   document.getElementById('modal-name-input').value = currentUser.name;
   updateModalAvatarPreview();
+  hideSecurityForm(); // resetear form de seguridad
   document.getElementById('profile-modal').style.display = 'flex';
 }
 
@@ -1011,6 +1047,86 @@ async function saveProfile() {
   syncAvatars();
   loadDashboard(); 
 }
+
+function showSecurityForm(action) {
+    currentSecurityAction = action;
+    document.getElementById('sec-buttons').style.display = 'none';
+    document.getElementById('sec-form').style.display = 'block';
+    document.getElementById('sec-current-pw').value = '';
+    document.getElementById('sec-new-pw').value = '';
+    document.getElementById('err-sec').classList.remove('show');
+
+    if (action === 'password') {
+        document.getElementById('sec-form-title').textContent = 'Cambiar Contraseña';
+        document.getElementById('sec-form-title').style.color = 'var(--dark)';
+        document.getElementById('sec-new-pw').style.display = 'block';
+        document.getElementById('btn-sec-confirm').style.background = 'var(--primary)';
+        document.getElementById('btn-sec-confirm').textContent = 'Actualizar';
+    } else {
+        document.getElementById('sec-form-title').textContent = 'Confirmar Eliminación Definitiva';
+        document.getElementById('sec-form-title').style.color = '#e74c3c';
+        document.getElementById('sec-new-pw').style.display = 'none';
+        document.getElementById('btn-sec-confirm').style.background = '#e74c3c';
+        document.getElementById('btn-sec-confirm').textContent = 'Eliminar';
+    }
+}
+
+function hideSecurityForm() {
+    document.getElementById('sec-buttons').style.display = 'flex';
+    document.getElementById('sec-form').style.display = 'none';
+    currentSecurityAction = null;
+}
+
+async function executeSecurityAction() {
+    const currentPw = document.getElementById('sec-current-pw').value;
+    const errEl = document.getElementById('err-sec');
+    errEl.classList.remove('show');
+
+    if (!currentPw) {
+        errEl.textContent = 'Ingresa tu contraseña actual';
+        errEl.classList.add('show');
+        return;
+    }
+
+    const user = auth.currentUser;
+    if (!user) return;
+
+    try {
+        // 1. Re-autenticación con Firebase
+        const credential = EmailAuthProvider.credential(user.email, currentPw);
+        await reauthenticateWithCredential(user, credential);
+
+        if (currentSecurityAction === 'password') {
+            // 2. Cambiar contraseña
+            const newPw = document.getElementById('sec-new-pw').value;
+            if (newPw.length < 6) {
+                errEl.textContent = 'La nueva contraseña debe tener mínimo 6 caracteres';
+                errEl.classList.add('show');
+                return;
+            }
+            await updatePassword(user, newPw);
+            alert("¡Tu contraseña ha sido actualizada con éxito!");
+            hideSecurityForm();
+
+        } else if (currentSecurityAction === 'delete') {
+            // 2. Eliminar cuenta permanentemente
+            // Paso A: Borrar datos de Firestore
+            await deleteDoc(doc(db, "users", user.uid));
+            // Paso B: Borrar cuenta de Auth
+            await deleteUser(user);
+            
+            alert("Tu cuenta y todos tus datos han sido eliminados. ¡Hasta pronto!");
+            currentUser = null;
+            closeProfileModal();
+            go('home');
+        }
+    } catch (error) {
+        console.error(error);
+        errEl.textContent = 'Error: verifica que tu contraseña actual sea correcta.';
+        errEl.classList.add('show');
+    }
+}
+
 
 // ═══════════════════════════════════════════
 //  NAVIGATION & UI
@@ -1500,7 +1616,6 @@ function getDistance(lat1, lon1, lat2, lon2) {
 // ═══════════════════════════════════════════
 // EXPOSICIÓN DE FUNCIONES A WINDOW
 // ═══════════════════════════════════════════
-// Al usar type="module", debemos hacer globales las funciones llamadas desde HTML
 window.go = go;
 window.switchRegTab = switchRegTab;
 window.togglePw = togglePw;
@@ -1513,6 +1628,9 @@ window.openProfileModal = openProfileModal;
 window.closeProfileModal = closeProfileModal;
 window.handleAvatarUpload = handleAvatarUpload;
 window.saveProfile = saveProfile;
+window.showSecurityForm = showSecurityForm;
+window.hideSecurityForm = hideSecurityForm;
+window.executeSecurityAction = executeSecurityAction;
 window.applyFilters = applyFilters;
 window.openDest = openDest;
 window.filterDestTab = filterDestTab;
