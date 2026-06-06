@@ -1,40 +1,40 @@
-destino_id,name,type,desc,price,free,img,lat,lng
-cusco,Plaza de Armas,🏛️ Plaza histórica,El corazón de la ciudad.,Gratis,true,https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Plaza_de_Cusco_Allison_Bellido.jpg/960px-Plaza_de_Cusco_Allison_Bellido.jpg,-13.5167,-71.97878
-cusco,Mercado San Pedro,🛒 Mercado,Lleno de colores locales.,Gratis entrada,true,https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/San_Pedro_Market.jpg/960px-San_Pedro_Market.jpg,-13.5198,-71.9825
-cusco,Sacsayhuamán,🏯 Arqueología,Imponente fortaleza inca.,S/ 70,false,https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Sacsayhuam%C3%A1n%2C_Cusco%2C_Per%C3%BA%2C_2015-07-31%2C_DD_01.JPG/1280px-Sacsayhuam%C3%A1n%2C_Cusco%2C_Per%C3%BA%2C_2015-07-31%2C_DD_01.JPG,-13.5085,-71.9816
-cusco,Qorikancha,🌞 Templo,Templo más importante del Imperio.,S/ 20,false,https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Cusco_Coricancha_Inti-Huasi_main_view.jpg/960px-Cusco_Coricancha_Inti-Huasi_main_view.jpg,-13.5204,-71.9745
-cusco,Barrio San Blas,🎨 Barrio,Bohemio con galerías de arte.,Gratis,true,https://www.perurail.com/wp-content/uploads/2024/10/Barrio-de-San-Blas-1.webp,-13.5147,-71.9749
-cusco,Chicha por Gastón Acurio,🍽️ Restaurante,Gastronomía cusqueña top.,S/ 50+,false,https://media-cdn.tripadvisor.com/media/photo-s/19/60/7b/57/caption.jpg,-13.5173,-71.9806
-cusco,Valle Sagrado,🏔️ Valle,Pueblos y paisajes andinos.,S/ 70,false,https://image-tc.galaxy.tf/wijpeg-7s1v8e5km8dojs4ckc2dhyi4t/valle-sagrado-destino-unico_wide.jpg?crop=26%2C0%2C1548%2C871&width=1140,-13.305,-72.0131
-cusco,Machu Picchu,🌟 Maravilla,La ciudad inca perdida.,S/ 152,false,https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Machu_Picchu%2C_Peru_%282018%29.jpg/960px-Machu_Picchu%2C_Peru_%282018%29.jpg,-13.1631,-72.545
-lima,Plaza Mayor,🏛️ Plaza histórica,Centro histórico de la ciudad.,Gratis,true,https://trexperienceperu.com/sites/default/files/plaza-mayor-lima-ahora.webp,-12.0464,-77.0305
-lima,Miraflores,🌊 Distrito,Malecón frente al Pacífico.,Gratis,true,https://www.gochile.cl/fotos/full/112290-willian-justen-de-vasconcellos-744176-unsplash@2x.jpg,-12.1219,-77.0305
-lima,Larcomar,🛍️ Centro Comercial,Shopping sobre los acantilados.,Gratis,true,https://viajandoalima.com/wp-content/uploads/2016/03/Larcomar-Lima.jpg,-12.132,-77.0305
-lima,Museo Larco,🏺 Museo,Colección arqueológica.,S/ 40,false,https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Lima_museo_larco.jpg/1920px-Lima_museo_larco.jpg,-12.0724,-77.0705
-lima,Barranco,🎨 Barrio,El barrio bohemio de Lima.,Gratis,true,https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/PUENTE_DE_LOS_SUSPIROS.jpg/960px-PUENTE_DE_LOS_SUSPIROS.jpg,-12.1481,-77.0212
-lima,Central Restaurante,🍽️ Restaurante,Alta gastronomía mundial.,"S/ 1,200",false,https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/84/70/bf/central-restaurante.jpg?w=1400&h=-1&s=1,-12.1416,-77.0223
-lima,Huaca Pucllana,🏺 Arqueología,Pirámide preínca en la ciudad.,S/ 15,false,https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Huaca_Pucllana_Miraflores.jpg/960px-Huaca_Pucllana_Miraflores.jpg,-12.1111,-77.0336
-arequipa,Plaza de Armas,🏛️ Plaza histórica,Edificios de sillar blanco.,Gratis,true,https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Arequipac.jpg/960px-Arequipac.jpg,-16.3988,-71.5369
-arequipa,Monasterio Santa Catalina,⛪ Monasterio,Ciudad colonial en el centro.,S/ 45,false,https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Monasterio_de_Santa_Catalina%2C_Arequipa.jpg/1280px-Monasterio_de_Santa_Catalina%2C_Arequipa.jpg,-16.3958,-71.5372
-arequipa,Cañón del Colca,🏔️ Naturaleza,Hogar del cóndor andino.,S/ 70,false,https://machupicchuperutours.com/wp-content/uploads/2022/07/canon-del-colca.webp,-15.6094,-71.8694
-arequipa,Volcán Misti,⛰️ Volcán,Volcán guardián de la ciudad.,Gratis,true,https://upload.wikimedia.org/wikipedia/commons/a/a3/Volcano_Misti%2C_Peru.jpg,-16.295,-71.4089
-ica,Oasis de Huacachina,🏜️ Oasis,Oasis rodeado de dunas.,Gratis,true,https://www.machupicchu-tours-peru.com/wp-content/uploads/2021/03/DAS-1.jpg,-14.0875,-75.7628
-ica,Líneas de Nazca (Vuelo),✈️ Arqueología,Sobrevuelo geoglifos.,S/ 350,false,https://files.pucp.education/puntoedu/wp-content/uploads/2025/06/04172152/web-1920x1080-lineas-de-nazca-1536x864.jpg,-14.739,-75.13
-ica,Reserva de Paracas,🦭 Naturaleza,Paisajes desérticos costeros.,S/ 11,false,https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Paracas_National_Reserve._Ica%2C_Peru.jpg/1280px-Paracas_National_Reserve._Ica%2C_Peru.jpg,-13.8828,-76.2514
-ica,Islas Ballestas,🐧 Islas,Fauna marina.,S/ 40,false,https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/7c/b9/ba/photo0jpg.jpg?w=1400&h=-1&s=1,-13.7317,-76.3983
-puno,Lago Titicaca (Tour),💧 Lago,Lago navegable más alto.,S/ 25,false,https://www.chullostravelperu.com/blog/wp-content/uploads/2025/10/LAGO-TITICACA.jpg,-15.8402,-69.3381
-puno,Islas Flotantes Uros,🌾 Islas flotantes,Islas de totora.,S/ 15,false,https://www.civitatis.com/f/peru/puno/galeria/big/isla-uros.jpg,-15.8206,-69.9678
-puno,Catedral de Puno,⛪ Catedral,Fachada mestiza barroca.,Gratis,true,https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Bas%C3%ADlica_Catedral_de_Puno_08.jpg/960px-Bas%C3%ADlica_Catedral_de_Puno_08.jpg,-15.8406,-70.0278
-puno,Chullpas de Sillustani,🗿 Arqueología,Torres funerarias preíncas.,S/ 15,false,https://incalake.com/galeria/admin/short-slider/PUNO/SILLUSTANI/chullpas-de-sillustan.webp,-15.7225,-70.1583
-loreto,Ciudad de Iquitos,🏙️ Ciudad,Ciudad en la Amazonía.,Gratis,true,https://i0.wp.com/blog.howlanders.com/wp-content/uploads/2019/06/ciudad-de-iquitos.jpg?w=1200&ssl=1,-3.7491,-73.2538
-loreto,Reserva Pacaya Samiria,🌿 Reserva,Laberinto de ríos.,S/ 150,false,https://cms.ytuqueplanes.com/archivos/Blog/Notas%20blog%20viajero/InternaNota_1200%E2%80%8A%C3%97%E2%80%8A876%20(5).webp,-5.2631,-74.8364
-loreto,Río Amazonas,🌊 Río,El río más caudaloso.,Gratis,true,https://okdiario.com/img/2017/04/11/el-rio-amazonas-en-5-datos-655x368.jpg,-3.738,-73.2425
-loreto,Malecón Tarapacá,🌅 Malecón,Paseo frente al río.,Gratis,true,https://iquitosperu.net/uploads/large/malecon-tarapaca.jpg,-3.7497,-73.2415
-trujillo,Chan Chan,🏯 Arqueología,Ciudadela de barro.,S/ 11,false,https://bushop.com/wp-content/uploads/sites/10/Mascotte-of-Chan-Chan-Small.jpg,-8.1082,-79.0754
-trujillo,Huaca de la Luna,🌙 Arqueología,Templo moche con murales.,S/ 10,false,https://upload.wikimedia.org/wikipedia/commons/9/9e/Huaca_de_la_Luna_-_El_Dios_Degollador.jpg,-8.134,-78.9859
-trujillo,Huanchaco,🏄 Playa,Caballitos de totora.,Gratis,true,https://www.infobae.com/resizer/v2/H3RV262UBRDURITW4BLNTMOLJE.png?auth=bdbdce9b0fa266d3392e330e01dc3e41fa22a4f1b57698957e1a0406c1224d0a&smart=true&width=992&height=558&quality=85,-8.0811,-79.1197
-trujillo,Plaza de Armas,🏛️ Plaza,Colorida y colonial.,Gratis,true,https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Freedom_Monument%2C_Trujillo.jpg/960px-Freedom_Monument%2C_Trujillo.jpg,-8.1116,-79.0287
-huaraz,Parque Nacional Huascarán,🏔️ Parque,Montañas nevadas.,S/ 65,false,https://visitaareasnaturales.sernanp.gob.pe/wp-content/uploads/2024/12/trekking-laguna-churup1.jpg,-9.1219,-77.5255
-huaraz,Laguna 69,💧 Laguna,Laguna turquesa andina.,S/ 30,false,https://bushop.com/peru/wp-content/uploads/sites/10/laguna69-1_1.jpg,-9.0125,-77.6105
-huaraz,Chavín de Huántar,🏯 Arqueología,Templo preínca.,S/ 15,false,https://antipode-peru.com/Que-Voir/chavin-de-huantar-v1-1200-800.jpeg,-9.5936,-77.1777
-huaraz,Glaciar Pastoruri,⛰️ Glaciar,Glaciar accesible.,S/ 30,false,https://dynamic-media-cdn.tripadvisor.com/media/photo-o/10/f0/e3/4b/nevado-pastoruri.jpg?w=2000&h=-1&s=1,-9.8823,-77.1856
+destino_id,name,type,desc,price,free,img,lat,lng,more_info
+cusco,Plaza de Armas,🏛️ Plaza histórica,El corazón de la ciudad.,Gratis,true,https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Plaza_de_Cusco_Allison_Bellido.jpg/960px-Plaza_de_Cusco_Allison_Bellido.jpg,-13.5167,-71.97878,cosas
+cusco,Mercado San Pedro,🛒 Mercado,Lleno de colores locales.,Gratis entrada,true,https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/San_Pedro_Market.jpg/960px-San_Pedro_Market.jpg,-13.5198,-71.9825,cosas
+cusco,Sacsayhuamán,🏯 Arqueología,Imponente fortaleza inca.,S/ 70,false,https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Sacsayhuam%C3%A1n%2C_Cusco%2C_Per%C3%BA%2C_2015-07-31%2C_DD_01.JPG/1280px-Sacsayhuam%C3%A1n%2C_Cusco%2C_Per%C3%BA%2C_2015-07-31%2C_DD_01.JPG,-13.5085,-71.9816,cosas
+cusco,Qorikancha,🌞 Templo,Templo más importante del Imperio.,S/ 20,false,https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Cusco_Coricancha_Inti-Huasi_main_view.jpg/960px-Cusco_Coricancha_Inti-Huasi_main_view.jpg,-13.5204,-71.9745,cosas
+cusco,Barrio San Blas,🎨 Barrio,Bohemio con galerías de arte.,Gratis,true,https://www.perurail.com/wp-content/uploads/2024/10/Barrio-de-San-Blas-1.webp,-13.5147,-71.9749,cosas
+cusco,Chicha por Gastón Acurio,🍽️ Restaurante,Gastronomía cusqueña top.,S/ 50+,false,https://media-cdn.tripadvisor.com/media/photo-s/19/60/7b/57/caption.jpg,-13.5173,-71.9806,cosas
+cusco,Valle Sagrado,🏔️ Valle,Pueblos y paisajes andinos.,S/ 70,false,https://image-tc.galaxy.tf/wijpeg-7s1v8e5km8dojs4ckc2dhyi4t/valle-sagrado-destino-unico_wide.jpg?crop=26%2C0%2C1548%2C871&width=1140,-13.305,-72.0131,cosas
+cusco,Machu Picchu,🌟 Maravilla,La ciudad inca perdida.,S/ 152,false,https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Machu_Picchu%2C_Peru_%282018%29.jpg/960px-Machu_Picchu%2C_Peru_%282018%29.jpg,-13.1631,-72.545,cosas
+lima,Plaza Mayor,🏛️ Plaza histórica,Centro histórico de la ciudad.,Gratis,true,https://trexperienceperu.com/sites/default/files/plaza-mayor-lima-ahora.webp,-12.0464,-77.0305,cosas
+lima,Miraflores,🌊 Distrito,Malecón frente al Pacífico.,Gratis,true,https://www.gochile.cl/fotos/full/112290-willian-justen-de-vasconcellos-744176-unsplash@2x.jpg,-12.1219,-77.0305,cosas
+lima,Larcomar,🛍️ Centro Comercial,Shopping sobre los acantilados.,Gratis,true,https://viajandoalima.com/wp-content/uploads/2016/03/Larcomar-Lima.jpg,-12.132,-77.0305,cosas
+lima,Museo Larco,🏺 Museo,Colección arqueológica.,S/ 40,false,https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Lima_museo_larco.jpg/1920px-Lima_museo_larco.jpg,-12.0724,-77.0705,cosas
+lima,Barranco,🎨 Barrio,El barrio bohemio de Lima.,Gratis,true,https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/PUENTE_DE_LOS_SUSPIROS.jpg/960px-PUENTE_DE_LOS_SUSPIROS.jpg,-12.1481,-77.0212,cosas
+lima,Central Restaurante,🍽️ Restaurante,Alta gastronomía mundial.,"S/ 1,200",false,https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/84/70/bf/central-restaurante.jpg?w=1400&h=-1&s=1,-12.1416,-77.0223,cosas
+lima,Huaca Pucllana,🏺 Arqueología,Pirámide preínca en la ciudad.,S/ 15,false,https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Huaca_Pucllana_Miraflores.jpg/960px-Huaca_Pucllana_Miraflores.jpg,-12.1111,-77.0336,cosas
+arequipa,Plaza de Armas,🏛️ Plaza histórica,Edificios de sillar blanco.,Gratis,true,https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Arequipac.jpg/960px-Arequipac.jpg,-16.3988,-71.5369,cosas
+arequipa,Monasterio Santa Catalina,⛪ Monasterio,Ciudad colonial en el centro.,S/ 45,false,https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Monasterio_de_Santa_Catalina%2C_Arequipa.jpg/1280px-Monasterio_de_Santa_Catalina%2C_Arequipa.jpg,-16.3958,-71.5372,cosas
+arequipa,Cañón del Colca,🏔️ Naturaleza,Hogar del cóndor andino.,S/ 70,false,https://machupicchuperutours.com/wp-content/uploads/2022/07/canon-del-colca.webp,-15.6094,-71.8694,cosas
+arequipa,Volcán Misti,⛰️ Volcán,Volcán guardián de la ciudad.,Gratis,true,https://upload.wikimedia.org/wikipedia/commons/a/a3/Volcano_Misti%2C_Peru.jpg,-16.295,-71.4089,cosas
+ica,Oasis de Huacachina,🏜️ Oasis,Oasis rodeado de dunas.,Gratis,true,https://www.machupicchu-tours-peru.com/wp-content/uploads/2021/03/DAS-1.jpg,-14.0875,-75.7628,cosas
+ica,Líneas de Nazca (Vuelo),✈️ Arqueología,Sobrevuelo geoglifos.,S/ 350,false,https://files.pucp.education/puntoedu/wp-content/uploads/2025/06/04172152/web-1920x1080-lineas-de-nazca-1536x864.jpg,-14.739,-75.13,cosas
+ica,Reserva de Paracas,🦭 Naturaleza,Paisajes desérticos costeros.,S/ 11,false,https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Paracas_National_Reserve._Ica%2C_Peru.jpg/1280px-Paracas_National_Reserve._Ica%2C_Peru.jpg,-13.8828,-76.2514,cosas
+ica,Islas Ballestas,🐧 Islas,Fauna marina.,S/ 40,false,https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/7c/b9/ba/photo0jpg.jpg?w=1400&h=-1&s=1,-13.7317,-76.3983,cosas
+puno,Lago Titicaca (Tour),💧 Lago,Lago navegable más alto.,S/ 25,false,https://www.chullostravelperu.com/blog/wp-content/uploads/2025/10/LAGO-TITICACA.jpg,-15.8402,-69.3381,cosas
+puno,Islas Flotantes Uros,🌾 Islas flotantes,Islas de totora.,S/ 15,false,https://www.civitatis.com/f/peru/puno/galeria/big/isla-uros.jpg,-15.8206,-69.9678,cosas
+puno,Catedral de Puno,⛪ Catedral,Fachada mestiza barroca.,Gratis,true,https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Bas%C3%ADlica_Catedral_de_Puno_08.jpg/960px-Bas%C3%ADlica_Catedral_de_Puno_08.jpg,-15.8406,-70.0278,cosas
+puno,Chullpas de Sillustani,🗿 Arqueología,Torres funerarias preíncas.,S/ 15,false,https://incalake.com/galeria/admin/short-slider/PUNO/SILLUSTANI/chullpas-de-sillustan.webp,-15.7225,-70.1583,cosas
+loreto,Ciudad de Iquitos,🏙️ Ciudad,Ciudad en la Amazonía.,Gratis,true,https://i0.wp.com/blog.howlanders.com/wp-content/uploads/2019/06/ciudad-de-iquitos.jpg?w=1200&ssl=1,-3.7491,-73.2538,cosas
+loreto,Reserva Pacaya Samiria,🌿 Reserva,Laberinto de ríos.,S/ 150,false,https://cms.ytuqueplanes.com/archivos/Blog/Notas%20blog%20viajero/InternaNota_1200%E2%80%8A%C3%97%E2%80%8A876%20(5).webp,-5.2631,-74.8364,cosas
+loreto,Río Amazonas,🌊 Río,El río más caudaloso.,Gratis,true,https://okdiario.com/img/2017/04/11/el-rio-amazonas-en-5-datos-655x368.jpg,-3.738,-73.2425,cosas
+loreto,Malecón Tarapacá,🌅 Malecón,Paseo frente al río.,Gratis,true,https://iquitosperu.net/uploads/large/malecon-tarapaca.jpg,-3.7497,-73.2415,cosas
+trujillo,Chan Chan,🏯 Arqueología,Ciudadela de barro.,S/ 11,false,https://bushop.com/wp-content/uploads/sites/10/Mascotte-of-Chan-Chan-Small.jpg,-8.1082,-79.0754,cosas
+trujillo,Huaca de la Luna,🌙 Arqueología,Templo moche con murales.,S/ 10,false,https://upload.wikimedia.org/wikipedia/commons/9/9e/Huaca_de_la_Luna_-_El_Dios_Degollador.jpg,-8.134,-78.9859,cosas
+trujillo,Huanchaco,🏄 Playa,Caballitos de totora.,Gratis,true,https://www.infobae.com/resizer/v2/H3RV262UBRDURITW4BLNTMOLJE.png?auth=bdbdce9b0fa266d3392e330e01dc3e41fa22a4f1b57698957e1a0406c1224d0a&smart=true&width=992&height=558&quality=85,-8.0811,-79.1197,cosas
+trujillo,Plaza de Armas,🏛️ Plaza,Colorida y colonial.,Gratis,true,https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Freedom_Monument%2C_Trujillo.jpg/960px-Freedom_Monument%2C_Trujillo.jpg,-8.1116,-79.0287,cosas
+huaraz,Parque Nacional Huascarán,🏔️ Parque,Montañas nevadas.,S/ 65,false,https://visitaareasnaturales.sernanp.gob.pe/wp-content/uploads/2024/12/trekking-laguna-churup1.jpg,-9.1219,-77.5255,cosas
+huaraz,Laguna 69,💧 Laguna,Laguna turquesa andina.,S/ 30,false,https://bushop.com/peru/wp-content/uploads/sites/10/laguna69-1_1.jpg,-9.0125,-77.6105,cosas
+huaraz,Chavín de Huántar,🏯 Arqueología,Templo preínca.,S/ 15,false,https://antipode-peru.com/Que-Voir/chavin-de-huantar-v1-1200-800.jpeg,-9.5936,-77.1777,cosas
+huaraz,Glaciar Pastoruri,⛰️ Glaciar,Glaciar accesible.,S/ 30,false,https://dynamic-media-cdn.tripadvisor.com/media/photo-o/10/f0/e3/4b/nevado-pastoruri.jpg?w=2000&h=-1&s=1,-9.8823,-77.1856,cosas
