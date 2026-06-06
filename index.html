@@ -244,7 +244,8 @@
   .itin-day-header h4{font-size:13px;font-weight:700;color:var(--dark);display:flex;align-items:center;gap:8px}
   .day-num{width:22px;height:22px;border-radius:50%;background:var(--primary);color:white;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
   .itin-day-sub{font-size:11px;color:var(--text-muted)}
-  .act-item{display:flex;gap:10px;padding:12px 16px;background:white;margin-bottom:1px}
+  .act-item{display:flex;gap:10px;padding:12px 16px;background:white;margin-bottom:1px; cursor:pointer; transition:background .1s;}
+  .act-item:hover{background:#fafaf7;}
   .act-timeline{display:flex;flex-direction:column;align-items:center;padding-top:3px}
   .act-dot{width:10px;height:10px;border-radius:50%;background:var(--primary);flex-shrink:0;border:2px solid white;box-shadow:0 0 0 1.5px var(--primary)}
   .act-line{width:2px;background:var(--primary-light);flex:1;margin-top:4px;min-height:30px}
@@ -322,6 +323,22 @@
 </style>
 </head>
 <body>
+
+<div id="place-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(3px);">
+  <div style="background:white; border-radius:var(--radius-lg); width:90%; max-width:440px; max-height:85vh; overflow-y:auto; box-shadow:var(--shadow-md); font-family:'DM Sans',sans-serif; position:relative;">
+    <button onclick="closePlaceModal()" style="position:absolute; top:12px; right:12px; background:rgba(0,0,0,0.5); color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; font-weight:bold; z-index:10; display:flex; align-items:center; justify-content:center; font-size:14px;">✕</button>
+    <div id="pm-img" style="height:220px; background-size:cover; background-position:center; border-radius:var(--radius-lg) var(--radius-lg) 0 0; background-color:#ccc;"></div>
+    <div style="padding:1.8rem;">
+      <div id="pm-type" style="font-size:11px; color:var(--primary); font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">TIPO DE LUGAR</div>
+      <h3 id="pm-title" style="font-family:'Outfit',sans-serif; color:var(--dark); font-size:1.6rem; margin-bottom:10px; font-weight:800;">Nombre del Lugar</h3>
+      <div id="pm-desc" style="font-size:14px; color:#555; line-height:1.5; margin-bottom:18px; font-weight:500;">Descripción corta del lugar.</div>
+      <div id="pm-moreinfo-container" style="border-top:1px solid var(--border); padding-top:18px;">
+        <h4 style="font-size:12px; color:var(--dark); font-weight:800; text-transform:uppercase; margin-bottom:8px;">Detalles adicionales</h4>
+        <p id="pm-moreinfo" style="font-size:14px; color:var(--text); line-height:1.6;"></p>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div id="screen-home" class="screen active">
   <nav class="nav-landing">
@@ -723,6 +740,10 @@ const DESTINATIONS = [
 
 let PLACES = {};
 
+// Arreglos globales para mapear índices en el modal
+let currentRenderedPlaces = [];
+let currentItinPlaces = [];
+
 // FUNCIÓN DE CARGA DE CSV
 function cargarLugares() {
   fetch('data/lugares.csv')
@@ -743,6 +764,7 @@ function cargarLugares() {
               name: fila.name,
               type: fila.type,
               desc: fila.desc,
+              more_info: fila.more_info || "", // NUEVO: Extrae la columna extra
               price: fila.price,
               free: (fila.free === 'true' || fila.free === 'VERDADERO'),
               img: fila.img,
@@ -758,6 +780,43 @@ function cargarLugares() {
       console.error("Error al cargar la base de datos CSV:", error);
       fillRegChips(); 
     });
+}
+
+// ═══════════════════════════════════════════
+//  MODAL DE LUGAR DETALLADO
+// ═══════════════════════════════════════════
+function openPlaceModal(index) {
+  const p = currentRenderedPlaces[index];
+  if(p) fillAndShowPlaceModal(p);
+}
+
+function openItinPlaceModal(index) {
+  const p = currentItinPlaces[index];
+  if(p) fillAndShowPlaceModal(p);
+}
+
+function fillAndShowPlaceModal(p) {
+  document.getElementById('pm-img').style.backgroundImage = `url('${p.img}')`;
+  document.getElementById('pm-type').textContent = p.type;
+  document.getElementById('pm-title').textContent = p.name;
+  document.getElementById('pm-desc').textContent = p.desc;
+  
+  const moreInfoEl = document.getElementById('pm-moreinfo');
+  const containerEl = document.getElementById('pm-moreinfo-container');
+  
+  if (p.more_info && p.more_info.trim() !== "") {
+    moreInfoEl.textContent = p.more_info;
+    containerEl.style.display = 'block';
+  } else {
+    moreInfoEl.textContent = "No hay información adicional disponible para este lugar en este momento.";
+    containerEl.style.display = 'block';
+  }
+  
+  document.getElementById('place-modal').style.display = 'flex';
+}
+
+function closePlaceModal() {
+  document.getElementById('place-modal').style.display = 'none';
 }
 
 // ═══════════════════════════════════════════
@@ -1086,8 +1145,9 @@ function filterDestTab(cat, el) {
 }
 
 function renderDestPlaces(places) {
-  document.getElementById('dest-places-list').innerHTML = places.map(p=>`
-    <div class="place-item">
+  currentRenderedPlaces = places; // Guardar el arreglo actual para referenciarlo en el modal
+  document.getElementById('dest-places-list').innerHTML = places.map((p, i)=>`
+    <div class="place-item" onclick="openPlaceModal(${i})">
       <div class="place-thumb" style="background-image: url('${p.img}')">
         <div class="place-thumb-icon">${p.type.split(' ')[0]}</div>
       </div>
@@ -1327,6 +1387,8 @@ function renderItineraryView(tripData) {
   }
   // -----------------------------------
   
+  currentItinPlaces = placesForTrip; // Guardar el arreglo actual para referenciarlo en el modal
+
   let actsHtml = placesForTrip.map((p, i) => {
       let timeStr = (8 + i*3).toString().padStart(2, '0') + ':00';
       let badge = p.free ? '<span class="badge-free">Gratis</span>' : `<span class="badge-price">${p.price}</span>`;
@@ -1354,7 +1416,7 @@ function renderItineraryView(tripData) {
       }
 
       return `
-      <div class="act-item">
+      <div class="act-item" onclick="openItinPlaceModal(${i})">
           <div class="act-timeline">
               <div class="act-dot"></div>
               ${i < placesForTrip.length-1 ? '<div class="act-line"></div>' : ''}
