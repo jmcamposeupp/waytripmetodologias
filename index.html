@@ -293,13 +293,6 @@
 
   /* ONBOARDING */
   .onboard-page{min-height:calc(100vh - 60px);background:var(--bg);display:flex;flex-direction:column;align-items:center;padding:2.5rem 1rem}
-  .steps-bar{display:flex;align-items:center;gap:0;margin-bottom:2.5rem}
-  .step-item{display:flex;flex-direction:column;align-items:center;gap:5px}
-  .step-circ{width:30px;height:30px;border-radius:50%;border:2px solid #ccc;color:#ccc;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif}
-  .step-circ.active{background:var(--primary);border-color:var(--primary);color:white}
-  .step-lbl{font-size:10px;color:#bbb;letter-spacing:.6px;font-weight:600}
-  .step-lbl.active{color:var(--primary)}
-  .step-connector{width:64px;height:2px;background:#ddd;margin-bottom:20px}
   .onboard-card{background:white;border-radius:var(--radius-lg);border:1px solid var(--border);padding:2rem;max-width:600px;width:100%;box-shadow:var(--shadow)}
   .onboard-card h2{font-size:1.4rem;font-weight:800;color:var(--dark);text-align:center;margin-bottom:6px}
   .onboard-card .sub{font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:1.5rem}
@@ -428,13 +421,6 @@
     <div class="logo"><img src="img/logo.png" alt="WayTrip" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="logo-icon" style="display:none;">🧭</div>WayTrip</div>
   </nav>
   <div class="onboard-page">
-    <div class="steps-bar">
-      <div class="step-item"><div class="step-circ active">1</div><div class="step-lbl active">INTERESES</div></div>
-      <div class="step-connector"></div>
-      <div class="step-item"><div class="step-circ">2</div><div class="step-lbl">ESTILO</div></div>
-      <div class="step-connector"></div>
-      <div class="step-item"><div class="step-circ">3</div><div class="step-lbl">PERFIL</div></div>
-    </div>
     <div class="onboard-card">
       <h2>¿Qué te apasiona en un viaje?</h2>
       <p class="sub">Selecciona todo lo que te llame la atención. Usaremos esto para personalizar tus recomendaciones.</p>
@@ -710,6 +696,9 @@
       <button class="btn btn-ghost" style="flex:1; justify-content:center;" onclick="closeProfileModal()">Cancelar</button>
       <button class="btn btn-primary" style="flex:1; justify-content:center;" onclick="saveProfile()">Guardar</button>
     </div>
+    <div style="display:flex; gap:10px; margin-top:10px;">
+      <button class="btn btn-ghost" style="flex:1; justify-content:center; color:#e74c3c; border-color:#e74c3c;" onclick="logout()">Cerrar sesión</button>
+    </div>
   </div>
 </div>
 
@@ -832,6 +821,12 @@ function doLogin() {
   currentUser = { name: user.name, email, interests: user.interests, trips: user.trips || [], avatar: user.avatar || null };
   loadDashboard();
   go('dashboard');
+}
+
+function logout() {
+  currentUser = null;
+  closeProfileModal();
+  go('home');
 }
 
 function finishOnboard() {
@@ -1233,18 +1228,30 @@ function renderMisViajes() {
     mvEmpty.style.display = 'none';
     mvList.style.display = 'grid';
     mvList.innerHTML = currentUser.trips.map(t => `
-      <div class="exp-card" onclick="openTrip(${t.id})">
-        <div class="exp-card-img" style="background-image: url('${t.img}')">
-          <div class="exp-overlay"></div>
-          <span class="exp-name">${t.destName}</span>
-        </div>
-        <div class="exp-card-body">
-          <div style="font-size:14px; font-weight:700; color:var(--dark); margin-bottom:4px;">${t.days} día · ${t.people} personas</div>
-          <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">Presupuesto est: S/ ${t.totalBudget}</div>
-          <div style="font-size:12px; color:var(--text-muted);">📅 ${t.arrival}</div>
+      <div class="exp-card" style="position:relative;">
+        <button onclick="deleteTrip(event, ${t.id})" style="position:absolute; top:10px; right:10px; z-index:10; background:rgba(255,255,255,0.9); border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; color:#e74c3c; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 4px rgba(0,0,0,0.2); transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">🗑️</button>
+        <div onclick="openTrip(${t.id})" style="height:100%;">
+          <div class="exp-card-img" style="background-image: url('${t.img}')">
+            <div class="exp-overlay"></div>
+            <span class="exp-name">${t.destName}</span>
+          </div>
+          <div class="exp-card-body">
+            <div style="font-size:14px; font-weight:700; color:var(--dark); margin-bottom:4px;">${t.days} día · ${t.people} personas</div>
+            <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">Presupuesto est: S/ ${t.totalBudget}</div>
+            <div style="font-size:12px; color:var(--text-muted);">📅 ${t.arrival}</div>
+          </div>
         </div>
       </div>
     `).reverse().join('');
+  }
+}
+
+function deleteTrip(e, tripId) {
+  e.stopPropagation();
+  if (confirm("¿Estás seguro de que deseas eliminar este plan de viaje?")) {
+    currentUser.trips = currentUser.trips.filter(t => t.id !== tripId);
+    if(USERS[currentUser.email]) USERS[currentUser.email].trips = currentUser.trips;
+    renderMisViajes();
   }
 }
 
