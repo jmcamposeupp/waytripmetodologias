@@ -42,8 +42,8 @@
     height: 16px;
     border: 2px solid rgba(255,255,255,0.3);
     border-radius: 50%;
-    border-top-color: #fff;
-    animation: spin 0.8s ease-in-out infinite;
+    border-top-color: transparent;
+    animation: spin 0.8s linear infinite;
     margin-right: 8px;
     vertical-align: middle;
   }
@@ -54,7 +54,7 @@
   .logo{display:flex;align-items:center;gap:8px;color:white;font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;cursor:pointer;text-decoration:none;margin-right:auto}
   .logo-img{height:32px;width:auto;object-fit:contain;border-radius:4px}
   .nav-btns{display:flex;gap:8px}
-  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:none;font-family:'DM Sans',sans-serif}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 18px;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:none;font-family:'DM Sans',sans-serif}
   .btn:disabled{opacity:0.7;cursor:not-allowed}
   .btn-white-outline{background:transparent;color:white;border:1.5px solid rgba(255,255,255,0.6)}
   .btn-white-outline:hover:not(:disabled){background:rgba(255,255,255,0.1)}
@@ -310,6 +310,7 @@
   .pw-wrap{position:relative}
   .pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text-muted);font-size:16px;background:none;border:none;padding:0}
   .btn-continue{width:100%;background:var(--primary);color:white;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;margin-top:1rem;font-family:'Outfit',sans-serif;transition:all .15s}
+  .btn-continue:hover:not(:disabled){background:var(--primary-dark)}
   .form-error{color:#e74c3c;font-size:12px;margin-top:4px;display:none}
   .form-error.show{display:block}
 
@@ -329,8 +330,7 @@
   .onboard-count{font-size:13px;color:var(--text-muted)}
   .btn-siguiente{background:#ccc;color:white;border:none;border-radius:10px;padding:10px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s}
   .btn-siguiente.on{background:var(--primary)}
-  .btn-siguiente.on:hover{background:var(--primary-dark)}
-  .btn-siguiente:disabled{background:#e2dfd6; color:#9ca3af; cursor:not-allowed;}
+  .btn-siguiente.on:hover:not(:disabled){background:var(--primary-dark)}
 
   /* MIS VIAJES empty */
   .empty-state{text-align:center;padding:5rem 2rem}
@@ -814,7 +814,7 @@
 
 // Importaciones de Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, EmailAuthProvider, reauthenticateWithCredential, updatePassword, deleteUser } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, EmailAuthProvider, reauthenticateWithCredential, updatePassword, deleteUser, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -867,10 +867,11 @@ function cargarLugares() {
         complete: function(results) {
           results.data.forEach(fila => {
             let idDestino = fila.destino_id;
+            if(!idDestino) return; // Protección contra filas vacías
             if(!PLACES[idDestino]) PLACES[idDestino] = [];
             PLACES[idDestino].push({
               name: fila.name,
-              type: fila.type,
+              type: fila.type || "",
               desc: fila.desc,
               more_info: fila.more_info || "",
               price: fila.price,
@@ -896,6 +897,22 @@ function fillRegChips() {
 }
 
 // ═══════════════════════════════════════════
+//  UTILIDADES DE UI (SPINNERS)
+// ═══════════════════════════════════════════
+function setBtnLoading(btnId, isLoading, textContent) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    if (isLoading) {
+        btn.disabled = true;
+        btn.dataset.originalText = btn.innerHTML; // Guardar el texto original
+        btn.innerHTML = `<span class="spinner"></span> ${textContent}`;
+    } else {
+        btn.disabled = false;
+        btn.innerHTML = btn.dataset.originalText || textContent;
+    }
+}
+
+// ═══════════════════════════════════════════
 //  MODAL DE LUGAR
 // ═══════════════════════════════════════════
 function openPlaceModal(index) {
@@ -912,7 +929,7 @@ function openItinPlaceModal(dayIndex, actIndex) {
 
 function fillAndShowPlaceModal(p) {
   document.getElementById('pm-img').style.backgroundImage = `url('${p.img}')`;
-  document.getElementById('pm-type').textContent = p.type;
+  document.getElementById('pm-type').textContent = p.type || 'Destino';
   document.getElementById('pm-title').textContent = p.name;
   document.getElementById('pm-desc').textContent = p.desc;
   
@@ -938,6 +955,36 @@ function closePlaceModal() {
 // ═══════════════════════════════════════════
 let currentUser = null;  
 
+// Mantener sesión al recargar la página
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        try {
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if (userDoc.exists()) {
+                currentUser = userDoc.data();
+            } else {
+                currentUser = { name: "Viajero", email: user.email, interests: [], trips: [], avatar: null };
+            }
+            syncAvatars();
+            
+            // Si estaba en la pantalla de inicio o registro y ya está logueado, redirigir
+            const currentScreen = document.querySelector('.screen.active')?.id;
+            if (currentScreen === 'screen-home' || currentScreen === 'screen-register') {
+                if (currentUser.interests && currentUser.interests.length > 0) {
+                    loadDashboard();
+                    go('dashboard');
+                } else {
+                    go('onboard');
+                }
+            }
+        } catch (e) {
+            console.error("Error cargando perfil:", e);
+        }
+    } else {
+        currentUser = null;
+    }
+});
+
 async function doRegister() {
   const name  = document.getElementById('r-name').value.trim();
   const email = document.getElementById('r-email').value.trim().toLowerCase();
@@ -955,10 +1002,7 @@ async function doRegister() {
 
   if (!ok) return;
 
-  const btn = document.getElementById('btn-do-register');
-  const originalText = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Creando cuenta...';
+  setBtnLoading('btn-do-register', true, 'Creando cuenta...');
 
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, pw);
@@ -970,8 +1014,7 @@ async function doRegister() {
     document.getElementById('err-r-email').classList.add('show');
     document.getElementById('r-email').classList.add('error');
   } finally {
-    btn.disabled = false;
-    btn.innerHTML = originalText;
+    setBtnLoading('btn-do-register', false, 'Continuar →');
   }
 }
 
@@ -980,10 +1023,7 @@ async function doLogin() {
   const pw    = document.getElementById('l-pw').value;
   document.getElementById('err-l-email').classList.remove('show');
 
-  const btn = document.getElementById('btn-do-login');
-  const originalText = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Iniciando sesión...';
+  setBtnLoading('btn-do-login', true, 'Iniciando sesión...');
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, pw);
@@ -999,8 +1039,7 @@ async function doLogin() {
     document.getElementById('l-email').classList.add('error');
     document.getElementById('l-pw').classList.add('error');
   } finally {
-    btn.disabled = false;
-    btn.innerHTML = originalText;
+    setBtnLoading('btn-do-login', false, 'Ingresar →');
   }
 }
 
@@ -1016,10 +1055,7 @@ async function finishOnboard() {
   const selected = [...document.querySelectorAll('.interest-item.sel')].map(el => el.querySelector('.interest-name').textContent);
   if(selected.length === 0) return;
 
-  const btn = document.getElementById('btn-sig');
-  const originalText = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Guardando...';
+  setBtnLoading('btn-sig', true, 'Guardando...');
 
   try {
       currentUser.interests = selected;
@@ -1027,8 +1063,7 @@ async function finishOnboard() {
       loadDashboard();
       go('dashboard');
   } finally {
-      btn.disabled = false;
-      btn.innerHTML = originalText;
+      setBtnLoading('btn-sig', false, 'Siguiente ›');
   }
 }
 
@@ -1069,10 +1104,7 @@ function updateModalAvatarPreview() {
   }
 }
 async function saveProfile() {
-  const btn = document.getElementById('btn-save-profile');
-  const originalText = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Guardando...';
+  setBtnLoading('btn-save-profile', true, 'Guardando...');
 
   try {
       const newName = document.getElementById('modal-name-input').value.trim();
@@ -1083,8 +1115,7 @@ async function saveProfile() {
       syncAvatars();
       loadDashboard(); 
   } finally {
-      btn.disabled = false;
-      btn.innerHTML = originalText;
+      setBtnLoading('btn-save-profile', false, 'Guardar');
   }
 }
 function showSecurityForm(action) {
@@ -1123,10 +1154,7 @@ async function executeSecurityAction() {
     const user = auth.currentUser;
     if (!user) return;
 
-    const btn = document.getElementById('btn-sec-confirm');
-    const originalText = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Procesando...';
+    setBtnLoading('btn-sec-confirm', true, 'Procesando...');
 
     try {
         const credential = EmailAuthProvider.credential(user.email, currentPw);
@@ -1147,8 +1175,7 @@ async function executeSecurityAction() {
     } catch (error) {
         errEl.textContent = 'Error: verifica que tu contraseña actual sea correcta.'; errEl.classList.add('show');
     } finally {
-        btn.disabled = false;
-        btn.innerHTML = originalText;
+        setBtnLoading('btn-sec-confirm', false, currentSecurityAction === 'password' ? 'Actualizar' : 'Eliminar');
     }
 }
 
@@ -1256,33 +1283,42 @@ function applyFilters() {
 }
 
 function openDest(id) {
-  if (!requireAuth()) return;
-  currentDest = id;
-  const d = DESTINATIONS.find(x => x.id === id);
-  if (!d) return;
+  try {
+      if (!requireAuth()) return;
+      currentDest = id;
+      const d = DESTINATIONS.find(x => x.id === id);
+      if (!d) return;
 
-  document.getElementById('dest-banner').style.backgroundImage = `url('${d.img}')`;
-  document.getElementById('dest-title').textContent = d.name;
-  document.getElementById('dest-subtitle-txt').textContent = d.subtitle;
-  document.getElementById('dest-rating').textContent = '⭐ ' + d.rating;
-  const places = PLACES[id] || [];
-  document.getElementById('dest-places-count').textContent = places.length;
-  document.getElementById('dest-tags').innerHTML = d.tags.map(t=>`<span class="dest-hero-tag">${capitalize(t)}</span>`).join('');
-  document.getElementById('plan-dest-title').textContent = d.name;
+      document.getElementById('dest-banner').style.backgroundImage = `url('${d.img}')`;
+      document.getElementById('dest-title').textContent = d.name;
+      document.getElementById('dest-subtitle-txt').textContent = d.subtitle;
+      document.getElementById('dest-rating').textContent = '⭐ ' + d.rating;
+      
+      const places = PLACES[id] || [];
+      document.getElementById('dest-places-count').textContent = places.length;
+      document.getElementById('dest-tags').innerHTML = d.tags.map(t=>`<span class="dest-hero-tag">${capitalize(t)}</span>`).join('');
+      document.getElementById('plan-dest-title').textContent = d.name;
 
-  const catMap = {'🍽️':'Restaurantes','🛒':'Mercados','🏯':'Arqueológico','🎨':'Arte','🏔️':'Naturaleza','🌅':'Naturaleza','🌞':'Templos','⛪':'Iglesias','💧':'Lagos','🏛️':'Histórico','🌟':'Destacado','🛍️':'Compras','🏺':'Museos','⛰️':'Montañas','🌾':'Islas','🧵':'Cultura','🚣':'Aventura','🏄':'Playas','🏂':'Aventura','✈️':'Arqueológico','🍷':'Gastronomía','🦭':'Fauna','🐧':'Fauna','🐬':'Fauna','🏙️':'Ciudades','🌿':'Naturaleza','🌊':'Lagos'};
-  
-  // SOLUCIÓN AL BUG DEL TIPO VACÍO:
-  const uniqCats = [...new Set(places.map(p=>(catMap[(p.type || '').split(' ')[0]]||'Otros')))];
-  
-  const tabsEl = document.getElementById('dest-tabs');
-  tabsEl.innerHTML = `<span class="dest-tab active" onclick="filterDestTab('all',this)">Todos</span>`;
-  uniqCats.slice(0,5).forEach(cat => { tabsEl.innerHTML += `<span class="dest-tab" onclick="filterDestTab('${cat}',this)">${cat}</span>`; });
-  
-  renderDestMap(id);
-  renderDestPlaces(places);
-  document.getElementById('dest-list-header').textContent = `Todos los lugares (${places.length})`;
-  go('dest');
+      const catMap = {'🍽️':'Restaurantes','🛒':'Mercados','🏯':'Arqueológico','🎨':'Arte','🏔️':'Naturaleza','🌅':'Naturaleza','🌞':'Templos','⛪':'Iglesias','💧':'Lagos','🏛️':'Histórico','🌟':'Destacado','🛍️':'Compras','🏺':'Museos','⛰️':'Montañas','🌾':'Islas','🧵':'Cultura','🚣':'Aventura','🏄':'Playas','🏂':'Aventura','✈️':'Arqueológico','🍷':'Gastronomía','🦭':'Fauna','🐧':'Fauna','🐬':'Fauna','🏙️':'Ciudades','🌿':'Naturaleza','🌊':'Lagos'};
+      
+      // SOLUCIÓN AL BUG DEL TIPO VACÍO (Evita que el mapa map() tire error si el tipo no existe)
+      const uniqCats = [...new Set(places.map(p => {
+          let t = String(p.type || '').split(' ')[0];
+          return catMap[t] || 'Otros';
+      }))];
+      
+      const tabsEl = document.getElementById('dest-tabs');
+      tabsEl.innerHTML = `<span class="dest-tab active" onclick="filterDestTab('all',this)">Todos</span>`;
+      uniqCats.slice(0,5).forEach(cat => { tabsEl.innerHTML += `<span class="dest-tab" onclick="filterDestTab('${cat}',this)">${cat}</span>`; });
+      
+      renderDestMap(id);
+      renderDestPlaces(places);
+      document.getElementById('dest-list-header').textContent = `Todos los lugares (${places.length})`;
+      go('dest');
+  } catch (err) {
+      console.error("Error al abrir destino:", err);
+      alert("Ocurrió un error al cargar el destino. Revisa la consola.");
+  }
 }
 
 function filterDestTab(cat, el) {
@@ -1304,7 +1340,7 @@ function renderDestPlaces(places) {
       </div>
       <div class="place-info">
         <div class="place-name">${p.name}</div>
-        <div class="place-type">${p.type}</div>
+        <div class="place-type">${p.type || 'Lugar'}</div>
         <div class="place-desc">${p.desc}</div>
       </div>
       <span class="place-price ${p.free?'free':''}">${p.price}</span>
@@ -1340,7 +1376,7 @@ function toggleInterest(el) {
 }
 
 // ═══════════════════════════════════════════
-//  PLAN & MIS VIAJES (AHORA DINÁMICO)
+//  PLAN & MIS VIAJES
 // ═══════════════════════════════════════════
 function updateDays() {
   const arrDate = new Date(document.getElementById('plan-arrival').value);
@@ -1417,10 +1453,7 @@ function optimizeDayRoute(placesArray) {
 async function generateItinerary() {
   if (!currentUser) return;
 
-  const btn = document.getElementById('btn-do-generate');
-  const originalText = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Generando viaje...';
+  setBtnLoading('btn-do-generate', true, 'Generando viaje...');
 
   try {
       const budgetPP = parseInt(document.getElementById('budget-val').value) || 0;
@@ -1476,8 +1509,7 @@ async function generateItinerary() {
       go('itinerary');
 
   } finally {
-      btn.disabled = false;
-      btn.innerHTML = originalText;
+      setBtnLoading('btn-do-generate', false, '✨ Generar mi itinerario ✨');
   }
 }
 
