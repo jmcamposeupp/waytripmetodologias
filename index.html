@@ -35,18 +35,33 @@
   h1,h2,h3,h4,h5{font-family:'Outfit',sans-serif}
   .screen{display:none}.screen.active{display:block}
 
+  /* SPINNER ANIMATION */
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 0.8s ease-in-out infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
   /* NAV LANDING */
   .nav-landing{background:var(--dark);display:flex;align-items:center;padding:0 2rem;height:60px;position:sticky;top:0;z-index:100}
   .logo{display:flex;align-items:center;gap:8px;color:white;font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;cursor:pointer;text-decoration:none;margin-right:auto}
   .logo-img{height:32px;width:auto;object-fit:contain;border-radius:4px}
   .nav-btns{display:flex;gap:8px}
   .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:none;font-family:'DM Sans',sans-serif}
+  .btn:disabled{opacity:0.6;cursor:not-allowed;}
   .btn-white-outline{background:transparent;color:white;border:1.5px solid rgba(255,255,255,0.6)}
-  .btn-white-outline:hover{background:rgba(255,255,255,0.1)}
+  .btn-white-outline:hover:not(:disabled){background:rgba(255,255,255,0.1)}
   .btn-primary{background:var(--primary);color:white}
-  .btn-primary:hover{background:var(--primary-dark)}
+  .btn-primary:hover:not(:disabled){background:var(--primary-dark)}
   .btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border)}
-  .btn-ghost:hover{background:var(--border);color:var(--text)}
+  .btn-ghost:hover:not(:disabled){background:var(--border);color:var(--text)}
 
   /* HERO */
   .hero{min-height:calc(100vh - 60px);background:linear-gradient(165deg, var(--dark) 0%, #153752 45%, #1a4568 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 2rem 3rem;position:relative;overflow:hidden}
@@ -65,7 +80,7 @@
   .inner-nav{background:white;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.5rem;height:54px;position:sticky;top:0;z-index:100;gap:0}
   .inner-nav .logo{color:var(--dark);margin-right:1.5rem}
   .inner-nav .logo-img{height:26px}
-  .nav-item{display:flex;align-items:center;gap:5px;padding:0 14px;height:54px;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;text-decoration:none;transition:color .15s}
+  .nav-item{display:flex;align-items:center;gap:5px;padding:0 14px;height:54px;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;text-decoration:none;transition:color .15s;white-space:nowrap;}
   .nav-item:hover{color:var(--text)}
   .nav-item.active{color:var(--primary);border-bottom-color:var(--primary)}
   .nav-avatar{width:32px;height:32px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;color:white;font-size:13px;font-weight:700;margin-left:auto;cursor:pointer;font-family:'Outfit',sans-serif;transition:transform 0.15s;}
@@ -176,7 +191,6 @@
   .form-label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--text);margin-bottom:7px}
   .form-input{width:100%;border:1px solid var(--border);border-radius:var(--radius);padding:9px 13px;font-size:13px;color:var(--text);background:white;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .15s}
   .form-input:focus{border-color:var(--primary)}
-  .form-input[readonly]{background-color: #f5f5f5; cursor: not-allowed;}
   .date-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .date-label{font-size:11px;color:var(--text-muted);margin-bottom:4px}
   .day-count{color:var(--primary);font-size:12px;font-weight:600;margin-top:4px}
@@ -203,13 +217,12 @@
   .summary-lbl{font-size:9px;color:var(--text-muted);margin-bottom:2px;font-weight:500}
   .summary-val{font-size:12px;font-weight:700;color:var(--dark)}
   .btn-generate{width:100%;background:var(--primary);color:white;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;margin-top:1.5rem;display:flex;align-items:center;justify-content:center;gap:7px;font-family:'Outfit',sans-serif;transition:all .15s}
-  .btn-generate:hover{background:var(--primary-dark);transform:translateY(-1px)}
+  .btn-generate:hover:not(:disabled){background:var(--primary-dark);transform:translateY(-1px)}
 
   /* ITINERARY */
   .itin-wrap{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 54px)}
   .itin-map{background:#e1f4f9;overflow:hidden;position:relative;}
   
-  /* CSS para los Pines Numerados de Leaflet */
   .pin-number {
     background-color: var(--primary);
     color: white;
@@ -225,10 +238,7 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.4);
     font-family: 'DM Sans', sans-serif;
   }
-  .custom-pin {
-    background: transparent;
-    border: none;
-  }
+  .custom-pin { background: transparent; border: none; }
 
   .itin-side{display:flex;flex-direction:column;overflow:hidden}
   .itin-header{background:white;border-bottom:1px solid var(--border);padding:10px 16px;flex-shrink:0}
@@ -238,13 +248,13 @@
   .itin-stat{text-align:center}
   .itin-stat-lbl{font-size:10px;color:var(--text-muted)}
   .itin-stat-val{font-size:12px;font-weight:700;color:var(--dark)}
-  .itin-body{flex:1;overflow-y:auto;background:#f9f8f5}
+  .itin-body{flex:1;overflow-y:auto;background:#f9f8f5; padding-bottom: 2rem;}
   .itin-day{margin-bottom:6px}
-  .itin-day-header{background:white;padding:11px 16px;display:flex;align-items:center;justify-content:space-between}
+  .itin-day-header{background:white;padding:11px 16px;display:flex;align-items:center;justify-content:space-between; border-bottom:1px solid var(--border);}
   .itin-day-header h4{font-size:13px;font-weight:700;color:var(--dark);display:flex;align-items:center;gap:8px}
   .day-num{width:22px;height:22px;border-radius:50%;background:var(--primary);color:white;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
   .itin-day-sub{font-size:11px;color:var(--text-muted)}
-  .act-item{display:flex;gap:10px;padding:12px 16px;background:white;margin-bottom:1px; cursor:pointer; transition:background .1s;}
+  .act-item{display:flex;gap:10px;padding:12px 16px;background:white;margin-bottom:1px; cursor:pointer; transition:background .1s; position:relative;}
   .act-item:hover{background:#fafaf7;}
   .act-timeline{display:flex;flex-direction:column;align-items:center;padding-top:3px}
   .act-dot{width:10px;height:10px;border-radius:50%;background:var(--primary);flex-shrink:0;border:2px solid white;box-shadow:0 0 0 1.5px var(--primary)}
@@ -254,11 +264,9 @@
   .act-time{font-size:11px;color:var(--primary);font-weight:800;margin-bottom:3px;display:flex;align-items:center;gap:6px}
   .badge-free{background:var(--secondary-light);color:var(--secondary);font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
   .badge-price{background:var(--accent-light);color:var(--accent);font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
-  .act-name{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:3px}
+  .act-name{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:3px; padding-right:25px;}
   .act-desc{font-size:11px;color:#666;line-height:1.4}
   .act-transit{font-size:11px;color:#999;margin-top:6px;font-weight:600;display:flex;align-items:center;gap:5px; background:#f9f8f5; padding:4px 8px; border-radius:6px; width:fit-content;}
-  .day-total{text-align:right;padding:9px 16px;font-size:12px;color:var(--text-muted);background:white;border-top:1px solid #f0ede6}
-  .day-total strong{color:var(--dark);font-weight:800;font-size:13px}
 
   /* REGISTER / AUTH */
   .reg-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 60px)}
@@ -287,8 +295,6 @@
   .pw-wrap{position:relative}
   .pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text-muted);font-size:16px;background:none;border:none;padding:0}
   .btn-continue{width:100%;background:var(--primary);color:white;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;margin-top:1rem;font-family:'Outfit',sans-serif;transition:all .15s}
-  .btn-continue:hover{background:var(--primary-dark)}
-  .btn-continue:disabled{background:#ccc;cursor:not-allowed}
   .form-error{color:#e74c3c;font-size:12px;margin-top:4px;display:none}
   .form-error.show{display:block}
 
@@ -308,8 +314,7 @@
   .onboard-count{font-size:13px;color:var(--text-muted)}
   .btn-siguiente{background:#ccc;color:white;border:none;border-radius:10px;padding:10px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s}
   .btn-siguiente.on{background:var(--primary)}
-  .btn-siguiente.on:hover{background:var(--primary-dark)}
-  .btn-siguiente:disabled{background:#e2dfd6; color:#9ca3af; cursor:not-allowed;}
+  .btn-siguiente.on:hover:not(:disabled){background:var(--primary-dark)}
 
   /* MIS VIAJES empty */
   .empty-state{text-align:center;padding:5rem 2rem}
@@ -320,6 +325,37 @@
   ::-webkit-scrollbar{width:5px;height:5px}
   ::-webkit-scrollbar-track{background:transparent}
   ::-webkit-scrollbar-thumb{background:#ccc;border-radius:10px}
+
+  /* MEDIA QUERIES PARA CELULARES (MOBILE RESPONSIVE) */
+  @media (max-width: 768px) {
+    .nav-landing { padding: 0 1rem; }
+    .inner-nav { overflow-x: auto; padding: 0 1rem; }
+    .hero-content h1 { font-size: 2rem; }
+    .hero-btns { flex-direction: column; width: 100%; padding: 0 1rem;}
+    .btn-hero, .btn-hero-outline { width: 100%; }
+    
+    .dest-grid, .explore-grid { grid-template-columns: 1fr; }
+    .reg-wrap { grid-template-columns: 1fr; display: flex; flex-direction: column; }
+    .reg-left { padding: 2.5rem 1.5rem; }
+    .reg-right { padding: 2rem 1.5rem; }
+    
+    .dest-body, .itin-wrap { display: flex; flex-direction: column; height: auto; }
+    .dest-map, .itin-map { height: 40vh; width: 100%; flex-shrink: 0; }
+    .dest-list, .itin-side { flex: 1; height: auto; overflow: visible; }
+    
+    .filter-bar { flex-direction: column; align-items: stretch; }
+    .filter-count { text-align: left; margin-top: 5px; }
+    
+    .plan-page { padding: 1rem; }
+    .date-row { grid-template-columns: 1fr; }
+    .summary-row { grid-template-columns: 1fr 1fr; }
+    .summary-item:last-child { grid-column: span 2; }
+    
+    .welcome-banner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .user-chip { width: 100%; }
+    .itin-stats { grid-template-columns: repeat(3, 1fr); gap: 10px; flex-wrap: wrap;}
+    .interest-grid { grid-template-columns: repeat(2, 1fr); }
+  }
 </style>
 </head>
 <body>
@@ -394,18 +430,18 @@
         <p class="reg-sub">Crea tu cuenta y empieza a explorar el Perú.</p>
         <div class="reg-fg">
           <label class="reg-label">Nombre completo</label>
-          <input class="reg-input" id="r-name" placeholder="María García" type="text">
+          <input class="reg-input" id="r-name" placeholder="María García" type="text" oninput="checkAuthForms()">
           <div class="form-error" id="err-r-name">Ingresa tu nombre</div>
         </div>
         <div class="reg-fg">
           <label class="reg-label">Correo electrónico</label>
-          <input class="reg-input" id="r-email" placeholder="maria@ejemplo.com" type="email">
+          <input class="reg-input" id="r-email" placeholder="maria@ejemplo.com" type="email" oninput="checkAuthForms()">
           <div class="form-error" id="err-r-email">Ingresa un correo válido</div>
         </div>
         <div class="reg-fg">
           <label class="reg-label">Contraseña</label>
           <div class="pw-wrap">
-            <input class="reg-input" id="r-pw" placeholder="Mínimo 6 caracteres" type="password" style="padding-right:40px">
+            <input class="reg-input" id="r-pw" placeholder="Mínimo 6 caracteres" type="password" style="padding-right:40px" oninput="checkAuthForms()">
             <button class="pw-eye" onclick="togglePw('r-pw')">👁</button>
           </div>
           <div class="form-error" id="err-r-pw">La contraseña debe tener al menos 6 caracteres</div>
@@ -413,12 +449,12 @@
         <div class="reg-fg">
           <label class="reg-label">Confirmar Contraseña</label>
           <div class="pw-wrap">
-            <input class="reg-input" id="r-pw-confirm" placeholder="Repite tu contraseña" type="password" style="padding-right:40px">
+            <input class="reg-input" id="r-pw-confirm" placeholder="Repite tu contraseña" type="password" style="padding-right:40px" oninput="checkAuthForms()">
             <button class="pw-eye" onclick="togglePw('r-pw-confirm')">👁</button>
           </div>
           <div class="form-error" id="err-r-pw-confirm">Las contraseñas no coinciden</div>
         </div>
-        <button class="btn-continue" onclick="doRegister()">Continuar →</button>
+        <button class="btn-continue" id="btn-do-register" onclick="doRegister()" disabled>Continuar →</button>
       </div>
 
       <div id="form-login" style="display:none">
@@ -426,17 +462,17 @@
         <p class="reg-sub">Ingresa con tu cuenta para continuar.</p>
         <div class="reg-fg">
           <label class="reg-label">Correo electrónico</label>
-          <input class="reg-input" id="l-email" placeholder="maria@ejemplo.com" type="email">
+          <input class="reg-input" id="l-email" placeholder="maria@ejemplo.com" type="email" oninput="checkAuthForms()">
           <div class="form-error" id="err-l-email">Correo o contraseña incorrectos</div>
         </div>
         <div class="reg-fg">
           <label class="reg-label">Contraseña</label>
           <div class="pw-wrap">
-            <input class="reg-input" id="l-pw" placeholder="Tu contraseña" type="password" style="padding-right:40px">
+            <input class="reg-input" id="l-pw" placeholder="Tu contraseña" type="password" style="padding-right:40px" oninput="checkAuthForms()">
             <button class="pw-eye" onclick="togglePw('l-pw')">👁</button>
           </div>
         </div>
-        <button class="btn-continue" onclick="doLogin()">Ingresar →</button>
+        <button class="btn-continue" id="btn-do-login" onclick="doLogin()" disabled>Ingresar →</button>
       </div>
     </div>
   </div>
@@ -619,9 +655,9 @@
         <div class="form-label">📅 Fechas del viaje</div>
         <div class="date-row">
           <div><div class="date-label">Fecha de llegada</div><input type="date" class="form-input" id="plan-arrival" value="2026-06-15" onchange="updateDays()"></div>
-          <div><div class="date-label">Fecha de salida</div><input type="date" class="form-input" id="plan-depart" value="2026-06-15" readonly onchange="updateDays()"></div>
+          <div><div class="date-label">Fecha de salida</div><input type="date" class="form-input" id="plan-depart" value="2026-06-16" onchange="updateDays()"></div>
         </div>
-        <div class="day-count" id="day-count">1 día de viaje (Demo)</div>
+        <div class="day-count" id="day-count">2 días de viaje</div>
       </div>
       <div class="form-group">
         <div class="form-label">👥 Número de personas</div>
@@ -644,7 +680,7 @@
         </div>
       </div>
       <div class="form-group">
-        <div class="form-label">🚗 Tipo de movilidad principal (Puedes elegir varias)</div>
+        <div class="form-label">🚗 Tipo de movilidad principal</div>
         <div class="transport-grid">
           <div class="transport-opt active" onclick="selectTransport(this)"><span class="t-icon">🚌</span>Bus</div>
           <div class="transport-opt" onclick="selectTransport(this)"><span class="t-icon">🚗</span>Auto propio</div>
@@ -660,18 +696,18 @@
           <span id="rl-3">Intensivo</span>
         </div>
         <input type="range" min="1" max="3" value="2" id="rhythm-slider" oninput="updateRhythm()">
-        <div class="rhythm-sub"><span>4–5 act./día</span><span>5–7 act./día</span><span>8+ act./día</span></div>
+        <div class="rhythm-sub"><span>~1-2 act./día</span><span>~3 act./día</span><span>~4 act./día</span></div>
       </div>
       <div class="plan-summary">
         <div class="plan-summary-title">📋 RESUMEN DE TU VIAJE</div>
         <div class="summary-row">
-          <div class="summary-item"><div class="summary-lbl">DURACIÓN</div><div class="summary-val" id="sum-days">1 día</div></div>
+          <div class="summary-item"><div class="summary-lbl">DURACIÓN</div><div class="summary-val" id="sum-days">2 días</div></div>
           <div class="summary-item"><div class="summary-lbl">PERSONAS</div><div class="summary-val" id="sum-people">2</div></div>
-          <div class="summary-item"><div class="summary-lbl">TOTAL EST.</div><div class="summary-val" id="sum-budget">S/ 300</div></div>
+          <div class="summary-item"><div class="summary-lbl">TOTAL EST.</div><div class="summary-val" id="sum-budget">S/ 600</div></div>
           <div class="summary-item" style="grid-column: span 2;"><div class="summary-lbl">RITMO</div><div class="summary-val" id="sum-rhythm">Moderado</div></div>
         </div>
       </div>
-      <button class="btn-generate" onclick="generateItinerary()">✨ Generar mi itinerario ✨</button>
+      <button class="btn-generate" id="btn-do-generate" onclick="generateItinerary()">✨ Generar mi itinerario ✨</button>
     </div>
   </div>
 </div>
@@ -680,24 +716,22 @@
   <nav class="inner-nav">
     <div class="logo" style="color:var(--dark)" onclick="go('dashboard')"><img src="img/logo.png" alt="WayTrip" class="inner-nav logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="height:26px;"><div class="logo-icon" style="display:none; width:26px; height:26px; font-size:13px;">🧭</div>WayTrip</div>
     <div style="flex:1;text-align:center">
-      <div id="itin-title" style="font-size:14px;font-weight:700;color:var(--dark)">✈️ Cusco · 1 día  ·  <span style="font-weight:400;color:var(--text-muted)">15 Jun – 15 Jun</span></div>
-      <div id="itin-subtitle" style="font-size:11px;color:var(--text-muted)">S/ 385 presupuesto · 2 personas</div>
+      <div id="itin-title" style="font-size:14px;font-weight:700;color:var(--dark); display:none;">✈️ Destino</div>
     </div>
-    <button class="btn btn-ghost" style="font-size:12px;padding:6px 14px" onclick="go('plan')">✏️ Editar</button>
   </nav>
   <div class="itin-wrap">
     <div class="itin-map" id="mapa-itinerario-contenedor"></div>
     
     <div class="itin-side">
       <div class="itin-header">
-        <div class="itin-header-top"><h3 id="itin-header-title">✈️ Cusco · 1 día</h3></div>
+        <div class="itin-header-top"><h3 id="itin-header-title">✈️ Cusco</h3></div>
         <div class="itin-stats">
-          <div class="itin-stat"><div class="itin-stat-lbl">Días</div><div class="itin-stat-val" id="itin-stat-days">1</div></div>
-          <div class="itin-stat"><div class="itin-stat-lbl">Presupuesto</div><div class="itin-stat-val" id="itin-stat-budget">S/ 385</div></div>
-          <div class="itin-stat"><div class="itin-stat-lbl">Ritmo</div><div class="itin-stat-val" id="itin-stat-rhythm">Moderado</div></div>
+          <div class="itin-stat"><div class="itin-stat-lbl">Días</div><div class="itin-stat-val" id="itin-stat-days">-</div></div>
+          <div class="itin-stat"><div class="itin-stat-lbl">Presupuesto</div><div class="itin-stat-val" id="itin-stat-budget">-</div></div>
+          <div class="itin-stat"><div class="itin-stat-lbl">Ritmo</div><div class="itin-stat-val" id="itin-stat-rhythm">-</div></div>
         </div>
       </div>
-      <div class="itin-body">
+      <div class="itin-body" id="itin-body-content">
         </div>
     </div>
   </div>
@@ -720,7 +754,7 @@
     
     <div style="display:flex; gap:10px;">
       <button class="btn btn-ghost" style="flex:1; justify-content:center;" onclick="closeProfileModal()">Cancelar</button>
-      <button class="btn btn-primary" style="flex:1; justify-content:center;" onclick="saveProfile()">Guardar</button>
+      <button class="btn btn-primary" id="btn-save-profile" style="flex:1; justify-content:center;" onclick="saveProfile()">Guardar</button>
     </div>
 
     <hr style="border:0; border-top:1px solid var(--border); margin: 1.5rem 0;">
@@ -752,7 +786,7 @@
 
 // Importaciones de Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, EmailAuthProvider, reauthenticateWithCredential, updatePassword, deleteUser } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, EmailAuthProvider, reauthenticateWithCredential, updatePassword, deleteUser, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -765,7 +799,6 @@ const firebaseConfig = {
   measurementId: "G-5RG15J9YGX"
 };
 
-// Inicializamos Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -785,8 +818,12 @@ const DESTINATIONS = [
 ];
 
 let PLACES = {};
-let currentRenderedPlaces = [];
-let currentItinPlaces = [];
+let currentRenderedPlaces = []; 
+
+// Globales Itinerario
+let activeTrip = null; 
+let itinMapInstance = null;
+let planDays = 2; // Default
 
 function cargarLugares() {
   fetch('data/lugares.csv')
@@ -801,11 +838,11 @@ function cargarLugares() {
         complete: function(results) {
           results.data.forEach(fila => {
             let idDestino = fila.destino_id;
+            if(!idDestino) return; 
             if(!PLACES[idDestino]) PLACES[idDestino] = [];
-            
             PLACES[idDestino].push({
               name: fila.name,
-              type: fila.type,
+              type: fila.type || "",
               desc: fila.desc,
               more_info: fila.more_info || "",
               price: fila.price,
@@ -819,10 +856,7 @@ function cargarLugares() {
         }
       });
     })
-    .catch(error => {
-      console.error("Error al cargar CSV:", error);
-      fillRegChips(); 
-    });
+    .catch(error => { console.error("Error al cargar CSV:", error); fillRegChips(); });
 }
 
 function fillRegChips() {
@@ -834,21 +868,66 @@ function fillRegChips() {
 }
 
 // ═══════════════════════════════════════════
-//  MODAL DE LUGAR DETALLADO
+//  UTILIDADES DE UI (SPINNERS Y VALIDACIÓN)
+// ═══════════════════════════════════════════
+function setBtnLoading(btnId, isLoading, textContent) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    if (isLoading) {
+        btn.disabled = true;
+        btn.dataset.originalText = btn.innerHTML;
+        btn.innerHTML = `<span class="spinner"></span> ${textContent}`;
+    } else {
+        btn.disabled = false;
+        btn.innerHTML = btn.dataset.originalText || textContent;
+        if(btnId === 'btn-do-register' || btnId === 'btn-do-login') checkAuthForms(); // Revaluar bloqueo al terminar
+    }
+}
+
+function checkAuthForms() {
+    // Validar Registro
+    const rName = document.getElementById('r-name').value.trim();
+    const rEmail = document.getElementById('r-email').value.trim();
+    const rPw = document.getElementById('r-pw').value;
+    const rPwC = document.getElementById('r-pw-confirm').value;
+    const btnReg = document.getElementById('btn-do-register');
+    
+    // Solo se habilita si hay texto y contraseñas coinciden y miden >= 6
+    if (rName && rEmail && rPw.length >= 6 && rPw === rPwC) {
+        btnReg.disabled = false;
+    } else {
+        btnReg.disabled = true;
+    }
+
+    // Validar Login
+    const lEmail = document.getElementById('l-email').value.trim();
+    const lPw = document.getElementById('l-pw').value;
+    const btnLog = document.getElementById('btn-do-login');
+    
+    if (lEmail && lPw.length >= 6) {
+        btnLog.disabled = false;
+    } else {
+        btnLog.disabled = true;
+    }
+}
+
+// ═══════════════════════════════════════════
+//  MODAL DE LUGAR
 // ═══════════════════════════════════════════
 function openPlaceModal(index) {
   const p = currentRenderedPlaces[index];
   if(p) fillAndShowPlaceModal(p);
 }
 
-function openItinPlaceModal(index) {
-  const p = currentItinPlaces[index];
+function openItinPlaceModal(dayIndex, actIndex) {
+  if(!activeTrip || !activeTrip.dailyPlan || !activeTrip.dailyPlan[dayIndex]) return;
+  const p = activeTrip.dailyPlan[dayIndex][actIndex];
   if(p) fillAndShowPlaceModal(p);
 }
 
 function fillAndShowPlaceModal(p) {
   document.getElementById('pm-img').style.backgroundImage = `url('${p.img}')`;
-  document.getElementById('pm-type').textContent = p.type;
+  document.getElementById('pm-type').textContent = p.type || 'Destino';
   document.getElementById('pm-title').textContent = p.name;
   document.getElementById('pm-desc').textContent = p.desc;
   
@@ -874,61 +953,58 @@ function closePlaceModal() {
 // ═══════════════════════════════════════════
 let currentUser = null;  
 
+// Mantener sesión viva incluso al recargar F5
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        try {
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if (userDoc.exists()) {
+                currentUser = userDoc.data();
+            } else {
+                currentUser = { name: "Viajero", email: user.email, interests: [], trips: [], avatar: null };
+            }
+            syncAvatars();
+            
+            // Si carga la pagina y está logueado, llevarlo al dashboard
+            const currentScreen = document.querySelector('.screen.active')?.id;
+            if (currentScreen === 'screen-home' || currentScreen === 'screen-register') {
+                if (currentUser.interests && currentUser.interests.length > 0) {
+                    loadDashboard();
+                    go('dashboard');
+                } else {
+                    go('onboard');
+                }
+            }
+        } catch (e) {
+            console.error("Error cargando perfil:", e);
+        }
+    } else {
+        currentUser = null;
+    }
+});
+
 async function doRegister() {
   const name  = document.getElementById('r-name').value.trim();
   const email = document.getElementById('r-email').value.trim().toLowerCase();
   const pw    = document.getElementById('r-pw').value;
-  const pwConfirm = document.getElementById('r-pw-confirm').value; // Nueva validación
-  let ok = true;
+  
+  // Limpiar errores visuales previos
+  ['err-r-name','err-r-email','err-r-pw','err-r-pw-confirm'].forEach(id => document.getElementById(id).classList.remove('show'));
+  ['r-name','r-email','r-pw','r-pw-confirm'].forEach(id => document.getElementById(id).classList.remove('error'));
 
-  document.getElementById('err-r-name').classList.remove('show');
-  document.getElementById('err-r-email').classList.remove('show');
-  document.getElementById('err-r-pw').classList.remove('show');
-  document.getElementById('err-r-pw-confirm').classList.remove('show');
-  document.getElementById('r-name').classList.remove('error');
-  document.getElementById('r-email').classList.remove('error');
-  document.getElementById('r-pw').classList.remove('error');
-  document.getElementById('r-pw-confirm').classList.remove('error');
-
-  if (!name) {
-    document.getElementById('err-r-name').classList.add('show');
-    document.getElementById('r-name').classList.add('error');
-    ok = false;
-  }
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    document.getElementById('err-r-email').textContent = 'Ingresa un correo válido';
-    document.getElementById('err-r-email').classList.add('show');
-    document.getElementById('r-email').classList.add('error');
-    ok = false;
-  }
-  if (pw.length < 6) {
-    document.getElementById('err-r-pw').classList.add('show');
-    document.getElementById('r-pw').classList.add('error');
-    ok = false;
-  }
-  if (pw !== pwConfirm) {
-    document.getElementById('err-r-pw-confirm').classList.add('show');
-    document.getElementById('r-pw-confirm').classList.add('error');
-    ok = false;
-  }
-
-  if (!ok) return;
+  setBtnLoading('btn-do-register', true, 'Creando cuenta...');
 
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, pw);
-    const user = userCredential.user;
-
     currentUser = { name, email, interests: [], trips: [], avatar: null };
-
-    // Guardar en Firestore
-    await setDoc(doc(db, "users", user.uid), currentUser);
-    
+    await setDoc(doc(db, "users", userCredential.user.uid), currentUser);
     go('onboard');
   } catch (error) {
-    console.error(error);
     document.getElementById('err-r-email').textContent = 'Ese correo ya está registrado o hubo un error.';
     document.getElementById('err-r-email').classList.add('show');
     document.getElementById('r-email').classList.add('error');
+  } finally {
+    setBtnLoading('btn-do-register', false, 'Continuar →');
   }
 }
 
@@ -937,25 +1013,23 @@ async function doLogin() {
   const pw    = document.getElementById('l-pw').value;
   document.getElementById('err-l-email').classList.remove('show');
 
+  setBtnLoading('btn-do-login', true, 'Iniciando sesión...');
+
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, pw);
-    const userId = userCredential.user.uid;
-
-    const userDoc = await getDoc(doc(db, "users", userId));
-    if (userDoc.exists()) {
-       currentUser = userDoc.data();
-    } else {
-       currentUser = { name: "Viajero", email, interests: [], trips: [], avatar: null };
-    }
+    const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+    if (userDoc.exists()) currentUser = userDoc.data();
+    else currentUser = { name: "Viajero", email, interests: [], trips: [], avatar: null };
     
     loadDashboard();
     go('dashboard');
   } catch (error) {
-    console.error(error);
     document.getElementById('err-l-email').textContent = 'Correo o contraseña incorrectos';
     document.getElementById('err-l-email').classList.add('show');
     document.getElementById('l-email').classList.add('error');
     document.getElementById('l-pw').classList.add('error');
+  } finally {
+    setBtnLoading('btn-do-login', false, 'Ingresar →');
   }
 }
 
@@ -968,19 +1042,19 @@ async function logout() {
 
 async function finishOnboard() {
   if (!currentUser) return;
-  const selected = [...document.querySelectorAll('.interest-item.sel')].map(el =>
-    el.querySelector('.interest-name').textContent
-  );
+  const selected = [...document.querySelectorAll('.interest-item.sel')].map(el => el.querySelector('.interest-name').textContent);
   if(selected.length === 0) return;
 
-  currentUser.interests = selected;
-  
-  if (auth.currentUser) {
-    await updateDoc(doc(db, "users", auth.currentUser.uid), { interests: selected });
-  }
+  setBtnLoading('btn-sig', true, 'Guardando...');
 
-  loadDashboard();
-  go('dashboard');
+  try {
+      currentUser.interests = selected;
+      if (auth.currentUser) await updateDoc(doc(db, "users", auth.currentUser.uid), { interests: selected });
+      loadDashboard();
+      go('dashboard');
+  } finally {
+      setBtnLoading('btn-sig', false, 'Siguiente ›');
+  }
 }
 
 function requireAuth() {
@@ -989,7 +1063,7 @@ function requireAuth() {
 }
 
 // ═══════════════════════════════════════════
-//  PROFILE MODAL LOGIC & SECURITY
+//  PROFILE MODAL & SECURITY
 // ═══════════════════════════════════════════
 let tempAvatarBase64 = null;
 let currentSecurityAction = null;
@@ -999,55 +1073,41 @@ function openProfileModal() {
   tempAvatarBase64 = currentUser.avatar || null;
   document.getElementById('modal-name-input').value = currentUser.name;
   updateModalAvatarPreview();
-  hideSecurityForm(); // resetear form de seguridad
+  hideSecurityForm();
   document.getElementById('profile-modal').style.display = 'flex';
 }
-
-function closeProfileModal() {
-  document.getElementById('profile-modal').style.display = 'none';
-}
-
+function closeProfileModal() { document.getElementById('profile-modal').style.display = 'none'; }
 function handleAvatarUpload(e) {
   const file = e.target.files[0];
   if(!file) return;
   const reader = new FileReader();
-  reader.onload = function(event) {
-    tempAvatarBase64 = event.target.result; 
-    updateModalAvatarPreview();
-  };
+  reader.onload = function(event) { tempAvatarBase64 = event.target.result; updateModalAvatarPreview(); };
   reader.readAsDataURL(file);
 }
-
 function updateModalAvatarPreview() {
   const prev = document.getElementById('modal-avatar-preview');
   if(tempAvatarBase64) {
     prev.style.backgroundImage = `url('${tempAvatarBase64}')`;
-    prev.style.backgroundSize = 'cover';
-    prev.style.backgroundPosition = 'center';
-    prev.textContent = '';
+    prev.style.backgroundSize = 'cover'; prev.style.backgroundPosition = 'center'; prev.textContent = '';
   } else {
-    prev.style.backgroundImage = 'none';
-    prev.textContent = currentUser.name.charAt(0).toUpperCase();
+    prev.style.backgroundImage = 'none'; prev.textContent = currentUser.name.charAt(0).toUpperCase();
   }
 }
-
 async function saveProfile() {
-  const newName = document.getElementById('modal-name-input').value.trim();
-  if(newName) { currentUser.name = newName; }
-  currentUser.avatar = tempAvatarBase64;
-  
-  if (auth.currentUser) {
-    await updateDoc(doc(db, "users", auth.currentUser.uid), {
-       name: currentUser.name,
-       avatar: currentUser.avatar
-    });
-  }
-  
-  closeProfileModal();
-  syncAvatars();
-  loadDashboard(); 
-}
+  setBtnLoading('btn-save-profile', true, 'Guardando...');
 
+  try {
+      const newName = document.getElementById('modal-name-input').value.trim();
+      if(newName) currentUser.name = newName;
+      currentUser.avatar = tempAvatarBase64;
+      if (auth.currentUser) await updateDoc(doc(db, "users", auth.currentUser.uid), { name: currentUser.name, avatar: currentUser.avatar });
+      closeProfileModal();
+      syncAvatars();
+      loadDashboard(); 
+  } finally {
+      setBtnLoading('btn-save-profile', false, 'Guardar');
+  }
+}
 function showSecurityForm(action) {
     currentSecurityAction = action;
     document.getElementById('sec-buttons').style.display = 'none';
@@ -1070,75 +1130,51 @@ function showSecurityForm(action) {
         document.getElementById('btn-sec-confirm').textContent = 'Eliminar';
     }
 }
-
 function hideSecurityForm() {
     document.getElementById('sec-buttons').style.display = 'flex';
     document.getElementById('sec-form').style.display = 'none';
     currentSecurityAction = null;
 }
-
 async function executeSecurityAction() {
     const currentPw = document.getElementById('sec-current-pw').value;
     const errEl = document.getElementById('err-sec');
     errEl.classList.remove('show');
-
-    if (!currentPw) {
-        errEl.textContent = 'Ingresa tu contraseña actual';
-        errEl.classList.add('show');
-        return;
-    }
+    if (!currentPw) { errEl.textContent = 'Ingresa tu contraseña actual'; errEl.classList.add('show'); return; }
 
     const user = auth.currentUser;
     if (!user) return;
 
+    setBtnLoading('btn-sec-confirm', true, 'Procesando...');
+
     try {
-        // 1. Re-autenticación con Firebase
         const credential = EmailAuthProvider.credential(user.email, currentPw);
         await reauthenticateWithCredential(user, credential);
 
         if (currentSecurityAction === 'password') {
-            // 2. Cambiar contraseña
             const newPw = document.getElementById('sec-new-pw').value;
-            if (newPw.length < 6) {
-                errEl.textContent = 'La nueva contraseña debe tener mínimo 6 caracteres';
-                errEl.classList.add('show');
-                return;
-            }
+            if (newPw.length < 6) { errEl.textContent = 'La nueva contraseña debe tener mínimo 6 caracteres'; errEl.classList.add('show'); return; }
             await updatePassword(user, newPw);
             alert("¡Tu contraseña ha sido actualizada con éxito!");
             hideSecurityForm();
-
         } else if (currentSecurityAction === 'delete') {
-            // 2. Eliminar cuenta permanentemente
-            // Paso A: Borrar datos de Firestore
             await deleteDoc(doc(db, "users", user.uid));
-            // Paso B: Borrar cuenta de Auth
             await deleteUser(user);
-            
             alert("Tu cuenta y todos tus datos han sido eliminados. ¡Hasta pronto!");
-            currentUser = null;
-            closeProfileModal();
-            go('home');
+            currentUser = null; closeProfileModal(); go('home');
         }
     } catch (error) {
-        console.error(error);
-        errEl.textContent = 'Error: verifica que tu contraseña actual sea correcta.';
-        errEl.classList.add('show');
+        errEl.textContent = 'Error: verifica que tu contraseña actual sea correcta.'; errEl.classList.add('show');
+    } finally {
+        setBtnLoading('btn-sec-confirm', false, currentSecurityAction === 'password' ? 'Actualizar' : 'Eliminar');
     }
 }
-
 
 // ═══════════════════════════════════════════
 //  NAVIGATION & UI
 // ═══════════════════════════════════════════
-let currentDest = 'cusco';
-
 function go(id) {
   const protected_ = ['dashboard','mis-viajes','explore','dest','plan','itinerary'];
-  if (protected_.includes(id) && !currentUser) {
-    go('register');
-    return;
-  }
+  if (protected_.includes(id) && !currentUser) { go('register'); return; }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + id).classList.add('active');
   window.scrollTo(0, 0);
@@ -1158,13 +1194,9 @@ function syncAvatars() {
     if (el) { 
       el.title = currentUser.name; 
       if (currentUser.avatar) {
-        el.style.backgroundImage = `url('${currentUser.avatar}')`;
-        el.style.backgroundSize = 'cover';
-        el.style.backgroundPosition = 'center';
-        el.textContent = '';
+        el.style.backgroundImage = `url('${currentUser.avatar}')`; el.style.backgroundSize = 'cover'; el.style.backgroundPosition = 'center'; el.textContent = '';
       } else {
-        el.style.backgroundImage = 'none';
-        el.textContent = initial; 
+        el.style.backgroundImage = 'none'; el.textContent = initial; 
       }
     }
   });
@@ -1178,15 +1210,10 @@ function loadDashboard() {
 
   const chipAvatar = document.getElementById('dash-chip-avatar');
   if (currentUser.avatar) {
-    chipAvatar.style.backgroundImage = `url('${currentUser.avatar}')`;
-    chipAvatar.style.backgroundSize = 'cover';
-    chipAvatar.style.backgroundPosition = 'center';
-    chipAvatar.textContent = '';
+    chipAvatar.style.backgroundImage = `url('${currentUser.avatar}')`; chipAvatar.style.backgroundSize = 'cover'; chipAvatar.style.backgroundPosition = 'center'; chipAvatar.textContent = '';
   } else {
-    chipAvatar.style.backgroundImage = 'none';
-    chipAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+    chipAvatar.style.backgroundImage = 'none'; chipAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
   }
-
   const badge = currentUser.interests && currentUser.interests.length > 0 ? currentUser.interests[0] : 'Explorador';
   document.getElementById('dash-interest-badge').textContent = '🧭 ' + badge;
 
@@ -1207,9 +1234,9 @@ function loadDashboard() {
 }
 
 function applyFilters() {
-  const search    = (document.getElementById('search-input')?.value || '').toLowerCase();
-  const cat       = document.getElementById('filter-category')?.value || '';
-  const region    = document.getElementById('filter-region')?.value || '';
+  const search = (document.getElementById('search-input')?.value || '').toLowerCase();
+  const cat = document.getElementById('filter-category')?.value || '';
+  const region = document.getElementById('filter-region')?.value || '';
   const minRating = parseFloat(document.getElementById('filter-rating')?.value || '0');
 
   const filtered = DESTINATIONS.filter(d => {
@@ -1222,14 +1249,10 @@ function applyFilters() {
 
   const n = filtered.length;
   document.getElementById('filter-count').textContent = `${n} departamento${n!==1?'s':''} encontrado${n!==1?'s':''}`;
-  document.getElementById('explore-subtitle').textContent =
-    `${n} departamento${n!==1?'s':''} con lugares cuidadosamente seleccionados`;
+  document.getElementById('explore-subtitle').textContent = `${n} departamento${n!==1?'s':''} con lugares cuidadosamente seleccionados`;
 
   const grid = document.getElementById('explore-grid');
-  if (n === 0) {
-    grid.innerHTML = `<div class="no-results">No se encontraron destinos con esos filtros.<br><span style="font-size:2rem;display:block;margin-top:8px">🔍</span></div>`;
-    return;
-  }
+  if (n === 0) { grid.innerHTML = `<div class="no-results">No se encontraron destinos con esos filtros.<br><span style="font-size:2rem;display:block;margin-top:8px">🔍</span></div>`; return; }
   grid.innerHTML = filtered.map(d => `
     <div class="exp-card" onclick="openDest('${d.id}')">
       <div class="exp-card-img" style="background-image: url('${d.img}');">
@@ -1250,32 +1273,40 @@ function applyFilters() {
 }
 
 function openDest(id) {
-  if (!requireAuth()) return;
-  currentDest = id;
-  const d = DESTINATIONS.find(x => x.id === id);
-  if (!d) return;
+  try {
+      if (!requireAuth()) return;
+      currentDest = id;
+      const d = DESTINATIONS.find(x => x.id === id);
+      if (!d) return;
 
-  document.getElementById('dest-banner').style.backgroundImage = `url('${d.img}')`;
-  document.getElementById('dest-title').textContent = d.name;
-  document.getElementById('dest-subtitle-txt').textContent = d.subtitle;
-  document.getElementById('dest-rating').textContent = '⭐ ' + d.rating;
-  const places = PLACES[id] || [];
-  document.getElementById('dest-places-count').textContent = places.length;
-  document.getElementById('dest-tags').innerHTML = d.tags.map(t=>`<span class="dest-hero-tag">${capitalize(t)}</span>`).join('');
-  
-  document.getElementById('plan-dest-title').textContent = d.name;
+      document.getElementById('dest-banner').style.backgroundImage = `url('${d.img}')`;
+      document.getElementById('dest-title').textContent = d.name;
+      document.getElementById('dest-subtitle-txt').textContent = d.subtitle;
+      document.getElementById('dest-rating').textContent = '⭐ ' + d.rating;
+      
+      const places = PLACES[id] || [];
+      document.getElementById('dest-places-count').textContent = places.length;
+      document.getElementById('dest-tags').innerHTML = d.tags.map(t=>`<span class="dest-hero-tag">${capitalize(t)}</span>`).join('');
+      document.getElementById('plan-dest-title').textContent = d.name;
 
-  const catMap = {'🍽️':'Restaurantes','🛒':'Mercados','🏯':'Arqueológico','🎨':'Arte','🏔️':'Naturaleza','🌅':'Naturaleza','🌞':'Templos','⛪':'Iglesias','💧':'Lagos','🏛️':'Histórico','🌟':'Destacado','🛍️':'Compras','🏺':'Museos','⛰️':'Montañas','🌾':'Islas','🧵':'Cultura','🚣':'Aventura','🏄':'Playas','🏂':'Aventura','✈️':'Arqueológico','🍷':'Gastronomía','🦭':'Fauna','🐧':'Fauna','🐬':'Fauna','🏙️':'Ciudades','🌿':'Naturaleza','🌊':'Lagos'};
-  const uniqCats = [...new Set(places.map(p=>(catMap[p.type.split(' ')[0]]||'Otros')))];
-  const tabsEl = document.getElementById('dest-tabs');
-  tabsEl.innerHTML = `<span class="dest-tab active" onclick="filterDestTab('all',this)">Todos</span>`;
-  uniqCats.slice(0,5).forEach(cat => {
-    tabsEl.innerHTML += `<span class="dest-tab" onclick="filterDestTab('${cat}',this)">${cat}</span>`;
-  });
-  renderDestMap(id);
-  renderDestPlaces(places);
-  document.getElementById('dest-list-header').textContent = `Todos los lugares (${places.length})`;
-  go('dest');
+      const catMap = {'🍽️':'Restaurantes','🛒':'Mercados','🏯':'Arqueológico','🎨':'Arte','🏔️':'Naturaleza','🌅':'Naturaleza','🌞':'Templos','⛪':'Iglesias','💧':'Lagos','🏛️':'Histórico','🌟':'Destacado','🛍️':'Compras','🏺':'Museos','⛰️':'Montañas','🌾':'Islas','🧵':'Cultura','🚣':'Aventura','🏄':'Playas','🏂':'Aventura','✈️':'Arqueológico','🍷':'Gastronomía','🦭':'Fauna','🐧':'Fauna','🐬':'Fauna','🏙️':'Ciudades','🌿':'Naturaleza','🌊':'Lagos'};
+      
+      const uniqCats = [...new Set(places.map(p => {
+          let t = String(p.type || '').split(' ')[0];
+          return catMap[t] || 'Otros';
+      }))];
+      
+      const tabsEl = document.getElementById('dest-tabs');
+      tabsEl.innerHTML = `<span class="dest-tab active" onclick="filterDestTab('all',this)">Todos</span>`;
+      uniqCats.slice(0,5).forEach(cat => { tabsEl.innerHTML += `<span class="dest-tab" onclick="filterDestTab('${cat}',this)">${cat}</span>`; });
+      
+      renderDestMap(id);
+      renderDestPlaces(places);
+      document.getElementById('dest-list-header').textContent = `Todos los lugares (${places.length})`;
+      go('dest');
+  } catch (err) {
+      console.error("Error al abrir destino:", err);
+  }
 }
 
 function filterDestTab(cat, el) {
@@ -1283,7 +1314,7 @@ function filterDestTab(cat, el) {
   el.classList.add('active');
   const catMap = {'🍽️':'Restaurantes','🛒':'Mercados','🏯':'Arqueológico','🎨':'Arte','🏔️':'Naturaleza','🌅':'Naturaleza','🌞':'Templos','⛪':'Iglesias','💧':'Lagos','🏛️':'Histórico','🌟':'Destacado','🛍️':'Compras','🏺':'Museos','⛰️':'Montañas','🌾':'Islas','🧵':'Cultura','🚣':'Aventura','🏄':'Playas','🏂':'Aventura','✈️':'Arqueológico','🍷':'Gastronomía','🦭':'Fauna','🐧':'Fauna','🐬':'Fauna','🏙️':'Ciudades','🌿':'Naturaleza','🌊':'Lagos'};
   const places = PLACES[currentDest] || [];
-  const filtered = cat==='all' ? places : places.filter(p=>(catMap[p.type.split(' ')[0]]||'Otros')===cat);
+  const filtered = cat==='all' ? places : places.filter(p=>(catMap[(p.type || '').split(' ')[0]]||'Otros')===cat);
   renderDestPlaces(filtered);
   document.getElementById('dest-list-header').textContent = `${cat==='all'?'Todos los':cat} lugares (${filtered.length})`;
 }
@@ -1293,11 +1324,11 @@ function renderDestPlaces(places) {
   document.getElementById('dest-places-list').innerHTML = places.map((p, i)=>`
     <div class="place-item" onclick="openPlaceModal(${i})">
       <div class="place-thumb" style="background-image: url('${p.img}')">
-        <div class="place-thumb-icon">${p.type.split(' ')[0]}</div>
+        <div class="place-thumb-icon">${(p.type || '').split(' ')[0] || '📍'}</div>
       </div>
       <div class="place-info">
         <div class="place-name">${p.name}</div>
-        <div class="place-type">${p.type}</div>
+        <div class="place-type">${p.type || 'Lugar'}</div>
         <div class="place-desc">${p.desc}</div>
       </div>
       <span class="place-price ${p.free?'free':''}">${p.price}</span>
@@ -1308,10 +1339,7 @@ function renderDestPlaces(places) {
 function renderDestMap(id) {
   const container = document.getElementById('dest-map-container');
   const destName = DESTINATIONS.find(x=>x.id===id)?.name || '';
-  container.innerHTML = `
-    <iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" 
-      src="https://maps.google.com/maps?q=${encodeURIComponent(destName + ', Peru')}&t=&z=13&ie=UTF8&iwloc=&output=embed">
-    </iframe>`;
+  container.innerHTML = `<iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?q=${encodeURIComponent(destName + ', Peru')}&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>`;
 }
 
 function switchRegTab(tab) {
@@ -1319,33 +1347,35 @@ function switchRegTab(tab) {
   document.getElementById('tab-login').classList.toggle('active', tab==='login');
   document.getElementById('form-register').style.display = tab==='register' ? '' : 'none';
   document.getElementById('form-login').style.display    = tab==='login'    ? '' : 'none';
+  checkAuthForms(); // Refrescar botones al cambiar tab
 }
 
 function togglePw(id) {
-  const el = document.getElementById(id);
-  el.type = el.type==='password' ? 'text' : 'password';
+  const el = document.getElementById(id); el.type = el.type==='password' ? 'text' : 'password';
 }
 
 function toggleInterest(el) {
   el.classList.toggle('sel');
   const n = document.querySelectorAll('.interest-item.sel').length;
   document.getElementById('icount').textContent = n + ' seleccionado' + (n!==1?'s':'');
-  
   const btnSig = document.getElementById('btn-sig');
   btnSig.classList.toggle('on', n>0);
   btnSig.disabled = n === 0;
 }
 
 // ═══════════════════════════════════════════
-//  PLAN & MIS VIAJES
+//  PLAN & MIS VIAJES INTELIGENTE
 // ═══════════════════════════════════════════
-let planPeople = 2;
-
 function updateDays() {
-  const arrivalInput = document.getElementById('plan-arrival');
-  const departInput = document.getElementById('plan-depart');
-  departInput.value = arrivalInput.value;
-  document.getElementById('day-count').textContent = '1 día de viaje (Demo)';
+  const arrDate = new Date(document.getElementById('plan-arrival').value);
+  const depInput = document.getElementById('plan-depart');
+  const depDate = new Date(depInput.value);
+  
+  if(depDate < arrDate) { depInput.value = document.getElementById('plan-arrival').value; }
+  
+  const diffTime = Math.abs(new Date(depInput.value) - new Date(document.getElementById('plan-arrival').value));
+  planDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  document.getElementById('day-count').textContent = planDays + (planDays===1?' día de viaje':' días de viaje');
   updateSummary();
 }
 
@@ -1365,11 +1395,10 @@ function setBudget(val, el) {
 }
 
 function updateSummary() {
-  const days = 1; 
   const budgetPP = parseInt(document.getElementById('budget-val').value) || 0;
-  const total = budgetPP * planPeople * days;
+  const total = budgetPP * planPeople * planDays;
   document.getElementById('sum-budget').textContent = 'S/ ' + total;
-  document.getElementById('sum-days').textContent = '1 día';
+  document.getElementById('sum-days').textContent = planDays + (planDays===1?' día':' días');
 }
 
 function selectTransport(el) { el.classList.toggle('active'); }
@@ -1384,38 +1413,98 @@ function updateRhythm() {
   document.getElementById('sum-rhythm').textContent = names[v];
 }
 
+// Algoritmo de "Vecino más cercano"
+function optimizeDayRoute(placesArray) {
+    if (placesArray.length <= 1) return placesArray;
+    let maxDist = -1; let startIdx = 0;
+    for (let i=0; i<placesArray.length; i++) {
+        for (let j=i+1; j<placesArray.length; j++) {
+            let d = getDistance(placesArray[i].lat, placesArray[i].lng, placesArray[j].lat, placesArray[j].lng);
+            if (d > maxDist) { maxDist = d; startIdx = i; }
+        }
+    }
+    let unvisited = [...placesArray];
+    let current = unvisited.splice(startIdx, 1)[0];
+    let sortedPlaces = [current];
+    while (unvisited.length > 0) {
+        let minDist = Infinity; let nearestIdx = -1;
+        for (let i=0; i<unvisited.length; i++) {
+            let d = getDistance(current.lat, current.lng, unvisited[i].lat, unvisited[i].lng);
+            if (d < minDist) { minDist = d; nearestIdx = i; }
+        }
+        current = unvisited.splice(nearestIdx, 1)[0];
+        sortedPlaces.push(current);
+    }
+    return sortedPlaces;
+}
+
 async function generateItinerary() {
   if (!currentUser) return;
-  const days = 1; 
-  const budgetPP = parseInt(document.getElementById('budget-val').value) || 0;
-  const totalBudget = budgetPP * planPeople * days;
-  const destObj = DESTINATIONS.find(x => x.id === currentDest) || DESTINATIONS[0];
-  const v = parseInt(document.getElementById('rhythm-slider').value);
-  const rhythms = ['','Relajado','Moderado','Intensivo'];
-  const arrivalVal = document.getElementById('plan-arrival').value;
 
-  const newTrip = {
-    id: Date.now(),
-    destId: destObj.id,
-    destName: destObj.name,
-    img: destObj.img,
-    days: days,
-    people: planPeople,
-    totalBudget: totalBudget,
-    rhythm: rhythms[v],
-    arrival: arrivalVal,
-    depart: arrivalVal
-  };
+  setBtnLoading('btn-do-generate', true, 'Generando viaje...');
 
-  if(!currentUser.trips) currentUser.trips = [];
-  currentUser.trips.push(newTrip);
-  
-  if (auth.currentUser) {
-    await updateDoc(doc(db, "users", auth.currentUser.uid), { trips: currentUser.trips });
+  try {
+      const budgetPP = parseInt(document.getElementById('budget-val').value) || 0;
+      const totalBudget = budgetPP * planPeople * planDays;
+      const destObj = DESTINATIONS.find(x => x.id === currentDest) || DESTINATIONS[0];
+      const v = parseInt(document.getElementById('rhythm-slider').value);
+      const rhythms = ['','Relajado','Moderado','Intensivo'];
+      
+      // La cantidad de destinos es baja, así que el ritmo debe adaptarse a eso.
+      // Relajado: 2 máx por día | Moderado: 3 máx por día | Intensivo: 4 máx por día.
+      let actsPerDay = (v === 1) ? 2 : (v === 2) ? 3 : 4;
+
+      const validPlaces = (PLACES[currentDest] || []).filter(p => !isNaN(p.lat) && !isNaN(p.lng));
+      let pool = [...validPlaces];
+      pool.sort(() => Math.random() - 0.5); // Mezclar para variar recomendaciones
+
+      // Calcular cuántos lugares vamos a usar en total para que no falten
+      let totalPlacesToUse = Math.min(pool.length, actsPerDay * planDays);
+      let selectedPlaces = pool.slice(0, totalPlacesToUse);
+
+      let dailyPlan = Array.from({length: planDays}, () => []);
+
+      // Repartir lugares equitativamente entre los días
+      let currentDay = 0;
+      while(selectedPlaces.length > 0) {
+          if (dailyPlan[currentDay].length < actsPerDay) {
+              dailyPlan[currentDay].push(selectedPlaces.shift());
+          }
+          currentDay++;
+          if (currentDay >= planDays) currentDay = 0; // Volver al día 1 si llegamos al último
+      }
+
+      // Optimizar cada día
+      dailyPlan = dailyPlan.map(dayActs => optimizeDayRoute(dayActs));
+
+      const newTrip = {
+        id: Date.now(),
+        destId: destObj.id,
+        destName: destObj.name,
+        img: destObj.img,
+        days: planDays,
+        people: planPeople,
+        totalBudget: totalBudget,
+        rhythm: rhythms[v],
+        arrival: document.getElementById('plan-arrival').value,
+        depart: document.getElementById('plan-depart').value,
+        dailyPlan: dailyPlan 
+      };
+
+      if(!currentUser.trips) currentUser.trips = [];
+      currentUser.trips.push(newTrip);
+      
+      if (auth.currentUser) {
+        await updateDoc(doc(db, "users", auth.currentUser.uid), { trips: currentUser.trips });
+      }
+
+      activeTrip = newTrip;
+      renderItineraryView();
+      go('itinerary');
+
+  } finally {
+      setBtnLoading('btn-do-generate', false, '✨ Generar mi itinerario ✨');
   }
-
-  renderItineraryView(newTrip);
-  go('itinerary');
 }
 
 function renderMisViajes() {
@@ -1436,9 +1525,9 @@ function renderMisViajes() {
             <span class="exp-name">${t.destName}</span>
           </div>
           <div class="exp-card-body">
-            <div style="font-size:14px; font-weight:700; color:var(--dark); margin-bottom:4px;">${t.days} día · ${t.people} personas</div>
+            <div style="font-size:14px; font-weight:700; color:var(--dark); margin-bottom:4px;">${t.days} día(s) · ${t.people} personas</div>
             <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">Presupuesto est: S/ ${t.totalBudget}</div>
-            <div style="font-size:12px; color:var(--text-muted);">📅 ${t.arrival}</div>
+            <div style="font-size:12px; color:var(--text-muted);">📅 ${t.arrival} al ${t.depart}</div>
           </div>
         </div>
       </div>
@@ -1450,9 +1539,7 @@ async function deleteTrip(e, tripId) {
   e.stopPropagation();
   if (confirm("¿Estás seguro de que deseas eliminar este plan de viaje?")) {
     currentUser.trips = currentUser.trips.filter(t => t.id !== tripId);
-    if (auth.currentUser) {
-      await updateDoc(doc(db, "users", auth.currentUser.uid), { trips: currentUser.trips });
-    }
+    if (auth.currentUser) await updateDoc(doc(db, "users", auth.currentUser.uid), { trips: currentUser.trips });
     renderMisViajes();
   }
 }
@@ -1461,131 +1548,86 @@ function openTrip(tripId) {
     const t = currentUser.trips.find(x => x.id === tripId);
     if(!t) return;
     currentDest = t.destId;
-    renderItineraryView(t);
+    activeTrip = t;
+    renderItineraryView();
     go('itinerary');
 }
 
-let itinMapInstance = null;
-
-function renderItineraryView(tripData) {
-  document.getElementById('itin-title').innerHTML = `✈️ ${tripData.destName} · 1 día  ·  <span style="font-weight:400;color:var(--text-muted)">${tripData.arrival}</span>`;
-  document.getElementById('itin-subtitle').textContent = `S/ ${tripData.totalBudget} presupuesto · ${tripData.people} personas`;
-  document.getElementById('itin-header-title').textContent = `✈️ ${tripData.destName} · 1 día`;
-  document.getElementById('itin-stat-days').textContent = tripData.days;
-  document.getElementById('itin-stat-budget').textContent = `S/ ${tripData.totalBudget}`;
-  document.getElementById('itin-stat-rhythm').textContent = tripData.rhythm;
+function renderItineraryView() {
+  document.getElementById('itin-title').innerHTML = `✈️ ${activeTrip.destName} · ${activeTrip.days} día(s)  ·  <span style="font-weight:400;color:var(--text-muted)">${activeTrip.arrival}</span>`;
+  document.getElementById('itin-header-title').textContent = `✈️ ${activeTrip.destName}`;
+  document.getElementById('itin-stat-days').textContent = activeTrip.days;
+  document.getElementById('itin-stat-budget').textContent = `S/ ${activeTrip.totalBudget}`;
+  document.getElementById('itin-stat-rhythm').textContent = activeTrip.rhythm;
 
   const mapContainer = document.getElementById('mapa-itinerario-contenedor');
   mapContainer.innerHTML = `<div id="real-map-div" style="width:100%; height:100%; z-index:1;"></div>`;
 
-  const lugaresDelDestino = PLACES[tripData.destId] || [];
-  let validPlaces = lugaresDelDestino.filter(p => !isNaN(p.lat) && !isNaN(p.lng));
-  let placesForTrip = validPlaces.slice(0, 4); 
-
-  if (placesForTrip.length > 1) {
-      let maxDist = -1;
-      let startIdx = 0;
-      for (let i = 0; i < placesForTrip.length; i++) {
-          for (let j = i + 1; j < placesForTrip.length; j++) {
-              let d = getDistance(placesForTrip[i].lat, placesForTrip[i].lng, placesForTrip[j].lat, placesForTrip[j].lng);
-              if (d > maxDist) {
-                  maxDist = d;
-                  startIdx = i; 
-              }
-          }
-      }
-      let unvisited = [...placesForTrip];
-      let current = unvisited.splice(startIdx, 1)[0];
-      let sortedPlaces = [current];
-      while (unvisited.length > 0) {
-          let minDist = Infinity;
-          let nearestIdx = -1;
-          for (let i = 0; i < unvisited.length; i++) {
-              let d = getDistance(current.lat, current.lng, unvisited[i].lat, unvisited[i].lng);
-              if (d < minDist) {
-                  minDist = d;
-                  nearestIdx = i;
-              }
-          }
-          current = unvisited.splice(nearestIdx, 1)[0];
-          sortedPlaces.push(current);
-      }
-      placesForTrip = sortedPlaces;
-  }
+  const bodyEl = document.getElementById('itin-body-content');
+  let globalPinIndex = 1;
+  let bounds = [];
   
-  currentItinPlaces = placesForTrip; 
+  if (itinMapInstance) { itinMapInstance.remove(); }
+  itinMapInstance = window.L.map('real-map-div');
+  window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(itinMapInstance);
 
-  let actsHtml = placesForTrip.map((p, i) => {
-      let timeStr = (8 + i*3).toString().padStart(2, '0') + ':00';
-      let badge = p.free ? '<span class="badge-free">Gratis</span>' : `<span class="badge-price">${p.price}</span>`;
-      let transitHtml = '';
-      if (i < placesForTrip.length - 1) {
-          let nextP = placesForTrip[i+1];
-          let distKm = getDistance(p.lat, p.lng, nextP.lat, nextP.lng);
-          let minsPerKm = distKm < 1 ? 12 : 5; 
-          let timeMins = Math.round(distKm * minsPerKm);
-          if (timeMins < 1) timeMins = 1;
-          let distStr = distKm < 1 ? Math.round(distKm * 1000) + ' m' : distKm.toFixed(1) + ' km';
-          let iconTr = distKm < 1 ? '🚶' : '🚕';
-          transitHtml = `
-          <div class="act-transit">
-              ${iconTr} ~${timeMins} min de tránsito (${distStr}) al siguiente destino
+  let allDaysHtml = activeTrip.dailyPlan.map((dayActs, dayIndex) => {
+      let actsHtml = dayActs.map((p, actIndex) => {
+          let timeStr = (8 + actIndex*2).toString().padStart(2, '0') + ':00';
+          let badge = p.free ? '<span class="badge-free">Gratis</span>' : `<span class="badge-price">${p.price}</span>`;
+          let transitHtml = '';
+          
+          if (actIndex < dayActs.length - 1) {
+              let nextP = dayActs[actIndex+1];
+              let distKm = getDistance(p.lat, p.lng, nextP.lat, nextP.lng);
+              let minsPerKm = distKm < 1 ? 12 : 5; 
+              let timeMins = Math.round(distKm * minsPerKm);
+              if (timeMins < 1) timeMins = 1;
+              let distStr = distKm < 1 ? Math.round(distKm * 1000) + ' m' : distKm.toFixed(1) + ' km';
+              let iconTr = distKm < 1 ? '🚶' : '🚕';
+              transitHtml = `<div class="act-transit">${iconTr} ~${timeMins} min de tránsito (${distStr}) al siguiente destino</div>`;
+          }
+
+          let pinNum = globalPinIndex++;
+          bounds.push([p.lat, p.lng]);
+          
+          let numIcon = window.L.divIcon({ className: 'custom-pin', html: `<div class="pin-number">${pinNum}</div>`, iconSize: [26, 26], iconAnchor: [13, 13]});
+          window.L.marker([p.lat, p.lng], {icon: numIcon}).addTo(itinMapInstance).bindPopup(`<b>Día ${dayIndex+1}: ${p.name}</b><br>${p.desc}`);
+
+          return `
+          <div class="act-item" onclick="openItinPlaceModal(${dayIndex}, ${actIndex})">
+              <div class="act-timeline">
+                  <div class="act-dot"></div>
+                  ${actIndex < dayActs.length-1 ? '<div class="act-line"></div>' : ''}
+              </div>
+              <div class="act-thumb" style="background-image:url('${p.img}')"></div>
+              <div class="act-info">
+                  <div class="act-time">${timeStr} ${badge}</div>
+                  <div class="act-name">${pinNum}. ${p.name}</div>
+                  <div class="act-desc">${p.desc}</div>
+                  ${transitHtml}
+              </div>
           </div>`;
-      }
+      }).join('');
+
+      if (dayActs.length === 0) actsHtml = `<div style="padding:16px;text-align:center;color:#999;font-size:12px;">Día libre. Explora a tu propio ritmo.</div>`;
+
       return `
-      <div class="act-item" onclick="openItinPlaceModal(${i})">
-          <div class="act-timeline">
-              <div class="act-dot"></div>
-              ${i < placesForTrip.length-1 ? '<div class="act-line"></div>' : ''}
-          </div>
-          <div class="act-thumb" style="background-image:url('${p.img}')"></div>
-          <div class="act-info">
-              <div class="act-time">${timeStr} ${badge}</div>
-              <div class="act-name">${i+1}. ${p.name}</div>
-              <div class="act-desc">${p.desc}</div>
-              ${transitHtml}
-          </div>
+      <div class="itin-day">
+        <div class="itin-day-header">
+            <h4><span class="day-num">${dayIndex+1}</span>Día ${dayIndex+1}</h4>
+            <div class="itin-day-sub">${dayActs.length} actividades</div>
+        </div>
+        ${actsHtml}
       </div>`;
   }).join('');
 
-  if(actsHtml === '') {
-    actsHtml = `<div style="padding:20px;text-align:center;color:#666">No hay lugares cargados para este destino en el CSV.</div>`;
-  }
-
-  document.querySelector('.itin-body').innerHTML = `
-      <div class="itin-day">
-        <div class="itin-day-header">
-            <h4><span class="day-num">1</span>Día 1 — Descubriendo ${tripData.destName}</h4>
-            <div class="itin-day-sub">${placesForTrip.length} actividades</div>
-        </div>
-        ${actsHtml}
-      </div>
+  bodyEl.innerHTML = allDaysHtml + `
       <div style="padding:1rem 16px;text-align:center;font-size:13px;color:var(--text-muted)">
-        Total del viaje estimado: <strong style="color:var(--dark)">S/ ${tripData.totalBudget}</strong>
-      </div>
-  `;
-
+          Total del viaje estimado: <strong style="color:var(--dark)">S/ ${activeTrip.totalBudget}</strong>
+      </div>`;
+      
   setTimeout(() => {
-      if (itinMapInstance) { itinMapInstance.remove(); }
-      itinMapInstance = window.L.map('real-map-div');
-      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap'
-      }).addTo(itinMapInstance);
-      let bounds = []; 
-      placesForTrip.forEach((p, i) => {
-          if (!isNaN(p.lat) && !isNaN(p.lng)) {
-              bounds.push([p.lat, p.lng]);
-              let numIcon = window.L.divIcon({
-                  className: 'custom-pin',
-                  html: `<div class="pin-number">${i + 1}</div>`,
-                  iconSize: [26, 26],
-                  iconAnchor: [13, 13]
-              });
-              window.L.marker([p.lat, p.lng], {icon: numIcon})
-                  .addTo(itinMapInstance)
-                  .bindPopup(`<b>${i + 1}. ${p.name}</b><br>${p.desc}`);
-          }
-      });
       if (bounds.length > 0) {
           itinMapInstance.fitBounds(bounds, {padding: [40, 40]});
       } else {
@@ -1606,9 +1648,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
   const R = 6371; 
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-            Math.sin(dLon/2) * Math.sin(dLon/2);
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   return R * c; 
 }
@@ -1646,6 +1686,7 @@ window.openTrip = openTrip;
 window.openPlaceModal = openPlaceModal;
 window.openItinPlaceModal = openItinPlaceModal;
 window.closePlaceModal = closePlaceModal;
+window.checkAuthForms = checkAuthForms;
 
 // Inicialización de la app
 cargarLugares();
