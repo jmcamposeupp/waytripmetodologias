@@ -35,20 +35,35 @@
   h1,h2,h3,h4,h5{font-family:'Outfit',sans-serif}
   .screen{display:none}.screen.active{display:block}
 
+  /* SPINNER ANIMATION */
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 0.8s ease-in-out infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
   /* NAV LANDING */
   .nav-landing{background:var(--dark);display:flex;align-items:center;padding:0 2rem;height:60px;position:sticky;top:0;z-index:100}
   .logo{display:flex;align-items:center;gap:8px;color:white;font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;cursor:pointer;text-decoration:none;margin-right:auto}
   .logo-img{height:32px;width:auto;object-fit:contain;border-radius:4px}
   .nav-btns{display:flex;gap:8px}
   .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:none;font-family:'DM Sans',sans-serif}
+  .btn:disabled{opacity:0.7;cursor:not-allowed}
   .btn-white-outline{background:transparent;color:white;border:1.5px solid rgba(255,255,255,0.6)}
-  .btn-white-outline:hover{background:rgba(255,255,255,0.1)}
+  .btn-white-outline:hover:not(:disabled){background:rgba(255,255,255,0.1)}
   .btn-primary{background:var(--primary);color:white}
-  .btn-primary:hover{background:var(--primary-dark)}
+  .btn-primary:hover:not(:disabled){background:var(--primary-dark)}
   .btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border)}
-  .btn-ghost:hover{background:var(--border);color:var(--text)}
+  .btn-ghost:hover:not(:disabled){background:var(--border);color:var(--text)}
   .btn-danger{background:#e74c3c;color:white}
-  .btn-danger:hover{background:#c0392b}
+  .btn-danger:hover:not(:disabled){background:#c0392b}
 
   /* HERO */
   .hero{min-height:calc(100vh - 60px);background:linear-gradient(165deg, var(--dark) 0%, #153752 45%, #1a4568 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 2rem 3rem;position:relative;overflow:hidden}
@@ -204,7 +219,7 @@
   .summary-lbl{font-size:9px;color:var(--text-muted);margin-bottom:2px;font-weight:500}
   .summary-val{font-size:12px;font-weight:700;color:var(--dark)}
   .btn-generate{width:100%;background:var(--primary);color:white;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;margin-top:1.5rem;display:flex;align-items:center;justify-content:center;gap:7px;font-family:'Outfit',sans-serif;transition:all .15s}
-  .btn-generate:hover{background:var(--primary-dark);transform:translateY(-1px)}
+  .btn-generate:hover:not(:disabled){background:var(--primary-dark);transform:translateY(-1px)}
 
   /* ITINERARY */
   .itin-wrap{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 54px)}
@@ -295,8 +310,6 @@
   .pw-wrap{position:relative}
   .pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text-muted);font-size:16px;background:none;border:none;padding:0}
   .btn-continue{width:100%;background:var(--primary);color:white;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;margin-top:1rem;font-family:'Outfit',sans-serif;transition:all .15s}
-  .btn-continue:hover{background:var(--primary-dark)}
-  .btn-continue:disabled{background:#ccc;cursor:not-allowed}
   .form-error{color:#e74c3c;font-size:12px;margin-top:4px;display:none}
   .form-error.show{display:block}
 
@@ -468,7 +481,7 @@
           </div>
           <div class="form-error" id="err-r-pw-confirm">Las contraseñas no coinciden</div>
         </div>
-        <button class="btn-continue" onclick="doRegister()">Continuar →</button>
+        <button class="btn-continue" id="btn-do-register" onclick="doRegister()">Continuar →</button>
       </div>
 
       <div id="form-login" style="display:none">
@@ -486,7 +499,7 @@
             <button class="pw-eye" onclick="togglePw('l-pw')">👁</button>
           </div>
         </div>
-        <button class="btn-continue" onclick="doLogin()">Ingresar →</button>
+        <button class="btn-continue" id="btn-do-login" onclick="doLogin()">Ingresar →</button>
       </div>
     </div>
   </div>
@@ -721,7 +734,7 @@
           <div class="summary-item" style="grid-column: span 2;"><div class="summary-lbl">RITMO</div><div class="summary-val" id="sum-rhythm">Moderado</div></div>
         </div>
       </div>
-      <button class="btn-generate" onclick="generateItinerary()">✨ Generar mi itinerario ✨</button>
+      <button class="btn-generate" id="btn-do-generate" onclick="generateItinerary()">✨ Generar mi itinerario ✨</button>
     </div>
   </div>
 </div>
@@ -769,7 +782,7 @@
     
     <div style="display:flex; gap:10px;">
       <button class="btn btn-ghost" style="flex:1; justify-content:center;" onclick="closeProfileModal()">Cancelar</button>
-      <button class="btn btn-primary" style="flex:1; justify-content:center;" onclick="saveProfile()">Guardar</button>
+      <button class="btn btn-primary" id="btn-save-profile" style="flex:1; justify-content:center;" onclick="saveProfile()">Guardar</button>
     </div>
 
     <hr style="border:0; border-top:1px solid var(--border); margin: 1.5rem 0;">
@@ -942,6 +955,11 @@ async function doRegister() {
 
   if (!ok) return;
 
+  const btn = document.getElementById('btn-do-register');
+  const originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Creando cuenta...';
+
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, pw);
     currentUser = { name, email, interests: [], trips: [], avatar: null };
@@ -951,6 +969,9 @@ async function doRegister() {
     document.getElementById('err-r-email').textContent = 'Ese correo ya está registrado o hubo un error.';
     document.getElementById('err-r-email').classList.add('show');
     document.getElementById('r-email').classList.add('error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
   }
 }
 
@@ -958,6 +979,11 @@ async function doLogin() {
   const email = document.getElementById('l-email').value.trim().toLowerCase();
   const pw    = document.getElementById('l-pw').value;
   document.getElementById('err-l-email').classList.remove('show');
+
+  const btn = document.getElementById('btn-do-login');
+  const originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Iniciando sesión...';
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, pw);
@@ -972,6 +998,9 @@ async function doLogin() {
     document.getElementById('err-l-email').classList.add('show');
     document.getElementById('l-email').classList.add('error');
     document.getElementById('l-pw').classList.add('error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
   }
 }
 
@@ -987,10 +1016,20 @@ async function finishOnboard() {
   const selected = [...document.querySelectorAll('.interest-item.sel')].map(el => el.querySelector('.interest-name').textContent);
   if(selected.length === 0) return;
 
-  currentUser.interests = selected;
-  if (auth.currentUser) await updateDoc(doc(db, "users", auth.currentUser.uid), { interests: selected });
-  loadDashboard();
-  go('dashboard');
+  const btn = document.getElementById('btn-sig');
+  const originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Guardando...';
+
+  try {
+      currentUser.interests = selected;
+      if (auth.currentUser) await updateDoc(doc(db, "users", auth.currentUser.uid), { interests: selected });
+      loadDashboard();
+      go('dashboard');
+  } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+  }
 }
 
 function requireAuth() {
@@ -1030,13 +1069,23 @@ function updateModalAvatarPreview() {
   }
 }
 async function saveProfile() {
-  const newName = document.getElementById('modal-name-input').value.trim();
-  if(newName) currentUser.name = newName;
-  currentUser.avatar = tempAvatarBase64;
-  if (auth.currentUser) await updateDoc(doc(db, "users", auth.currentUser.uid), { name: currentUser.name, avatar: currentUser.avatar });
-  closeProfileModal();
-  syncAvatars();
-  loadDashboard(); 
+  const btn = document.getElementById('btn-save-profile');
+  const originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Guardando...';
+
+  try {
+      const newName = document.getElementById('modal-name-input').value.trim();
+      if(newName) currentUser.name = newName;
+      currentUser.avatar = tempAvatarBase64;
+      if (auth.currentUser) await updateDoc(doc(db, "users", auth.currentUser.uid), { name: currentUser.name, avatar: currentUser.avatar });
+      closeProfileModal();
+      syncAvatars();
+      loadDashboard(); 
+  } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+  }
 }
 function showSecurityForm(action) {
     currentSecurityAction = action;
@@ -1074,6 +1123,11 @@ async function executeSecurityAction() {
     const user = auth.currentUser;
     if (!user) return;
 
+    const btn = document.getElementById('btn-sec-confirm');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Procesando...';
+
     try {
         const credential = EmailAuthProvider.credential(user.email, currentPw);
         await reauthenticateWithCredential(user, credential);
@@ -1092,6 +1146,9 @@ async function executeSecurityAction() {
         }
     } catch (error) {
         errEl.textContent = 'Error: verifica que tu contraseña actual sea correcta.'; errEl.classList.add('show');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
     }
 }
 
@@ -1214,7 +1271,10 @@ function openDest(id) {
   document.getElementById('plan-dest-title').textContent = d.name;
 
   const catMap = {'🍽️':'Restaurantes','🛒':'Mercados','🏯':'Arqueológico','🎨':'Arte','🏔️':'Naturaleza','🌅':'Naturaleza','🌞':'Templos','⛪':'Iglesias','💧':'Lagos','🏛️':'Histórico','🌟':'Destacado','🛍️':'Compras','🏺':'Museos','⛰️':'Montañas','🌾':'Islas','🧵':'Cultura','🚣':'Aventura','🏄':'Playas','🏂':'Aventura','✈️':'Arqueológico','🍷':'Gastronomía','🦭':'Fauna','🐧':'Fauna','🐬':'Fauna','🏙️':'Ciudades','🌿':'Naturaleza','🌊':'Lagos'};
-  const uniqCats = [...new Set(places.map(p=>(catMap[p.type.split(' ')[0]]||'Otros')))];
+  
+  // SOLUCIÓN AL BUG DEL TIPO VACÍO:
+  const uniqCats = [...new Set(places.map(p=>(catMap[(p.type || '').split(' ')[0]]||'Otros')))];
+  
   const tabsEl = document.getElementById('dest-tabs');
   tabsEl.innerHTML = `<span class="dest-tab active" onclick="filterDestTab('all',this)">Todos</span>`;
   uniqCats.slice(0,5).forEach(cat => { tabsEl.innerHTML += `<span class="dest-tab" onclick="filterDestTab('${cat}',this)">${cat}</span>`; });
@@ -1230,7 +1290,7 @@ function filterDestTab(cat, el) {
   el.classList.add('active');
   const catMap = {'🍽️':'Restaurantes','🛒':'Mercados','🏯':'Arqueológico','🎨':'Arte','🏔️':'Naturaleza','🌅':'Naturaleza','🌞':'Templos','⛪':'Iglesias','💧':'Lagos','🏛️':'Histórico','🌟':'Destacado','🛍️':'Compras','🏺':'Museos','⛰️':'Montañas','🌾':'Islas','🧵':'Cultura','🚣':'Aventura','🏄':'Playas','🏂':'Aventura','✈️':'Arqueológico','🍷':'Gastronomía','🦭':'Fauna','🐧':'Fauna','🐬':'Fauna','🏙️':'Ciudades','🌿':'Naturaleza','🌊':'Lagos'};
   const places = PLACES[currentDest] || [];
-  const filtered = cat==='all' ? places : places.filter(p=>(catMap[p.type.split(' ')[0]]||'Otros')===cat);
+  const filtered = cat==='all' ? places : places.filter(p=>(catMap[(p.type || '').split(' ')[0]]||'Otros')===cat);
   renderDestPlaces(filtered);
   document.getElementById('dest-list-header').textContent = `${cat==='all'?'Todos los':cat} lugares (${filtered.length})`;
 }
@@ -1240,7 +1300,7 @@ function renderDestPlaces(places) {
   document.getElementById('dest-places-list').innerHTML = places.map((p, i)=>`
     <div class="place-item" onclick="openPlaceModal(${i})">
       <div class="place-thumb" style="background-image: url('${p.img}')">
-        <div class="place-thumb-icon">${p.type.split(' ')[0]}</div>
+        <div class="place-thumb-icon">${(p.type || '').split(' ')[0] || '📍'}</div>
       </div>
       <div class="place-info">
         <div class="place-name">${p.name}</div>
@@ -1255,6 +1315,7 @@ function renderDestPlaces(places) {
 function renderDestMap(id) {
   const container = document.getElementById('dest-map-container');
   const destName = DESTINATIONS.find(x=>x.id===id)?.name || '';
+  // SOLUCIÓN AL BUG DEL IFRAME URL:
   container.innerHTML = `<iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?q=${encodeURIComponent(destName + ', Peru')}&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>`;
 }
 
@@ -1355,59 +1416,69 @@ function optimizeDayRoute(placesArray) {
 
 async function generateItinerary() {
   if (!currentUser) return;
-  const budgetPP = parseInt(document.getElementById('budget-val').value) || 0;
-  const totalBudget = budgetPP * planPeople * planDays;
-  const destObj = DESTINATIONS.find(x => x.id === currentDest) || DESTINATIONS[0];
-  const v = parseInt(document.getElementById('rhythm-slider').value);
-  const rhythms = ['','Relajado','Moderado','Intensivo'];
-  
-  // Ritmo dicta cantidad
-  let actsPerDay = 4;
-  if(v === 2) actsPerDay = 6;
-  if(v === 3) actsPerDay = 8;
 
-  const validPlaces = (PLACES[currentDest] || []).filter(p => !isNaN(p.lat) && !isNaN(p.lng));
-  let pool = [...validPlaces];
-  // Mezclar para variedad (opcional, aquí simple shuffle)
-  pool.sort(() => Math.random() - 0.5); 
+  const btn = document.getElementById('btn-do-generate');
+  const originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Generando viaje...';
 
-  let dailyPlan = [];
-  for(let d=0; d<planDays; d++) {
-      let dayActs = [];
-      for(let a=0; a<actsPerDay; a++) {
-          if(pool.length > 0) dayActs.push(pool.shift());
-          else break; // No hay más lugares
+  try {
+      const budgetPP = parseInt(document.getElementById('budget-val').value) || 0;
+      const totalBudget = budgetPP * planPeople * planDays;
+      const destObj = DESTINATIONS.find(x => x.id === currentDest) || DESTINATIONS[0];
+      const v = parseInt(document.getElementById('rhythm-slider').value);
+      const rhythms = ['','Relajado','Moderado','Intensivo'];
+      
+      let actsPerDay = 4;
+      if(v === 2) actsPerDay = 6;
+      if(v === 3) actsPerDay = 8;
+
+      const validPlaces = (PLACES[currentDest] || []).filter(p => !isNaN(p.lat) && !isNaN(p.lng));
+      let pool = [...validPlaces];
+      pool.sort(() => Math.random() - 0.5); 
+
+      let dailyPlan = [];
+      for(let d=0; d<planDays; d++) {
+          let dayActs = [];
+          for(let a=0; a<actsPerDay; a++) {
+              if(pool.length > 0) dayActs.push(pool.shift());
+              else break; 
+          }
+          if(dayActs.length > 0) {
+              dailyPlan.push(optimizeDayRoute(dayActs));
+          }
       }
-      if(dayActs.length > 0) {
-          dailyPlan.push(optimizeDayRoute(dayActs));
+
+      const newTrip = {
+        id: Date.now(),
+        destId: destObj.id,
+        destName: destObj.name,
+        img: destObj.img,
+        days: planDays,
+        people: planPeople,
+        totalBudget: totalBudget,
+        rhythm: rhythms[v],
+        arrival: document.getElementById('plan-arrival').value,
+        depart: document.getElementById('plan-depart').value,
+        dailyPlan: dailyPlan 
+      };
+
+      if(!currentUser.trips) currentUser.trips = [];
+      currentUser.trips.push(newTrip);
+      
+      if (auth.currentUser) {
+        await updateDoc(doc(db, "users", auth.currentUser.uid), { trips: currentUser.trips });
       }
+
+      activeTrip = newTrip;
+      isItinEditMode = false;
+      renderItineraryView();
+      go('itinerary');
+
+  } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
   }
-
-  const newTrip = {
-    id: Date.now(),
-    destId: destObj.id,
-    destName: destObj.name,
-    img: destObj.img,
-    days: planDays,
-    people: planPeople,
-    totalBudget: totalBudget,
-    rhythm: rhythms[v],
-    arrival: document.getElementById('plan-arrival').value,
-    depart: document.getElementById('plan-depart').value,
-    dailyPlan: dailyPlan // Guardamos estructura diaria
-  };
-
-  if(!currentUser.trips) currentUser.trips = [];
-  currentUser.trips.push(newTrip);
-  
-  if (auth.currentUser) {
-    await updateDoc(doc(db, "users", auth.currentUser.uid), { trips: currentUser.trips });
-  }
-
-  activeTrip = newTrip;
-  isItinEditMode = false;
-  renderItineraryView();
-  go('itinerary');
 }
 
 function renderMisViajes() {
@@ -1464,8 +1535,8 @@ function openTrip(tripId) {
 function toggleEditMode() {
     isItinEditMode = !isItinEditMode;
     const b = document.getElementById('btn-toggle-edit');
-    if(isItinEditMode) { b.textContent = 'Guardar'; b.classList.add('btn-primary'); b.classList.remove('btn-ghost'); }
-    else { b.textContent = '✏️ Editar'; b.classList.remove('btn-primary'); b.classList.add('btn-ghost'); }
+    if(isItinEditMode) { b.innerHTML = '💾 Guardar'; b.classList.add('btn-primary'); b.classList.remove('btn-ghost'); }
+    else { b.innerHTML = '✏️ Editar'; b.classList.remove('btn-primary'); b.classList.add('btn-ghost'); }
     renderItineraryBody();
 }
 
@@ -1497,7 +1568,7 @@ function openAddPlaceModal(dayIdx) {
           <div style="width:50px;height:50px;border-radius:8px;background:url('${p.img}') center/cover;flex-shrink:0;"></div>
           <div style="flex:1;">
             <div style="font-size:13px;font-weight:700;color:var(--dark);">${p.name}</div>
-            <div style="font-size:11px;color:var(--primary);font-weight:600;">${p.type}</div>
+            <div style="font-size:11px;color:var(--primary);font-weight:600;">${p.type || 'Lugar'}</div>
           </div>
           <button onclick="addAct(${dayIdx}, '${p.name.replace(/'/g, "\\'")}')" class="btn btn-primary" style="padding:6px 12px;font-size:11px;">Añadir</button>
         </div>
