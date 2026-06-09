@@ -31,9 +31,24 @@
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
-  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:30px;}
   h1,h2,h3,h4,h5{font-family:'Outfit',sans-serif}
   .screen{display:none}.screen.active{display:block}
+
+  /* GLOBAL FOOTER */
+  .global-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--dark);
+    color: rgba(255,255,255,0.8);
+    text-align: center;
+    padding: 7px 0;
+    font-size: 12px;
+    z-index: 10000;
+    font-family: 'DM Sans', sans-serif;
+  }
 
   /* NAV LANDING */
   .nav-landing{background:var(--dark);display:flex;align-items:center;padding:0 2rem;height:60px;position:sticky;top:0;z-index:100}
@@ -98,7 +113,7 @@
   .dest-name{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:7px;font-family:'Outfit',sans-serif}
   .tags{display:flex;gap:5px;flex-wrap:wrap}
   .tag{background:#f0ede6;color:#555;font-size:10px;padding:3px 8px;border-radius:20px;font-weight:500}
-  .fab{position:fixed;bottom:28px;right:28px;background:var(--accent);color:white;border:none;border-radius:14px;padding:13px 22px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;box-shadow:0 4px 20px rgba(202,103,2,0.35);transition:all .15s;font-family:'DM Sans',sans-serif;z-index:90}
+  .fab{position:fixed;bottom:42px;right:28px;background:var(--accent);color:white;border:none;border-radius:14px;padding:13px 22px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;box-shadow:0 4px 20px rgba(202,103,2,0.35);transition:all .15s;font-family:'DM Sans',sans-serif;z-index:90}
   .fab:hover{background:#a65402;transform:translateY(-2px)}
 
   /* EXPLORE */
@@ -418,6 +433,15 @@
           </div>
           <div class="form-error" id="err-r-pw-confirm">Las contraseñas no coinciden</div>
         </div>
+        
+        <div class="reg-fg" style="display:flex; align-items:center; gap:8px;">
+          <input type="checkbox" id="r-terms" style="cursor:pointer; width:16px; height:16px; accent-color:var(--primary);">
+          <label for="r-terms" class="reg-label" style="margin:0; font-weight:500;">
+            Acepto los <a href="https://docs.google.com/document/d/13nXVFK1rHznj87Trcm5c4AWOonJhKBUsOI_eAae1EyA/edit?tab=t.0" target="_blank" style="color:var(--primary); text-decoration:underline;">términos y condiciones</a>
+          </label>
+        </div>
+        <div class="form-error" id="err-r-terms">Debes aceptar los términos y condiciones</div>
+
         <button class="btn-continue" onclick="doRegister()">Continuar →</button>
       </div>
 
@@ -648,7 +672,7 @@
         <div class="transport-grid">
           <div class="transport-opt active" onclick="selectTransport(this)"><span class="t-icon">🚌</span>Bus</div>
           <div class="transport-opt" onclick="selectTransport(this)"><span class="t-icon">🚗</span>Auto propio</div>
-          <div class="transport-opt" onclick="selectTransport(this)"><span class="t-icon">🚕</span>Taxi / Uber</div>
+          <div class="transport-opt" onclick="selectTransport(this)"><span class="t-icon">🚕</span>Taxi</div>
           <div class="transport-opt" onclick="selectTransport(this)"><span class="t-icon">🚶</span>A pie</div>
         </div>
       </div>
@@ -744,6 +768,8 @@
     </div>
   </div>
 </div>
+
+<div class="global-footer">📞 Soporte WayTrip: +51 999 888 555</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -879,12 +905,14 @@ async function doRegister() {
   const email = document.getElementById('r-email').value.trim().toLowerCase();
   const pw    = document.getElementById('r-pw').value;
   const pwConfirm = document.getElementById('r-pw-confirm').value; // Nueva validación
+  const terms = document.getElementById('r-terms').checked; // Nueva validación términos
   let ok = true;
 
   document.getElementById('err-r-name').classList.remove('show');
   document.getElementById('err-r-email').classList.remove('show');
   document.getElementById('err-r-pw').classList.remove('show');
   document.getElementById('err-r-pw-confirm').classList.remove('show');
+  document.getElementById('err-r-terms').classList.remove('show');
   document.getElementById('r-name').classList.remove('error');
   document.getElementById('r-email').classList.remove('error');
   document.getElementById('r-pw').classList.remove('error');
@@ -909,6 +937,10 @@ async function doRegister() {
   if (pw !== pwConfirm) {
     document.getElementById('err-r-pw-confirm').classList.add('show');
     document.getElementById('r-pw-confirm').classList.add('error');
+    ok = false;
+  }
+  if (!terms) {
+    document.getElementById('err-r-terms').classList.add('show');
     ok = false;
   }
 
