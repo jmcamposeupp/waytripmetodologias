@@ -35,6 +35,19 @@
   h1,h2,h3,h4,h5{font-family:'Outfit',sans-serif}
   .screen{display:none}.screen.active{display:block}
 
+  /* LOADING SPINNER */
+  .spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 0.8s ease-in-out infinite;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
   /* GLOBAL FOOTER */
   .global-footer {
     position: fixed;
@@ -94,9 +107,8 @@
   .user-chip{background:rgba(255,255,255,0.08);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px;min-width:190px;transition:background 0.15s;}
   .user-chip:hover{background:rgba(255,255,255,0.12);}
   .chip-avatar{width:38px;height:38px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-  .chip-info strong{font-size:13px;color:white;display:block}
-  .chip-info span{font-size:12px;color:rgba(255,255,255,0.58);display:block}
-  .chip-badge{background:rgba(255,255,255,0.12);border-radius:6px;padding:2px 8px;font-size:11px;color:rgba(255,255,255,0.8);margin-top:4px;display:inline-block}
+  .chip-info strong{font-size:14px;color:white;display:block}
+  .chip-info span{font-size:13px;color:rgba(255,255,255,0.7);display:block}
   .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
   .section-header h3{font-size:16px;font-weight:700;color:var(--dark)}
   .section-header a{font-size:13px;color:var(--primary);cursor:pointer;text-decoration:none;font-weight:500}
@@ -201,7 +213,7 @@
   .num-val{font-size:16px;font-weight:700;color:var(--dark);min-width:24px;text-align:center}
   .num-lbl{font-size:12px;color:var(--text-muted)}
   .budget-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
-  .budget-chip{border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text-muted);cursor:pointer;background:white;transition:all .15s;font-family:'DM Sans',sans-serif}
+  .budget-chip{border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--text-muted);cursor:pointer;background:white;transition:all .15s;font-family:'DM Sans',sans-serif;user-select:none;}
   .budget-chip.active,.budget-chip:hover{border-color:var(--primary);background:var(--primary-light);color:var(--primary);font-weight:600}
   .transport-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:7px}
   .transport-opt{border:1px solid var(--border);border-radius:9px;padding:9px 6px;text-align:center;cursor:pointer;font-size:11px;color:var(--text-muted);background:white;transition:all .15s;font-family:'DM Sans',sans-serif}
@@ -301,7 +313,7 @@
   .reg-input.error{border-color:#e74c3c}
   .pw-wrap{position:relative}
   .pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text-muted);font-size:16px;background:none;border:none;padding:0}
-  .btn-continue{width:100%;background:var(--primary);color:white;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;margin-top:1rem;font-family:'Outfit',sans-serif;transition:all .15s}
+  .btn-continue{width:100%;background:var(--primary);color:white;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;margin-top:1rem;font-family:'Outfit',sans-serif;transition:all .15s; display:flex; align-items:center; justify-content:center; gap:8px;}
   .btn-continue:hover{background:var(--primary-dark)}
   .btn-continue:disabled{background:#ccc;cursor:not-allowed}
   .form-error{color:#e74c3c;font-size:12px;margin-top:4px;display:none}
@@ -442,7 +454,7 @@
         </div>
         <div class="form-error" id="err-r-terms">Debes aceptar los términos y condiciones</div>
 
-        <button class="btn-continue" onclick="doRegister()">Continuar →</button>
+        <button class="btn-continue" id="btn-do-register" onclick="doRegister()">Continuar →</button>
       </div>
 
       <div id="form-login" style="display:none">
@@ -460,7 +472,7 @@
             <button class="pw-eye" onclick="togglePw('l-pw')">👁</button>
           </div>
         </div>
-        <button class="btn-continue" onclick="doLogin()">Ingresar →</button>
+        <button class="btn-continue" id="btn-do-login" onclick="doLogin()">Ingresar →</button>
       </div>
     </div>
   </div>
@@ -511,9 +523,8 @@
       <div class="user-chip" onclick="openProfileModal()" style="cursor:pointer" title="Editar perfil">
         <div class="chip-avatar" id="dash-chip-avatar">🏛️</div>
         <div class="chip-info">
-          <strong id="dash-username">usuario</strong>
+          <strong id="dash-username">Usuario</strong>
           <span id="dash-email-display">—</span>
-          <span class="chip-badge" id="dash-interest-badge">Explorador</span>
         </div>
       </div>
     </div>
@@ -695,7 +706,7 @@
           <div class="summary-item" style="grid-column: span 2;"><div class="summary-lbl">RITMO</div><div class="summary-val" id="sum-rhythm">Moderado</div></div>
         </div>
       </div>
-      <button class="btn-generate" onclick="generateItinerary()">✨ Generar mi itinerario ✨</button>
+      <button class="btn-generate" id="btn-do-generate" onclick="generateItinerary()">✨ Generar mi itinerario ✨</button>
     </div>
   </div>
 </div>
@@ -728,7 +739,7 @@
 </div>
 
 <div id="profile-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(3px);">
-  <div style="background:white; padding:2rem; border-radius:var(--radius-lg); width:90%; max-width:340px; max-height:85vh; overflow-y:auto; box-shadow:var(--shadow-md); text-align:center; font-family:'DM Sans',sans-serif;">
+  <div style="background:white; padding:2rem; border-radius:var(--radius-lg); width:90%; max-width:360px; max-height:85vh; overflow-y:auto; box-shadow:var(--shadow-md); text-align:center; font-family:'DM Sans',sans-serif;">
     <h3 style="font-family:'Outfit',sans-serif; color:var(--dark); margin-bottom:1.5rem; font-size:1.4rem;">Editar Perfil</h3>
     
     <div style="position:relative; display:inline-block; margin-bottom:1.5rem;">
@@ -742,9 +753,15 @@
       <input type="text" id="modal-name-input" class="form-input" style="font-weight:600; font-size:15px;">
     </div>
     
+    <div style="text-align:left; margin-bottom:1.5rem;">
+      <label style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:8px; display:block;">Mis Intereses</label>
+      <div id="modal-interests" style="display:flex; flex-wrap:wrap; gap:6px;">
+        </div>
+    </div>
+    
     <div style="display:flex; gap:10px;">
       <button class="btn btn-ghost" style="flex:1; justify-content:center;" onclick="closeProfileModal()">Cancelar</button>
-      <button class="btn btn-primary" style="flex:1; justify-content:center;" onclick="saveProfile()">Guardar</button>
+      <button class="btn btn-primary" id="btn-save-profile" style="flex:1; justify-content:center; display:flex; align-items:center;" onclick="saveProfile()">Guardar</button>
     </div>
 
     <hr style="border:0; border-top:1px solid var(--border); margin: 1.5rem 0;">
@@ -763,7 +780,7 @@
         <div class="form-error" id="err-sec" style="margin-bottom:8px;"></div>
         <div style="display:flex; gap:8px;">
             <button class="btn btn-ghost" style="flex:1; padding:6px; font-size:12px; justify-content:center;" onclick="hideSecurityForm()">Cancelar</button>
-            <button class="btn btn-primary" id="btn-sec-confirm" style="flex:1; padding:6px; font-size:12px; justify-content:center;" onclick="executeSecurityAction()">Confirmar</button>
+            <button class="btn btn-primary" id="btn-sec-confirm" style="flex:1; padding:6px; font-size:12px; justify-content:center; display:flex; align-items:center;" onclick="executeSecurityAction()">Confirmar</button>
         </div>
     </div>
   </div>
@@ -797,6 +814,24 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // ═══════════════════════════════════════════
+//  HELPER: CARGA/SPINNER EN BOTONES
+// ═══════════════════════════════════════════
+function toggleLoading(btnId, isLoading) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  if (isLoading) {
+    btn.dataset.originalHtml = btn.innerHTML;
+    btn.innerHTML = `<span class="spinner"></span> Procesando...`;
+    btn.disabled = true;
+    btn.style.opacity = '0.8';
+  } else {
+    btn.innerHTML = btn.dataset.originalHtml || btn.innerHTML;
+    btn.disabled = false;
+    btn.style.opacity = '1';
+  }
+}
+
+// ═══════════════════════════════════════════
 //  DATA DE DESTINOS
 // ═══════════════════════════════════════════
 const DESTINATIONS = [
@@ -813,6 +848,7 @@ const DESTINATIONS = [
 let PLACES = {};
 let currentRenderedPlaces = [];
 let currentItinPlaces = [];
+const ALL_INTERESTS_LIST = ['Gastronomía', 'Cultura', 'Arte y museos', 'Naturaleza', 'Aventura', 'Fiestas y festivales', 'Arquitectura', 'Fotografía', 'Compras locales', 'Historia'];
 
 function cargarLugares() {
   fetch('data/lugares.csv')
@@ -904,8 +940,8 @@ async function doRegister() {
   const name  = document.getElementById('r-name').value.trim();
   const email = document.getElementById('r-email').value.trim().toLowerCase();
   const pw    = document.getElementById('r-pw').value;
-  const pwConfirm = document.getElementById('r-pw-confirm').value; // Nueva validación
-  const terms = document.getElementById('r-terms').checked; // Nueva validación términos
+  const pwConfirm = document.getElementById('r-pw-confirm').value; 
+  const terms = document.getElementById('r-terms').checked; 
   let ok = true;
 
   document.getElementById('err-r-name').classList.remove('show');
@@ -946,6 +982,7 @@ async function doRegister() {
 
   if (!ok) return;
 
+  toggleLoading('btn-do-register', true);
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, pw);
     const user = userCredential.user;
@@ -961,6 +998,8 @@ async function doRegister() {
     document.getElementById('err-r-email').textContent = 'Ese correo ya está registrado o hubo un error.';
     document.getElementById('err-r-email').classList.add('show');
     document.getElementById('r-email').classList.add('error');
+  } finally {
+    toggleLoading('btn-do-register', false);
   }
 }
 
@@ -969,6 +1008,7 @@ async function doLogin() {
   const pw    = document.getElementById('l-pw').value;
   document.getElementById('err-l-email').classList.remove('show');
 
+  toggleLoading('btn-do-login', true);
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, pw);
     const userId = userCredential.user.uid;
@@ -988,6 +1028,8 @@ async function doLogin() {
     document.getElementById('err-l-email').classList.add('show');
     document.getElementById('l-email').classList.add('error');
     document.getElementById('l-pw').classList.add('error');
+  } finally {
+    toggleLoading('btn-do-login', false);
   }
 }
 
@@ -1005,14 +1047,22 @@ async function finishOnboard() {
   );
   if(selected.length === 0) return;
 
-  currentUser.interests = selected;
-  
-  if (auth.currentUser) {
-    await updateDoc(doc(db, "users", auth.currentUser.uid), { interests: selected });
-  }
+  const btnSig = document.getElementById('btn-sig');
+  btnSig.dataset.originalHtml = btnSig.innerHTML;
+  btnSig.innerHTML = `<span class="spinner"></span> Generando...`;
+  btnSig.disabled = true;
 
-  loadDashboard();
-  go('dashboard');
+  try {
+    currentUser.interests = selected;
+    if (auth.currentUser) {
+      await updateDoc(doc(db, "users", auth.currentUser.uid), { interests: selected });
+    }
+    loadDashboard();
+    go('dashboard');
+  } finally {
+    btnSig.innerHTML = btnSig.dataset.originalHtml;
+    btnSig.disabled = false;
+  }
 }
 
 function requireAuth() {
@@ -1031,6 +1081,7 @@ function openProfileModal() {
   tempAvatarBase64 = currentUser.avatar || null;
   document.getElementById('modal-name-input').value = currentUser.name;
   updateModalAvatarPreview();
+  renderModalInterests();
   hideSecurityForm(); // resetear form de seguridad
   document.getElementById('profile-modal').style.display = 'flex';
 }
@@ -1063,21 +1114,42 @@ function updateModalAvatarPreview() {
   }
 }
 
+function renderModalInterests() {
+  const container = document.getElementById('modal-interests');
+  const userInt = currentUser.interests || [];
+  container.innerHTML = ALL_INTERESTS_LIST.map(int => {
+    const isActive = userInt.includes(int);
+    return `<span class="budget-chip ${isActive ? 'active' : ''}" onclick="this.classList.toggle('active')">${int}</span>`;
+  }).join('');
+}
+
 async function saveProfile() {
   const newName = document.getElementById('modal-name-input').value.trim();
   if(newName) { currentUser.name = newName; }
   currentUser.avatar = tempAvatarBase64;
   
-  if (auth.currentUser) {
-    await updateDoc(doc(db, "users", auth.currentUser.uid), {
-       name: currentUser.name,
-       avatar: currentUser.avatar
-    });
-  }
+  // Guardar intereses seleccionados
+  const selectedChips = document.querySelectorAll('#modal-interests .budget-chip.active');
+  currentUser.interests = Array.from(selectedChips).map(chip => chip.textContent);
   
-  closeProfileModal();
-  syncAvatars();
-  loadDashboard(); 
+  toggleLoading('btn-save-profile', true);
+  try {
+    if (auth.currentUser) {
+      await updateDoc(doc(db, "users", auth.currentUser.uid), {
+         name: currentUser.name,
+         avatar: currentUser.avatar,
+         interests: currentUser.interests
+      });
+    }
+    
+    closeProfileModal();
+    syncAvatars();
+    loadDashboard(); 
+  } catch(error) {
+    console.error("Error guardando perfil:", error);
+  } finally {
+    toggleLoading('btn-save-profile', false);
+  }
 }
 
 function showSecurityForm(action) {
@@ -1123,17 +1195,17 @@ async function executeSecurityAction() {
     const user = auth.currentUser;
     if (!user) return;
 
+    toggleLoading('btn-sec-confirm', true);
     try {
-        // 1. Re-autenticación con Firebase
         const credential = EmailAuthProvider.credential(user.email, currentPw);
         await reauthenticateWithCredential(user, credential);
 
         if (currentSecurityAction === 'password') {
-            // 2. Cambiar contraseña
             const newPw = document.getElementById('sec-new-pw').value;
             if (newPw.length < 6) {
                 errEl.textContent = 'La nueva contraseña debe tener mínimo 6 caracteres';
                 errEl.classList.add('show');
+                toggleLoading('btn-sec-confirm', false);
                 return;
             }
             await updatePassword(user, newPw);
@@ -1141,10 +1213,7 @@ async function executeSecurityAction() {
             hideSecurityForm();
 
         } else if (currentSecurityAction === 'delete') {
-            // 2. Eliminar cuenta permanentemente
-            // Paso A: Borrar datos de Firestore
             await deleteDoc(doc(db, "users", user.uid));
-            // Paso B: Borrar cuenta de Auth
             await deleteUser(user);
             
             alert("Tu cuenta y todos tus datos han sido eliminados. ¡Hasta pronto!");
@@ -1156,6 +1225,8 @@ async function executeSecurityAction() {
         console.error(error);
         errEl.textContent = 'Error: verifica que tu contraseña actual sea correcta.';
         errEl.classList.add('show');
+    } finally {
+        toggleLoading('btn-sec-confirm', false);
     }
 }
 
@@ -1204,8 +1275,10 @@ function syncAvatars() {
 
 function loadDashboard() {
   if (!currentUser) return;
+  
+  // Modificaciones para no mostrar '_viajero' ni los detalles innecesarios
   document.getElementById('dash-greeting').textContent = `Bienvenido/a, ${currentUser.name.split(' ')[0]} 👋`;
-  document.getElementById('dash-username').textContent = currentUser.name.split(' ')[0].toLowerCase() + '_viajero';
+  document.getElementById('dash-username').textContent = currentUser.name; 
   document.getElementById('dash-email-display').textContent = currentUser.email;
 
   const chipAvatar = document.getElementById('dash-chip-avatar');
@@ -1218,9 +1291,6 @@ function loadDashboard() {
     chipAvatar.style.backgroundImage = 'none';
     chipAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
   }
-
-  const badge = currentUser.interests && currentUser.interests.length > 0 ? currentUser.interests[0] : 'Explorador';
-  document.getElementById('dash-interest-badge').textContent = '🧭 ' + badge;
 
   const grid = document.getElementById('dash-dest-grid');
   grid.innerHTML = DESTINATIONS.slice(0,4).map(d => `
@@ -1418,36 +1488,44 @@ function updateRhythm() {
 
 async function generateItinerary() {
   if (!currentUser) return;
-  const days = 1; 
-  const budgetPP = parseInt(document.getElementById('budget-val').value) || 0;
-  const totalBudget = budgetPP * planPeople * days;
-  const destObj = DESTINATIONS.find(x => x.id === currentDest) || DESTINATIONS[0];
-  const v = parseInt(document.getElementById('rhythm-slider').value);
-  const rhythms = ['','Relajado','Moderado','Intensivo'];
-  const arrivalVal = document.getElementById('plan-arrival').value;
-
-  const newTrip = {
-    id: Date.now(),
-    destId: destObj.id,
-    destName: destObj.name,
-    img: destObj.img,
-    days: days,
-    people: planPeople,
-    totalBudget: totalBudget,
-    rhythm: rhythms[v],
-    arrival: arrivalVal,
-    depart: arrivalVal
-  };
-
-  if(!currentUser.trips) currentUser.trips = [];
-  currentUser.trips.push(newTrip);
   
-  if (auth.currentUser) {
-    await updateDoc(doc(db, "users", auth.currentUser.uid), { trips: currentUser.trips });
-  }
+  toggleLoading('btn-do-generate', true);
+  try {
+    const days = 1; 
+    const budgetPP = parseInt(document.getElementById('budget-val').value) || 0;
+    const totalBudget = budgetPP * planPeople * days;
+    const destObj = DESTINATIONS.find(x => x.id === currentDest) || DESTINATIONS[0];
+    const v = parseInt(document.getElementById('rhythm-slider').value);
+    const rhythms = ['','Relajado','Moderado','Intensivo'];
+    const arrivalVal = document.getElementById('plan-arrival').value;
 
-  renderItineraryView(newTrip);
-  go('itinerary');
+    const newTrip = {
+      id: Date.now(),
+      destId: destObj.id,
+      destName: destObj.name,
+      img: destObj.img,
+      days: days,
+      people: planPeople,
+      totalBudget: totalBudget,
+      rhythm: rhythms[v],
+      arrival: arrivalVal,
+      depart: arrivalVal
+    };
+
+    if(!currentUser.trips) currentUser.trips = [];
+    currentUser.trips.push(newTrip);
+    
+    if (auth.currentUser) {
+      await updateDoc(doc(db, "users", auth.currentUser.uid), { trips: currentUser.trips });
+    }
+
+    renderItineraryView(newTrip);
+    go('itinerary');
+  } catch(error) {
+    console.error(error);
+  } finally {
+    toggleLoading('btn-do-generate', false);
+  }
 }
 
 function renderMisViajes() {
