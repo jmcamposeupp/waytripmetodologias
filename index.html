@@ -35,7 +35,6 @@
   h1,h2,h3,h4,h5{font-family:'Outfit',sans-serif}
   .screen{display:none}.screen.active{display:block}
 
-  /* LOADING SPINNER */
   .spinner {
     display: inline-block;
     width: 18px;
@@ -48,7 +47,6 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* GLOBAL FOOTER */
   .global-footer {
     position: fixed;
     bottom: 0;
@@ -63,7 +61,6 @@
     font-family: 'DM Sans', sans-serif;
   }
 
-  /* NAV LANDING */
   .nav-landing{background:var(--dark);display:flex;align-items:center;padding:0 2rem;height:60px;position:sticky;top:0;z-index:100}
   .logo{display:flex;align-items:center;gap:8px;color:white;font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;cursor:pointer;text-decoration:none;margin-right:auto}
   .logo-img{height:32px;width:auto;object-fit:contain;border-radius:4px}
@@ -76,7 +73,6 @@
   .btn-ghost{background:transparent;color:var(--text-muted);border:1px solid var(--border)}
   .btn-ghost:hover{background:var(--border);color:var(--text)}
 
-  /* HERO */
   .hero{min-height:calc(100vh - 60px);background:linear-gradient(165deg, var(--dark) 0%, #153752 45%, #1a4568 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 2rem 3rem;position:relative;overflow:hidden}
   .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 80%,rgba(10,143,181,0.12) 0%,transparent 70%)}
   .hero-mountain{position:absolute;bottom:0;left:0;right:0;height:220px;opacity:0.18;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 220'%3E%3Cpath fill='%23ffffff' d='M0,220 L0,140 L180,60 L300,100 L420,30 L560,90 L680,20 L800,80 L920,10 L1040,70 L1160,30 L1280,85 L1440,40 L1440,220Z'/%3E%3C/svg%3E") bottom/cover no-repeat}
@@ -89,7 +85,6 @@
   .btn-hero-outline{background:rgba(255,255,255,0.08);color:white;border:1.5px solid rgba(255,255,255,0.4);padding:14px 30px;font-size:15px;border-radius:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
   .btn-hero-outline:hover{background:rgba(255,255,255,0.15)}
 
-  /* INNER NAV */
   .inner-nav{background:white;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.5rem;height:54px;position:sticky;top:0;z-index:100;gap:0}
   .inner-nav .logo{color:var(--dark);margin-right:1.5rem}
   .inner-nav .logo-img{height:26px}
@@ -99,7 +94,6 @@
   .nav-avatar{width:32px;height:32px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;color:white;font-size:13px;font-weight:700;margin-left:auto;cursor:pointer;font-family:'Outfit',sans-serif;transition:transform 0.15s;}
   .nav-avatar:hover{transform:scale(1.05)}
 
-  /* DASHBOARD */
   .page-content{padding:1.8rem 2rem;max-width:1200px;margin:0 auto}
   .welcome-banner{background:var(--dark);border-radius:var(--radius-lg);padding:1.6rem 2rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;color:white}
   .welcome-banner h2{font-size:1.6rem;font-weight:800;margin-bottom:4px}
@@ -128,7 +122,6 @@
   .fab{position:fixed;bottom:42px;right:28px;background:var(--accent);color:white;border:none;border-radius:14px;padding:13px 22px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;box-shadow:0 4px 20px rgba(202,103,2,0.35);transition:all .15s;font-family:'DM Sans',sans-serif;z-index:90}
   .fab:hover{background:#a65402;transform:translateY(-2px)}
 
-  /* EXPLORE */
   .explore-hero{background:linear-gradient(to bottom,var(--dark) 0%,#153752 100%);padding:3rem 2rem 2rem;text-align:center;color:white}
   .explore-hero h2{font-size:2.2rem;font-weight:800;margin-bottom:6px}
   .explore-hero p{color:rgba(255,255,255,0.68);margin-bottom:1.6rem;font-size:14px}
@@ -156,7 +149,6 @@
   .exp-tag{background:#f0ede6;color:#555;font-size:10px;padding:3px 8px;border-radius:20px;font-weight:500}
   .no-results{text-align:center;padding:3rem;color:var(--text-muted);font-size:15px;grid-column:1/-1}
 
-  /* DEST DETAIL */
   .dest-detail-wrap{position:relative}
   .back-btn{position:absolute;top:12px;left:12px;z-index:10;background:rgba(255,255,255,0.9);border:none;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;color:var(--dark);font-family:'DM Sans',sans-serif;transition:background .15s}
   .back-btn:hover{background:white}
@@ -191,9 +183,8 @@
   .place-price{font-size:13px;font-weight:800;color:var(--dark);white-space:nowrap;flex-shrink:0;align-self:center}
   .place-price.free{color:var(--secondary)}
 
-  /* PLAN */
   .plan-page{min-height:calc(100vh - 54px);background:var(--bg);display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem}
-  .plan-card{background:white;border-radius:var(--radius-lg);border:1px solid var(--border);padding:2rem;max-width:460px;width:100%;box-shadow:var(--shadow)}
+  .plan-card{background:white;border-radius:var(--radius-lg);border:1px solid var(--border);padding:2rem;max-width:460px;width:100%;box-shadow:var(--shadow);position:relative;}
   .plan-logo{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:1.5rem}
   .plan-logo-icon{background:var(--primary);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:15px}
   .plan-logo span{font-family:'Outfit',sans-serif;font-weight:700;font-size:17px;color:var(--dark)}
@@ -203,7 +194,6 @@
   .form-label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--text);margin-bottom:7px}
   .form-input{width:100%;border:1px solid var(--border);border-radius:var(--radius);padding:9px 13px;font-size:13px;color:var(--text);background:white;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .15s}
   .form-input:focus{border-color:var(--primary)}
-  .form-input[readonly]{background-color: #f5f5f5; cursor: not-allowed;}
   .date-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .date-label{font-size:11px;color:var(--text-muted);margin-bottom:4px}
   .day-count{color:var(--primary);font-size:12px;font-weight:600;margin-top:4px}
@@ -232,11 +222,9 @@
   .btn-generate{width:100%;background:var(--primary);color:white;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;margin-top:1.5rem;display:flex;align-items:center;justify-content:center;gap:7px;font-family:'Outfit',sans-serif;transition:all .15s}
   .btn-generate:hover{background:var(--primary-dark);transform:translateY(-1px)}
 
-  /* ITINERARY */
   .itin-wrap{display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 54px)}
   .itin-map{background:#e1f4f9;overflow:hidden;position:relative;}
   
-  /* CSS para los Pines Numerados de Leaflet */
   .pin-number {
     background-color: var(--primary);
     color: white;
@@ -287,7 +275,6 @@
   .day-total{text-align:right;padding:9px 16px;font-size:12px;color:var(--text-muted);background:white;border-top:1px solid #f0ede6}
   .day-total strong{color:var(--dark);font-weight:800;font-size:13px}
 
-  /* REGISTER / AUTH */
   .reg-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 60px)}
   .reg-left{background:var(--dark);padding:3rem 2.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem}
   .reg-map-box{background:rgba(255,255,255,0.06);border-radius:16px;padding:1.5rem;width:100%;max-width:300px}
@@ -319,7 +306,6 @@
   .form-error{color:#e74c3c;font-size:12px;margin-top:4px;display:none}
   .form-error.show{display:block}
 
-  /* ONBOARDING */
   .onboard-page{min-height:calc(100vh - 60px);background:var(--bg);display:flex;flex-direction:column;align-items:center;padding:2.5rem 1rem}
   .onboard-card{background:white;border-radius:var(--radius-lg);border:1px solid var(--border);padding:2rem;max-width:600px;width:100%;box-shadow:var(--shadow)}
   .onboard-card h2{font-size:1.4rem;font-weight:800;color:var(--dark);text-align:center;margin-bottom:6px}
@@ -338,7 +324,6 @@
   .btn-siguiente.on:hover{background:var(--primary-dark)}
   .btn-siguiente:disabled{background:#e2dfd6; color:#9ca3af; cursor:not-allowed;}
 
-  /* MIS VIAJES empty */
   .empty-state{text-align:center;padding:5rem 2rem}
   .empty-state .icon{font-size:4rem;margin-bottom:1rem}
   .empty-state h2{font-size:1.5rem;color:var(--dark);margin-bottom:8px}
@@ -639,8 +624,9 @@
 
 <div id="screen-plan" class="screen">
   <nav class="inner-nav">
+    <button class="btn btn-ghost" onclick="go('dest')" style="padding:6px 10px; margin-right:15px; font-size:12px;">← Volver</button>
     <div class="logo" style="color:var(--dark)" onclick="go('dashboard')"><img src="img/logo.png" alt="WayTrip" class="inner-nav logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="height:26px;"><div class="logo-icon" style="display:none; width:26px; height:26px; font-size:13px;">🧭</div>WayTrip</div>
-    <a class="nav-item" onclick="go('dashboard')">🏠 Inicio</a>
+    <a class="nav-item" onclick="go('dashboard')" style="margin-left:auto;">🏠 Inicio</a>
     <a class="nav-item" onclick="go('explore')">🗺 Explorar</a>
     <a class="nav-item" onclick="go('mis-viajes')">⭐ Mis Viajes</a>
     <div class="nav-avatar" id="plan-avatar" onclick="openProfileModal()">M</div>
@@ -653,10 +639,10 @@
       <div class="form-group">
         <div class="form-label">📅 Fechas del viaje</div>
         <div class="date-row">
-          <div><div class="date-label">Fecha de llegada</div><input type="date" class="form-input" id="plan-arrival" value="2026-06-15" onchange="updateDays()"></div>
-          <div><div class="date-label">Fecha de salida</div><input type="date" class="form-input" id="plan-depart" value="2026-06-15" readonly onchange="updateDays()"></div>
+          <div><div class="date-label">Fecha de llegada</div><input type="date" class="form-input" id="plan-arrival" onchange="updateDays()"></div>
+          <div><div class="date-label">Fecha de salida</div><input type="date" class="form-input" id="plan-depart" onchange="updateDays()"></div>
         </div>
-        <div class="day-count" id="day-count">1 día de viaje (Demo)</div>
+        <div class="day-count" id="day-count">1 día de viaje</div>
       </div>
       <div class="form-group">
         <div class="form-label">👥 Número de personas</div>
@@ -695,7 +681,7 @@
           <span id="rl-3">Intensivo</span>
         </div>
         <input type="range" min="1" max="3" value="2" id="rhythm-slider" oninput="updateRhythm()">
-        <div class="rhythm-sub"><span>4–5 act./día</span><span>5–7 act./día</span><span>8+ act./día</span></div>
+        <div class="rhythm-sub"><span>4 act./día</span><span>6 act./día</span><span>8 act./día</span></div>
       </div>
       <div class="plan-summary">
         <div class="plan-summary-title">📋 RESUMEN DE TU VIAJE</div>
@@ -713,10 +699,11 @@
 
 <div id="screen-itinerary" class="screen">
   <nav class="inner-nav">
-    <div class="logo" style="color:var(--dark)" onclick="go('dashboard')"><img src="img/logo.png" alt="WayTrip" class="inner-nav logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="height:26px;"><div class="logo-icon" style="display:none; width:26px; height:26px; font-size:13px;">🧭</div>WayTrip</div>
+    <button class="btn btn-ghost" onclick="go('mis-viajes')" style="padding:6px 10px; margin-right:15px; font-size:12px;">← Mis Viajes</button>
+    <div class="logo" style="color:var(--dark); margin-right:auto;" onclick="go('dashboard')"><img src="img/logo.png" alt="WayTrip" class="inner-nav logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="height:26px;"><div class="logo-icon" style="display:none; width:26px; height:26px; font-size:13px;">🧭</div>WayTrip</div>
     <div style="flex:1;text-align:center">
-      <div id="itin-title" style="font-size:14px;font-weight:700;color:var(--dark)">✈️ Cusco · 1 día  ·  <span style="font-weight:400;color:var(--text-muted)">15 Jun – 15 Jun</span></div>
-      <div id="itin-subtitle" style="font-size:11px;color:var(--text-muted)">S/ 385 presupuesto · 2 personas</div>
+      <div id="itin-title" style="font-size:14px;font-weight:700;color:var(--dark)"></div>
+      <div id="itin-subtitle" style="font-size:11px;color:var(--text-muted)"></div>
     </div>
     <button class="btn btn-ghost" style="font-size:12px;padding:6px 14px" onclick="go('plan')">✏️ Editar</button>
   </nav>
@@ -725,11 +712,11 @@
     
     <div class="itin-side">
       <div class="itin-header">
-        <div class="itin-header-top"><h3 id="itin-header-title">✈️ Cusco · 1 día</h3></div>
+        <div class="itin-header-top"><h3 id="itin-header-title"></h3></div>
         <div class="itin-stats">
-          <div class="itin-stat"><div class="itin-stat-lbl">Días</div><div class="itin-stat-val" id="itin-stat-days">1</div></div>
-          <div class="itin-stat"><div class="itin-stat-lbl">Presupuesto</div><div class="itin-stat-val" id="itin-stat-budget">S/ 385</div></div>
-          <div class="itin-stat"><div class="itin-stat-lbl">Ritmo</div><div class="itin-stat-val" id="itin-stat-rhythm">Moderado</div></div>
+          <div class="itin-stat"><div class="itin-stat-lbl">Días</div><div class="itin-stat-val" id="itin-stat-days"></div></div>
+          <div class="itin-stat"><div class="itin-stat-lbl">Presupuesto</div><div class="itin-stat-val" id="itin-stat-budget"></div></div>
+          <div class="itin-stat"><div class="itin-stat-lbl">Ritmo</div><div class="itin-stat-val" id="itin-stat-rhythm"></div></div>
         </div>
       </div>
       <div class="itin-body">
@@ -792,8 +779,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
 <script type="module">
-
-// Importaciones de Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, EmailAuthProvider, reauthenticateWithCredential, updatePassword, deleteUser } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -808,14 +793,10 @@ const firebaseConfig = {
   measurementId: "G-5RG15J9YGX"
 };
 
-// Inicializamos Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ═══════════════════════════════════════════
-//  HELPER: CARGA/SPINNER EN BOTONES
-// ═══════════════════════════════════════════
 function toggleLoading(btnId, isLoading) {
   const btn = document.getElementById(btnId);
   if (!btn) return;
@@ -831,9 +812,6 @@ function toggleLoading(btnId, isLoading) {
   }
 }
 
-// ═══════════════════════════════════════════
-//  DATA DE DESTINOS
-// ═══════════════════════════════════════════
 const DESTINATIONS = [
   { id:'cusco',    name:'Cusco',    subtitle:'La capital histórica del Perú',       img:'https://images.unsplash.com/photo-1587595431973-160d0d94add1?auto=format&fit=crop&q=80&w=800', region:'sur',    rating:4.9, tags:['historia','cultura','gastronomia','arquitectura'] },
   { id:'lima',     name:'Lima',     subtitle:'Capital gastronómica de América',     img:'https://images.contentstack.io/v3/assets/blt06f605a34f1194ff/blt96a5b0c9189c9685/67a8a3690f97a244ae33bc11/BCC-2024-EXPLORER-LIMA-LANDMARKS-HEADER-DESKTOP.jpg?fit=crop&disable=upscale&auto=webp&quality=60&crop=smart&width=1600&height=900', region:'centro', rating:4.7, tags:['gastronomia','arte','cultura'] },
@@ -895,9 +873,6 @@ function fillRegChips() {
   `;
 }
 
-// ═══════════════════════════════════════════
-//  MODAL DE LUGAR DETALLADO
-// ═══════════════════════════════════════════
 function openPlaceModal(index) {
   const p = currentRenderedPlaces[index];
   if(p) fillAndShowPlaceModal(p);
@@ -931,9 +906,6 @@ function closePlaceModal() {
   document.getElementById('place-modal').style.display = 'none';
 }
 
-// ═══════════════════════════════════════════
-//  AUTH & PROFILE (FIREBASE)
-// ═══════════════════════════════════════════
 let currentUser = null;  
 
 async function doRegister() {
@@ -986,15 +958,10 @@ async function doRegister() {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, pw);
     const user = userCredential.user;
-
     currentUser = { name, email, interests: [], trips: [], avatar: null };
-
-    // Guardar en Firestore
     await setDoc(doc(db, "users", user.uid), currentUser);
-    
     go('onboard');
   } catch (error) {
-    console.error(error);
     document.getElementById('err-r-email').textContent = 'Ese correo ya está registrado o hubo un error.';
     document.getElementById('err-r-email').classList.add('show');
     document.getElementById('r-email').classList.add('error');
@@ -1012,18 +979,15 @@ async function doLogin() {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, pw);
     const userId = userCredential.user.uid;
-
     const userDoc = await getDoc(doc(db, "users", userId));
     if (userDoc.exists()) {
        currentUser = userDoc.data();
     } else {
        currentUser = { name: "Viajero", email, interests: [], trips: [], avatar: null };
     }
-    
     loadDashboard();
     go('dashboard');
   } catch (error) {
-    console.error(error);
     document.getElementById('err-l-email').textContent = 'Correo o contraseña incorrectos';
     document.getElementById('err-l-email').classList.add('show');
     document.getElementById('l-email').classList.add('error');
@@ -1036,6 +1000,7 @@ async function doLogin() {
 async function logout() {
   await signOut(auth);
   currentUser = null;
+  resetPlanForm();
   closeProfileModal();
   go('home');
 }
@@ -1070,9 +1035,6 @@ function requireAuth() {
   return true;
 }
 
-// ═══════════════════════════════════════════
-//  PROFILE MODAL LOGIC & SECURITY
-// ═══════════════════════════════════════════
 let tempAvatarBase64 = null;
 let currentSecurityAction = null;
 
@@ -1082,7 +1044,7 @@ function openProfileModal() {
   document.getElementById('modal-name-input').value = currentUser.name;
   updateModalAvatarPreview();
   renderModalInterests();
-  hideSecurityForm(); // resetear form de seguridad
+  hideSecurityForm();
   document.getElementById('profile-modal').style.display = 'flex';
 }
 
@@ -1127,8 +1089,6 @@ async function saveProfile() {
   const newName = document.getElementById('modal-name-input').value.trim();
   if(newName) { currentUser.name = newName; }
   currentUser.avatar = tempAvatarBase64;
-  
-  // Guardar intereses seleccionados
   const selectedChips = document.querySelectorAll('#modal-interests .budget-chip.active');
   currentUser.interests = Array.from(selectedChips).map(chip => chip.textContent);
   
@@ -1141,12 +1101,11 @@ async function saveProfile() {
          interests: currentUser.interests
       });
     }
-    
     closeProfileModal();
     syncAvatars();
     loadDashboard(); 
   } catch(error) {
-    console.error("Error guardando perfil:", error);
+    console.error(error);
   } finally {
     toggleLoading('btn-save-profile', false);
   }
@@ -1211,18 +1170,16 @@ async function executeSecurityAction() {
             await updatePassword(user, newPw);
             alert("¡Tu contraseña ha sido actualizada con éxito!");
             hideSecurityForm();
-
         } else if (currentSecurityAction === 'delete') {
             await deleteDoc(doc(db, "users", user.uid));
             await deleteUser(user);
-            
             alert("Tu cuenta y todos tus datos han sido eliminados. ¡Hasta pronto!");
             currentUser = null;
+            resetPlanForm();
             closeProfileModal();
             go('home');
         }
     } catch (error) {
-        console.error(error);
         errEl.textContent = 'Error: verifica que tu contraseña actual sea correcta.';
         errEl.classList.add('show');
     } finally {
@@ -1230,10 +1187,6 @@ async function executeSecurityAction() {
     }
 }
 
-
-// ═══════════════════════════════════════════
-//  NAVIGATION & UI
-// ═══════════════════════════════════════════
 let currentDest = 'cusco';
 
 function go(id) {
@@ -1247,7 +1200,14 @@ function go(id) {
   window.scrollTo(0, 0);
   
   if (id === 'explore') applyFilters();
-  if (id === 'plan') updateSummary();
+  if (id === 'plan') {
+      if(!document.getElementById('plan-arrival').value) {
+          const t = new Date().toISOString().split('T')[0];
+          document.getElementById('plan-arrival').value = t;
+          document.getElementById('plan-depart').value = t;
+      }
+      updateSummary();
+  }
   if (id === 'mis-viajes') renderMisViajes();
   
   syncAvatars();
@@ -1275,8 +1235,6 @@ function syncAvatars() {
 
 function loadDashboard() {
   if (!currentUser) return;
-  
-  // Modificaciones para no mostrar '_viajero' ni los detalles innecesarios
   document.getElementById('dash-greeting').textContent = `Bienvenido/a, ${currentUser.name.split(' ')[0]} 👋`;
   document.getElementById('dash-username').textContent = currentUser.name; 
   document.getElementById('dash-email-display').textContent = currentUser.email;
@@ -1324,8 +1282,7 @@ function applyFilters() {
 
   const n = filtered.length;
   document.getElementById('filter-count').textContent = `${n} departamento${n!==1?'s':''} encontrado${n!==1?'s':''}`;
-  document.getElementById('explore-subtitle').textContent =
-    `${n} departamento${n!==1?'s':''} con lugares cuidadosamente seleccionados`;
+  document.getElementById('explore-subtitle').textContent = `${n} departamento${n!==1?'s':''} con lugares cuidadosamente seleccionados`;
 
   const grid = document.getElementById('explore-grid');
   if (n === 0) {
@@ -1438,16 +1395,36 @@ function toggleInterest(el) {
   btnSig.disabled = n === 0;
 }
 
-// ═══════════════════════════════════════════
-//  PLAN & MIS VIAJES
-// ═══════════════════════════════════════════
+function resetPlanForm() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('plan-arrival').value = today;
+    document.getElementById('plan-depart').value = today;
+    planPeople = 2;
+    document.getElementById('p-val').textContent = 2;
+    document.getElementById('p-lbl').textContent = "2 personas";
+    document.getElementById('budget-val').value = 150;
+    document.querySelectorAll('.budget-chip').forEach(c=>c.classList.remove('active'));
+    document.querySelectorAll('.budget-chip')[1].classList.add('active');
+    document.getElementById('rhythm-slider').value = 2;
+    updateRhythm();
+    updateDays();
+}
+
 let planPeople = 2;
 
 function updateDays() {
-  const arrivalInput = document.getElementById('plan-arrival');
-  const departInput = document.getElementById('plan-depart');
-  departInput.value = arrivalInput.value;
-  document.getElementById('day-count').textContent = '1 día de viaje (Demo)';
+  const arrInput = document.getElementById('plan-arrival');
+  const depInput = document.getElementById('plan-depart');
+  let arr = new Date(arrInput.value);
+  let dep = new Date(depInput.value);
+  
+  if (dep < arr) {
+    depInput.value = arrInput.value;
+    dep = arr;
+  }
+  const diffTime = Math.abs(dep - arr);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  document.getElementById('day-count').textContent = diffDays + (diffDays === 1 ? ' día de viaje' : ' días de viaje');
   updateSummary();
 }
 
@@ -1467,11 +1444,15 @@ function setBudget(val, el) {
 }
 
 function updateSummary() {
-  const days = 1; 
+  let arr = new Date(document.getElementById('plan-arrival').value);
+  let dep = new Date(document.getElementById('plan-depart').value);
+  let days = Math.ceil(Math.abs(dep - arr) / (1000 * 60 * 60 * 24)) + 1;
+  if(isNaN(days)) days = 1;
+
   const budgetPP = parseInt(document.getElementById('budget-val').value) || 0;
   const total = budgetPP * planPeople * days;
   document.getElementById('sum-budget').textContent = 'S/ ' + total;
-  document.getElementById('sum-days').textContent = '1 día';
+  document.getElementById('sum-days').textContent = days + (days === 1 ? ' día' : ' días');
 }
 
 function selectTransport(el) { el.classList.toggle('active'); }
@@ -1491,13 +1472,17 @@ async function generateItinerary() {
   
   toggleLoading('btn-do-generate', true);
   try {
-    const days = 1; 
+    let arr = new Date(document.getElementById('plan-arrival').value);
+    let dep = new Date(document.getElementById('plan-depart').value);
+    const days = Math.ceil(Math.abs(dep - arr) / (1000 * 60 * 60 * 24)) + 1;
+
     const budgetPP = parseInt(document.getElementById('budget-val').value) || 0;
     const totalBudget = budgetPP * planPeople * days;
     const destObj = DESTINATIONS.find(x => x.id === currentDest) || DESTINATIONS[0];
     const v = parseInt(document.getElementById('rhythm-slider').value);
     const rhythms = ['','Relajado','Moderado','Intensivo'];
     const arrivalVal = document.getElementById('plan-arrival').value;
+    const departVal = document.getElementById('plan-depart').value;
 
     const newTrip = {
       id: Date.now(),
@@ -1509,7 +1494,7 @@ async function generateItinerary() {
       totalBudget: totalBudget,
       rhythm: rhythms[v],
       arrival: arrivalVal,
-      depart: arrivalVal
+      depart: departVal
     };
 
     if(!currentUser.trips) currentUser.trips = [];
@@ -1521,8 +1506,6 @@ async function generateItinerary() {
 
     renderItineraryView(newTrip);
     go('itinerary');
-  } catch(error) {
-    console.error(error);
   } finally {
     toggleLoading('btn-do-generate', false);
   }
@@ -1546,7 +1529,7 @@ function renderMisViajes() {
             <span class="exp-name">${t.destName}</span>
           </div>
           <div class="exp-card-body">
-            <div style="font-size:14px; font-weight:700; color:var(--dark); margin-bottom:4px;">${t.days} día · ${t.people} personas</div>
+            <div style="font-size:14px; font-weight:700; color:var(--dark); margin-bottom:4px;">${t.days} día${t.days>1?'s':''} · ${t.people} personas</div>
             <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">Presupuesto est: S/ ${t.totalBudget}</div>
             <div style="font-size:12px; color:var(--text-muted);">📅 ${t.arrival}</div>
           </div>
@@ -1578,9 +1561,12 @@ function openTrip(tripId) {
 let itinMapInstance = null;
 
 function renderItineraryView(tripData) {
-  document.getElementById('itin-title').innerHTML = `✈️ ${tripData.destName} · 1 día  ·  <span style="font-weight:400;color:var(--text-muted)">${tripData.arrival}</span>`;
+  const daysText = tripData.days === 1 ? '1 día' : tripData.days + ' días';
+  const dateText = tripData.arrival === tripData.depart ? tripData.arrival : `${tripData.arrival} – ${tripData.depart}`;
+  
+  document.getElementById('itin-title').innerHTML = `✈️ ${tripData.destName} · ${daysText}  ·  <span style="font-weight:400;color:var(--text-muted)">${dateText}</span>`;
   document.getElementById('itin-subtitle').textContent = `S/ ${tripData.totalBudget} presupuesto · ${tripData.people} personas`;
-  document.getElementById('itin-header-title').textContent = `✈️ ${tripData.destName} · 1 día`;
+  document.getElementById('itin-header-title').textContent = `✈️ ${tripData.destName} · ${daysText}`;
   document.getElementById('itin-stat-days').textContent = tripData.days;
   document.getElementById('itin-stat-budget').textContent = `S/ ${tripData.totalBudget}`;
   document.getElementById('itin-stat-rhythm').textContent = tripData.rhythm;
@@ -1590,7 +1576,10 @@ function renderItineraryView(tripData) {
 
   const lugaresDelDestino = PLACES[tripData.destId] || [];
   let validPlaces = lugaresDelDestino.filter(p => !isNaN(p.lat) && !isNaN(p.lng));
-  let placesForTrip = validPlaces.slice(0, 4); 
+
+  let actsPerDay = tripData.rhythm === 'Relajado' ? 4 : (tripData.rhythm === 'Intensivo' ? 8 : 6);
+  let totalActsNeeded = actsPerDay * tripData.days;
+  let placesForTrip = validPlaces.slice(0, totalActsNeeded); 
 
   if (placesForTrip.length > 1) {
       let maxDist = -1;
@@ -1624,52 +1613,62 @@ function renderItineraryView(tripData) {
   }
   
   currentItinPlaces = placesForTrip; 
+  let placesPerDayMap = Math.ceil(placesForTrip.length / tripData.days);
+  let itinBodyHtml = '';
+  let globalPlaceIdx = 0;
 
-  let actsHtml = placesForTrip.map((p, i) => {
-      let timeStr = (8 + i*3).toString().padStart(2, '0') + ':00';
-      let badge = p.free ? '<span class="badge-free">Gratis</span>' : `<span class="badge-price">${p.price}</span>`;
-      let transitHtml = '';
-      if (i < placesForTrip.length - 1) {
-          let nextP = placesForTrip[i+1];
-          let distKm = getDistance(p.lat, p.lng, nextP.lat, nextP.lng);
-          let minsPerKm = distKm < 1 ? 12 : 5; 
-          let timeMins = Math.round(distKm * minsPerKm);
-          if (timeMins < 1) timeMins = 1;
-          let distStr = distKm < 1 ? Math.round(distKm * 1000) + ' m' : distKm.toFixed(1) + ' km';
-          let iconTr = distKm < 1 ? '🚶' : '🚕';
-          transitHtml = `
-          <div class="act-transit">
-              ${iconTr} ~${timeMins} min de tránsito (${distStr}) al siguiente destino
-          </div>`;
-      }
-      return `
-      <div class="act-item" onclick="openItinPlaceModal(${i})">
-          <div class="act-timeline">
-              <div class="act-dot"></div>
-              ${i < placesForTrip.length-1 ? '<div class="act-line"></div>' : ''}
-          </div>
-          <div class="act-thumb" style="background-image:url('${p.img}')"></div>
-          <div class="act-info">
-              <div class="act-time">${timeStr} ${badge}</div>
-              <div class="act-name">${i+1}. ${p.name}</div>
-              <div class="act-desc">${p.desc}</div>
-              ${transitHtml}
-          </div>
-      </div>`;
-  }).join('');
+  if (placesForTrip.length === 0) {
+    itinBodyHtml = `<div style="padding:20px;text-align:center;color:#666">No hay lugares cargados para este destino en el CSV.</div>`;
+  } else {
+    for (let d = 1; d <= tripData.days; d++) {
+        let dayPlaces = placesForTrip.slice((d - 1) * placesPerDayMap, d * placesPerDayMap);
+        if (dayPlaces.length === 0) continue;
 
-  if(actsHtml === '') {
-    actsHtml = `<div style="padding:20px;text-align:center;color:#666">No hay lugares cargados para este destino en el CSV.</div>`;
+        let actsHtml = dayPlaces.map((p, idxInDay) => {
+            let i = globalPlaceIdx++;
+            let timeStr = (8 + idxInDay * 2).toString().padStart(2, '0') + ':00';
+            let badge = p.free ? '<span class="badge-free">Gratis</span>' : `<span class="badge-price">${p.price}</span>`;
+            let transitHtml = '';
+            if (idxInDay < dayPlaces.length - 1) {
+                let nextP = dayPlaces[idxInDay+1];
+                let distKm = getDistance(p.lat, p.lng, nextP.lat, nextP.lng);
+                let minsPerKm = distKm < 1 ? 12 : 5; 
+                let timeMins = Math.max(1, Math.round(distKm * minsPerKm));
+                let distStr = distKm < 1 ? Math.round(distKm * 1000) + ' m' : distKm.toFixed(1) + ' km';
+                let iconTr = distKm < 1 ? '🚶' : '🚕';
+                transitHtml = `
+                <div class="act-transit">
+                    ${iconTr} ~${timeMins} min de tránsito (${distStr}) al siguiente destino
+                </div>`;
+            }
+            return `
+            <div class="act-item" onclick="openItinPlaceModal(${i})">
+                <div class="act-timeline">
+                    <div class="act-dot"></div>
+                    ${idxInDay < dayPlaces.length-1 ? '<div class="act-line"></div>' : ''}
+                </div>
+                <div class="act-thumb" style="background-image:url('${p.img}')"></div>
+                <div class="act-info">
+                    <div class="act-time">${timeStr} ${badge}</div>
+                    <div class="act-name">${i+1}. ${p.name}</div>
+                    <div class="act-desc">${p.desc}</div>
+                    ${transitHtml}
+                </div>
+            </div>`;
+        }).join('');
+
+        itinBodyHtml += `
+        <div class="itin-day">
+          <div class="itin-day-header">
+              <h4><span class="day-num">${d}</span>Día ${d} — Descubriendo ${tripData.destName}</h4>
+              <div class="itin-day-sub">${dayPlaces.length} actividades</div>
+          </div>
+          ${actsHtml}
+        </div>`;
+    }
   }
 
-  document.querySelector('.itin-body').innerHTML = `
-      <div class="itin-day">
-        <div class="itin-day-header">
-            <h4><span class="day-num">1</span>Día 1 — Descubriendo ${tripData.destName}</h4>
-            <div class="itin-day-sub">${placesForTrip.length} actividades</div>
-        </div>
-        ${actsHtml}
-      </div>
+  document.querySelector('.itin-body').innerHTML = itinBodyHtml + `
       <div style="padding:1rem 16px;text-align:center;font-size:13px;color:var(--text-muted)">
         Total del viaje estimado: <strong style="color:var(--dark)">S/ ${tripData.totalBudget}</strong>
       </div>
@@ -1723,9 +1722,6 @@ function getDistance(lat1, lon1, lat2, lon2) {
   return R * c; 
 }
 
-// ═══════════════════════════════════════════
-// EXPOSICIÓN DE FUNCIONES A WINDOW
-// ═══════════════════════════════════════════
 window.go = go;
 window.switchRegTab = switchRegTab;
 window.togglePw = togglePw;
@@ -1757,7 +1753,6 @@ window.openPlaceModal = openPlaceModal;
 window.openItinPlaceModal = openItinPlaceModal;
 window.closePlaceModal = closePlaceModal;
 
-// Inicialización de la app
 cargarLugares();
 
 </script>
