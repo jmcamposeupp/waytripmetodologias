@@ -259,8 +259,9 @@
   .itin-day-header h4{font-size:13px;font-weight:700;color:var(--dark);display:flex;align-items:center;gap:8px}
   .day-num{width:22px;height:22px;border-radius:50%;background:var(--primary);color:white;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
   .itin-day-sub{font-size:11px;color:var(--text-muted)}
-  .act-item{display:flex;gap:10px;padding:12px 16px;background:white;margin-bottom:1px; cursor:pointer; transition:background .1s;}
+  .act-item{display:flex;flex-direction:column;padding:12px 16px;background:white;margin-bottom:1px; transition:background .1s;}
   .act-item:hover{background:#fafaf7;}
+  .act-item-main{display:flex;gap:10px; cursor:pointer;}
   .act-timeline{display:flex;flex-direction:column;align-items:center;padding-top:3px}
   .act-dot{width:10px;height:10px;border-radius:50%;background:var(--primary);flex-shrink:0;border:2px solid white;box-shadow:0 0 0 1.5px var(--primary)}
   .act-line{width:2px;background:var(--primary-light);flex:1;margin-top:4px;min-height:30px}
@@ -271,7 +272,11 @@
   .badge-price{background:var(--accent-light);color:var(--accent);font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
   .act-name{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:3px}
   .act-desc{font-size:11px;color:#666;line-height:1.4}
-  .act-transit{font-size:11px;color:#999;margin-top:6px;font-weight:600;display:flex;align-items:center;gap:5px; background:#f9f8f5; padding:4px 8px; border-radius:6px; width:fit-content;}
+  .act-actions{display:flex;gap:8px;margin-top:8px;padding-left:80px}
+  .btn-act{background:transparent;border:1px solid var(--border);color:var(--text-muted);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;transition:all .1s;font-family:'DM Sans',sans-serif;}
+  .btn-act:hover{background:var(--border);color:var(--dark);}
+  .btn-act-danger:hover{background:#fdedec;color:#e74c3c;border-color:#f5b7b1;}
+  .act-transit{font-size:11px;color:#999;margin-top:6px;font-weight:600;display:flex;align-items:center;gap:5px; background:#f9f8f5; padding:4px 8px; border-radius:6px; width:fit-content; margin-left:80px;}
   .day-total{text-align:right;padding:9px 16px;font-size:12px;color:var(--text-muted);background:white;border-top:1px solid #f0ede6}
   .day-total strong{color:var(--dark);font-weight:800;font-size:13px}
 
@@ -349,6 +354,16 @@
         <p id="pm-moreinfo" style="font-size:14px; color:var(--text); line-height:1.6;"></p>
       </div>
     </div>
+  </div>
+</div>
+
+<div id="edit-itin-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(3px);">
+  <div style="background:white; border-radius:var(--radius-lg); width:90%; max-width:440px; max-height:85vh; display:flex; flex-direction:column; box-shadow:var(--shadow-md); font-family:'DM Sans',sans-serif; position:relative;">
+    <div style="padding:15px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+      <h3 style="margin:0; font-family:'Outfit',sans-serif; font-size:1.2rem; color:var(--dark)">Selecciona un lugar</h3>
+      <button onclick="closeEditItinModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted); font-weight:bold;">✕</button>
+    </div>
+    <div id="edit-itin-list" style="overflow-y:auto; padding:10px; flex:1; background:#f9f8f5;"></div>
   </div>
 </div>
 
@@ -681,7 +696,7 @@
           <span id="rl-3">Intensivo</span>
         </div>
         <input type="range" min="1" max="3" value="2" id="rhythm-slider" oninput="updateRhythm()">
-        <div class="rhythm-sub"><span>4 act./día</span><span>6 act./día</span><span>8 act./día</span></div>
+        <div class="rhythm-sub"><span>2 act./día</span><span>4 act./día</span><span>6 act./día</span></div>
       </div>
       <div class="plan-summary">
         <div class="plan-summary-title">📋 RESUMEN DE TU VIAJE</div>
@@ -705,7 +720,7 @@
       <div id="itin-title" style="font-size:14px;font-weight:700;color:var(--dark)"></div>
       <div id="itin-subtitle" style="font-size:11px;color:var(--text-muted)"></div>
     </div>
-    <button class="btn btn-ghost" style="font-size:12px;padding:6px 14px" onclick="editCurrentTrip()">✏️ Editar</button>
+    <button class="btn btn-ghost" style="font-size:12px;padding:6px 14px" onclick="editCurrentTrip()">✏️ Ajustes Generales</button>
   </nav>
   <div class="itin-wrap">
     <div class="itin-map" id="mapa-itinerario-contenedor"></div>
@@ -826,8 +841,11 @@ const DESTINATIONS = [
 let PLACES = {};
 let currentRenderedPlaces = [];
 let currentItinPlaces = [];
-let currentViewedTripId = null; // Guardar el viaje que se está viendo
-let editingTripId = null; // Guardar el ID si estamos en modo edición
+let currentViewedTripId = null; 
+let editingTripId = null; 
+
+let editTargetDay = null;
+let editTargetPlaceIdx = null;
 
 const ALL_INTERESTS_LIST = ['Gastronomía', 'Cultura', 'Arte y museos', 'Naturaleza', 'Aventura', 'Fiestas y festivales', 'Arquitectura', 'Fotografía', 'Compras locales', 'Historia'];
 
@@ -909,7 +927,6 @@ function closePlaceModal() {
   document.getElementById('place-modal').style.display = 'none';
 }
 
-// Nueva función para borrar campos autocompletados
 function clearAuthFields() {
   document.getElementById('r-name').value = '';
   document.getElementById('r-email').value = '';
@@ -1018,7 +1035,7 @@ async function doLogin() {
 async function logout() {
   await signOut(auth);
   currentUser = null;
-  clearAuthFields(); // Limpiamos campos de inicio de sesión/registro
+  clearAuthFields(); 
   resetPlanForm();
   closeProfileModal();
   go('home');
@@ -1194,7 +1211,7 @@ async function executeSecurityAction() {
             await deleteUser(user);
             alert("Tu cuenta y todos tus datos han sido eliminados. ¡Hasta pronto!");
             currentUser = null;
-            clearAuthFields(); // Limpiamos campos de inicio de sesión/registro
+            clearAuthFields(); 
             resetPlanForm();
             closeProfileModal();
             go('home');
@@ -1331,7 +1348,7 @@ function applyFilters() {
 function openDest(id) {
   if (!requireAuth()) return;
   currentDest = id;
-  editingTripId = null; // Reseteamos la edición al abrir un destino
+  editingTripId = null; 
   
   const d = DESTINATIONS.find(x => x.id === id);
   if (!d) return;
@@ -1439,7 +1456,6 @@ function startNewTripPlan() {
     go('plan');
 }
 
-// Cargar en el formulario la información del viaje que estamos viendo para editarlo
 function editCurrentTrip() {
     const t = currentUser.trips.find(x => x.id === currentViewedTripId);
     if (!t) return;
@@ -1469,7 +1485,7 @@ function editCurrentTrip() {
     updateDays();
     
     document.getElementById('plan-dest-title').textContent = t.destName;
-    document.getElementById('btn-do-generate').innerHTML = "✨ Guardar cambios ✨";
+    document.getElementById('btn-do-generate').innerHTML = "✨ Guardar ajustes ✨";
     
     go('plan');
 }
@@ -1531,6 +1547,73 @@ function updateRhythm() {
   document.getElementById('sum-rhythm').textContent = names[v];
 }
 
+// Lógica de puntuación por intereses del usuario
+function getInterestScore(place, userInterests) {
+    let score = 0;
+    let str = (place.type + " " + place.desc + " " + place.name).toLowerCase();
+    userInterests.forEach(int => {
+        let kw = int.toLowerCase();
+        if (kw === 'arte y museos') kw = 'arte';
+        if (kw === 'compras locales') kw = 'compras';
+        if (str.includes(kw)) score += 10;
+    });
+    return score;
+}
+
+// Nueva función de generación y segmentación por días, usa los intereses reales
+function buildDailyPlaces(destId, days, rhythm, interests) {
+    let actsPerDay = rhythm === 'Relajado' ? 2 : (rhythm === 'Intensivo' ? 6 : 4);
+    let validPlaces = (PLACES[destId] || []).filter(p => !isNaN(p.lat) && !isNaN(p.lng));
+
+    validPlaces.forEach(p => {
+        p._score = getInterestScore(p, interests);
+    });
+
+    // Ordenar primero por puntuación (Intereses), y luego para priorizar un poco la distancia básica
+    validPlaces.sort((a,b) => b._score - a._score);
+    let placesForTrip = validPlaces.slice(0, actsPerDay * days);
+
+    // Reordenar la selección final para la ruta más óptima aprox (TSP básico)
+    if (placesForTrip.length > 1) {
+        let maxDist = -1;
+        let startIdx = 0;
+        for (let i = 0; i < placesForTrip.length; i++) {
+            for (let j = i + 1; j < placesForTrip.length; j++) {
+                let d = getDistance(placesForTrip[i].lat, placesForTrip[i].lng, placesForTrip[j].lat, placesForTrip[j].lng);
+                if (d > maxDist) { maxDist = d; startIdx = i; }
+            }
+        }
+        let unvisited = [...placesForTrip];
+        let current = unvisited.splice(startIdx, 1)[0];
+        let sortedPlaces = [current];
+        while (unvisited.length > 0) {
+            let minDist = Infinity;
+            let nearestIdx = -1;
+            for (let i = 0; i < unvisited.length; i++) {
+                let d = getDistance(current.lat, current.lng, unvisited[i].lat, unvisited[i].lng);
+                if (d < minDist) { minDist = d; nearestIdx = i; }
+            }
+            current = unvisited.splice(nearestIdx, 1)[0];
+            sortedPlaces.push(current);
+        }
+        placesForTrip = sortedPlaces;
+    }
+
+    let dailyPlaces = [];
+    let pIdx = 0;
+    for(let d=0; d<days; d++) {
+        let dayArr = [];
+        for(let a=0; a<actsPerDay; a++) {
+            if(pIdx < placesForTrip.length) {
+                dayArr.push(placesForTrip[pIdx]);
+                pIdx++;
+            }
+        }
+        dailyPlaces.push(dayArr);
+    }
+    return dailyPlaces;
+}
+
 async function generateItinerary() {
   if (!currentUser) return;
   
@@ -1551,11 +1634,14 @@ async function generateItinerary() {
     if(!currentUser.trips) currentUser.trips = [];
     
     let targetTrip;
+    let needsRegeneration = false;
     
     if (editingTripId) {
-        // Actualizamos viaje existente
         targetTrip = currentUser.trips.find(t => t.id === editingTripId);
         if (targetTrip) {
+            if (targetTrip.days !== days || targetTrip.rhythm !== rhythms[v]) {
+                needsRegeneration = true;
+            }
             targetTrip.days = days;
             targetTrip.people = planPeople;
             targetTrip.totalBudget = totalBudget;
@@ -1566,7 +1652,6 @@ async function generateItinerary() {
     }
     
     if (!targetTrip) {
-        // Creamos nuevo viaje
         targetTrip = {
           id: Date.now(),
           destId: destObj.id,
@@ -1579,7 +1664,12 @@ async function generateItinerary() {
           arrival: arrivalVal,
           depart: departVal
         };
+        needsRegeneration = true;
         currentUser.trips.push(targetTrip);
+    }
+
+    if (!targetTrip.dailyPlaces || needsRegeneration) {
+        targetTrip.dailyPlaces = buildDailyPlaces(destObj.id, days, rhythms[v], currentUser.interests || []);
     }
     
     if (auth.currentUser) {
@@ -1587,7 +1677,7 @@ async function generateItinerary() {
     }
 
     currentViewedTripId = targetTrip.id;
-    editingTripId = null; // Reseteamos variable de edición
+    editingTripId = null; 
     renderItineraryView(targetTrip);
     go('itinerary');
   } finally {
@@ -1638,7 +1728,7 @@ function openTrip(tripId) {
     const t = currentUser.trips.find(x => x.id === tripId);
     if(!t) return;
     currentDest = t.destId;
-    currentViewedTripId = t.id; // Guardar el viaje activo
+    currentViewedTripId = t.id; 
     renderItineraryView(t);
     go('itinerary');
 }
@@ -1659,98 +1749,75 @@ function renderItineraryView(tripData) {
   const mapContainer = document.getElementById('mapa-itinerario-contenedor');
   mapContainer.innerHTML = `<div id="real-map-div" style="width:100%; height:100%; z-index:1;"></div>`;
 
-  const lugaresDelDestino = PLACES[tripData.destId] || [];
-  let validPlaces = lugaresDelDestino.filter(p => !isNaN(p.lat) && !isNaN(p.lng));
-
-  let actsPerDay = tripData.rhythm === 'Relajado' ? 4 : (tripData.rhythm === 'Intensivo' ? 8 : 6);
-  let totalActsNeeded = actsPerDay * tripData.days;
-  let placesForTrip = validPlaces.slice(0, totalActsNeeded); 
-
-  if (placesForTrip.length > 1) {
-      let maxDist = -1;
-      let startIdx = 0;
-      for (let i = 0; i < placesForTrip.length; i++) {
-          for (let j = i + 1; j < placesForTrip.length; j++) {
-              let d = getDistance(placesForTrip[i].lat, placesForTrip[i].lng, placesForTrip[j].lat, placesForTrip[j].lng);
-              if (d > maxDist) {
-                  maxDist = d;
-                  startIdx = i; 
-              }
-          }
-      }
-      let unvisited = [...placesForTrip];
-      let current = unvisited.splice(startIdx, 1)[0];
-      let sortedPlaces = [current];
-      while (unvisited.length > 0) {
-          let minDist = Infinity;
-          let nearestIdx = -1;
-          for (let i = 0; i < unvisited.length; i++) {
-              let d = getDistance(current.lat, current.lng, unvisited[i].lat, unvisited[i].lng);
-              if (d < minDist) {
-                  minDist = d;
-                  nearestIdx = i;
-              }
-          }
-          current = unvisited.splice(nearestIdx, 1)[0];
-          sortedPlaces.push(current);
-      }
-      placesForTrip = sortedPlaces;
-  }
-  
-  currentItinPlaces = placesForTrip; 
-  let placesPerDayMap = Math.ceil(placesForTrip.length / tripData.days);
   let itinBodyHtml = '';
   let globalPlaceIdx = 0;
+  currentItinPlaces = [];
 
-  if (placesForTrip.length === 0) {
-    itinBodyHtml = `<div style="padding:20px;text-align:center;color:#666">No hay lugares cargados para este destino en el CSV.</div>`;
+  if (!tripData.dailyPlaces || tripData.dailyPlaces.length === 0) {
+    itinBodyHtml = `<div style="padding:20px;text-align:center;color:#666">No hay lugares para mostrar.</div>`;
   } else {
-    for (let d = 1; d <= tripData.days; d++) {
-        let dayPlaces = placesForTrip.slice((d - 1) * placesPerDayMap, d * placesPerDayMap);
-        if (dayPlaces.length === 0) continue;
-
-        let actsHtml = dayPlaces.map((p, idxInDay) => {
-            let i = globalPlaceIdx++;
-            let timeStr = (8 + idxInDay * 2).toString().padStart(2, '0') + ':00';
-            let badge = p.free ? '<span class="badge-free">Gratis</span>' : `<span class="badge-price">${p.price}</span>`;
-            let transitHtml = '';
-            if (idxInDay < dayPlaces.length - 1) {
-                let nextP = dayPlaces[idxInDay+1];
-                let distKm = getDistance(p.lat, p.lng, nextP.lat, nextP.lng);
-                let minsPerKm = distKm < 1 ? 12 : 5; 
-                let timeMins = Math.max(1, Math.round(distKm * minsPerKm));
-                let distStr = distKm < 1 ? Math.round(distKm * 1000) + ' m' : distKm.toFixed(1) + ' km';
-                let iconTr = distKm < 1 ? '🚶' : '🚕';
-                transitHtml = `
-                <div class="act-transit">
-                    ${iconTr} ~${timeMins} min de tránsito (${distStr}) al siguiente destino
-                </div>`;
-            }
-            return `
-            <div class="act-item" onclick="openItinPlaceModal(${i})">
-                <div class="act-timeline">
-                    <div class="act-dot"></div>
-                    ${idxInDay < dayPlaces.length-1 ? '<div class="act-line"></div>' : ''}
-                </div>
-                <div class="act-thumb" style="background-image:url('${p.img}')"></div>
-                <div class="act-info">
-                    <div class="act-time">${timeStr} ${badge}</div>
-                    <div class="act-name">${i+1}. ${p.name}</div>
-                    <div class="act-desc">${p.desc}</div>
+    tripData.dailyPlaces.forEach((dayPlaces, dIdx) => {
+        let actsHtml = "";
+        
+        if (dayPlaces.length === 0) {
+            actsHtml = `<div style="padding:15px; font-size:12px; color:#888; text-align:center;">Día libre. Puedes añadir lugares.</div>`;
+        } else {
+            actsHtml = dayPlaces.map((p, idxInDay) => {
+                let i = globalPlaceIdx++;
+                currentItinPlaces.push(p);
+                
+                let timeStr = (8 + idxInDay * 2).toString().padStart(2, '0') + ':00';
+                let badge = p.free ? '<span class="badge-free">Gratis</span>' : `<span class="badge-price">${p.price}</span>`;
+                let transitHtml = '';
+                
+                if (idxInDay < dayPlaces.length - 1) {
+                    let nextP = dayPlaces[idxInDay+1];
+                    let distKm = getDistance(p.lat, p.lng, nextP.lat, nextP.lng);
+                    let minsPerKm = distKm < 1 ? 12 : 5; 
+                    let timeMins = Math.max(1, Math.round(distKm * minsPerKm));
+                    let distStr = distKm < 1 ? Math.round(distKm * 1000) + ' m' : distKm.toFixed(1) + ' km';
+                    let iconTr = distKm < 1 ? '🚶' : '🚕';
+                    transitHtml = `
+                    <div class="act-transit">
+                        ${iconTr} ~${timeMins} min (${distStr}) al siguiente destino
+                    </div>`;
+                }
+                
+                return `
+                <div class="act-item">
+                    <div class="act-item-main" onclick="openItinPlaceModal(${i})">
+                        <div class="act-timeline">
+                            <div class="act-dot"></div>
+                            ${idxInDay < dayPlaces.length-1 ? '<div class="act-line"></div>' : ''}
+                        </div>
+                        <div class="act-thumb" style="background-image:url('${p.img}')"></div>
+                        <div class="act-info">
+                            <div class="act-time">${timeStr} ${badge}</div>
+                            <div class="act-name">${i+1}. ${p.name}</div>
+                            <div class="act-desc">${p.desc}</div>
+                        </div>
+                    </div>
+                    <div class="act-actions">
+                        <button class="btn-act" onclick="promptEditPlace(${dIdx}, ${idxInDay}, event)">🔄 Cambiar</button>
+                        <button class="btn-act btn-act-danger" onclick="removePlace(${dIdx}, ${idxInDay}, event)">❌ Quitar</button>
+                    </div>
                     ${transitHtml}
-                </div>
-            </div>`;
-        }).join('');
+                </div>`;
+            }).join('');
+        }
 
         itinBodyHtml += `
         <div class="itin-day">
           <div class="itin-day-header">
-              <h4><span class="day-num">${d}</span>Día ${d} — Descubriendo ${tripData.destName}</h4>
+              <h4><span class="day-num">${dIdx+1}</span>Día ${dIdx+1}</h4>
               <div class="itin-day-sub">${dayPlaces.length} actividades</div>
           </div>
           ${actsHtml}
+          <div style="text-align:center; padding:10px; background:white; border-bottom:1px solid #f0ede6;">
+             <button class="btn-act" style="width:100%; padding:8px;" onclick="promptEditPlace(${dIdx}, -1, event)">➕ Añadir lugar a este día</button>
+          </div>
         </div>`;
-    }
+    });
   }
 
   document.querySelector('.itin-body').innerHTML = itinBodyHtml + `
@@ -1765,8 +1832,9 @@ function renderItineraryView(tripData) {
       window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '© OpenStreetMap'
       }).addTo(itinMapInstance);
+      
       let bounds = []; 
-      placesForTrip.forEach((p, i) => {
+      currentItinPlaces.forEach((p, i) => {
           if (!isNaN(p.lat) && !isNaN(p.lng)) {
               bounds.push([p.lat, p.lng]);
               let numIcon = window.L.divIcon({
@@ -1786,6 +1854,69 @@ function renderItineraryView(tripData) {
           itinMapInstance.setView([-9.19, -75.01], 5);
       }
   }, 100);
+}
+
+window.promptEditPlace = function(dayIndex, placeIndex, event) {
+    if(event) event.stopPropagation();
+    editTargetDay = dayIndex;
+    editTargetPlaceIdx = placeIndex;
+    
+    let trip = currentUser.trips.find(t => t.id === currentViewedTripId);
+    let usedNames = [];
+    trip.dailyPlaces.forEach(dp => dp.forEach(p => usedNames.push(p.name)));
+
+    let available = (PLACES[trip.destId] || []).filter(p => !usedNames.includes(p.name));
+    
+    const listEl = document.getElementById('edit-itin-list');
+    if (available.length === 0) {
+        listEl.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted);">No hay más lugares disponibles en este destino.</div>`;
+    } else {
+        listEl.innerHTML = available.map(p => `
+            <div style="display:flex; gap:12px; padding:12px; background:white; border-radius:8px; border:1px solid var(--border); margin-bottom:8px; cursor:pointer;" onclick="confirmEditPlace('${p.name.replace(/'/g, "\\'")}')">
+                <div style="width:50px; height:50px; border-radius:8px; background-image:url('${p.img}'); background-size:cover; background-position:center; flex-shrink:0;"></div>
+                <div>
+                    <div style="font-size:13px; font-weight:700; color:var(--dark); margin-bottom:3px;">${p.name}</div>
+                    <div style="font-size:11px; color:var(--text-muted);">${p.type}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+    document.getElementById('edit-itin-modal').style.display = 'flex';
+};
+
+window.confirmEditPlace = async function(placeName) {
+    let trip = currentUser.trips.find(t => t.id === currentViewedTripId);
+    let newPlace = PLACES[trip.destId].find(p => p.name === placeName);
+    
+    if (editTargetPlaceIdx === -1) {
+        trip.dailyPlaces[editTargetDay].push(newPlace);
+    } else {
+        trip.dailyPlaces[editTargetDay][editTargetPlaceIdx] = newPlace;
+    }
+    
+    await saveAndRenderTrip();
+    closeEditItinModal();
+};
+
+window.removePlace = async function(dayIndex, placeIndex, event) {
+    if(event) event.stopPropagation();
+    if(confirm("¿Estás seguro de que quieres quitar este lugar del día?")) {
+        let trip = currentUser.trips.find(t => t.id === currentViewedTripId);
+        trip.dailyPlaces[dayIndex].splice(placeIndex, 1);
+        await saveAndRenderTrip();
+    }
+};
+
+window.closeEditItinModal = function() {
+    document.getElementById('edit-itin-modal').style.display = 'none';
+};
+
+async function saveAndRenderTrip() {
+    if (auth.currentUser) {
+        await updateDoc(doc(db, "users", auth.currentUser.uid), { trips: currentUser.trips });
+    }
+    let trip = currentUser.trips.find(t => t.id === currentViewedTripId);
+    renderItineraryView(trip);
 }
 
 function capitalize(s) {
@@ -1841,6 +1972,10 @@ window.closePlaceModal = closePlaceModal;
 window.startNewTripPlan = startNewTripPlan;
 window.editCurrentTrip = editCurrentTrip;
 window.clearAuthFields = clearAuthFields;
+window.promptEditPlace = promptEditPlace;
+window.confirmEditPlace = confirmEditPlace;
+window.removePlace = removePlace;
+window.closeEditItinModal = closeEditItinModal;
 
 cargarLugares();
 
