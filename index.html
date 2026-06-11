@@ -406,18 +406,18 @@
         <p class="reg-sub">Crea tu cuenta y empieza a explorar el Perú.</p>
         <div class="reg-fg">
           <label class="reg-label">Nombre completo</label>
-          <input class="reg-input" id="r-name" placeholder="María García" type="text">
+          <input class="reg-input" id="r-name" placeholder="María García" type="text" autocomplete="off">
           <div class="form-error" id="err-r-name">Ingresa tu nombre</div>
         </div>
         <div class="reg-fg">
           <label class="reg-label">Correo electrónico</label>
-          <input class="reg-input" id="r-email" placeholder="maria@ejemplo.com" type="email">
+          <input class="reg-input" id="r-email" placeholder="maria@ejemplo.com" type="email" autocomplete="off">
           <div class="form-error" id="err-r-email">Ingresa un correo válido</div>
         </div>
         <div class="reg-fg">
           <label class="reg-label">Contraseña</label>
           <div class="pw-wrap">
-            <input class="reg-input" id="r-pw" placeholder="Mínimo 6 caracteres" type="password" style="padding-right:40px">
+            <input class="reg-input" id="r-pw" placeholder="Mínimo 6 caracteres" type="password" style="padding-right:40px" autocomplete="new-password">
             <button class="pw-eye" onclick="togglePw('r-pw')">👁</button>
           </div>
           <div class="form-error" id="err-r-pw">La contraseña debe tener al menos 6 caracteres</div>
@@ -425,7 +425,7 @@
         <div class="reg-fg">
           <label class="reg-label">Confirmar Contraseña</label>
           <div class="pw-wrap">
-            <input class="reg-input" id="r-pw-confirm" placeholder="Repite tu contraseña" type="password" style="padding-right:40px">
+            <input class="reg-input" id="r-pw-confirm" placeholder="Repite tu contraseña" type="password" style="padding-right:40px" autocomplete="new-password">
             <button class="pw-eye" onclick="togglePw('r-pw-confirm')">👁</button>
           </div>
           <div class="form-error" id="err-r-pw-confirm">Las contraseñas no coinciden</div>
@@ -447,13 +447,13 @@
         <p class="reg-sub">Ingresa con tu cuenta para continuar.</p>
         <div class="reg-fg">
           <label class="reg-label">Correo electrónico</label>
-          <input class="reg-input" id="l-email" placeholder="maria@ejemplo.com" type="email">
+          <input class="reg-input" id="l-email" placeholder="maria@ejemplo.com" type="email" autocomplete="off">
           <div class="form-error" id="err-l-email">Correo o contraseña incorrectos</div>
         </div>
         <div class="reg-fg">
           <label class="reg-label">Contraseña</label>
           <div class="pw-wrap">
-            <input class="reg-input" id="l-pw" placeholder="Tu contraseña" type="password" style="padding-right:40px">
+            <input class="reg-input" id="l-pw" placeholder="Tu contraseña" type="password" style="padding-right:40px" autocomplete="new-password">
             <button class="pw-eye" onclick="togglePw('l-pw')">👁</button>
           </div>
         </div>
@@ -608,7 +608,7 @@
       <div class="dest-hero-meta">
         <div class="dest-meta-item"><strong id="dest-places-count">0</strong><span>Lugares</span></div>
         <div class="dest-meta-item"><strong id="dest-rating">⭐ 4.9</strong><span>Rating</span></div>
-        <button class="btn btn-primary" onclick="go('plan')" style="padding:9px 18px;font-size:13px">📋 Planificar viaje</button>
+        <button class="btn btn-primary" onclick="startNewTripPlan()" style="padding:9px 18px;font-size:13px">📋 Planificar viaje</button>
       </div>
     </div>
     <div class="dest-tabs" id="dest-tabs"></div>
@@ -705,7 +705,7 @@
       <div id="itin-title" style="font-size:14px;font-weight:700;color:var(--dark)"></div>
       <div id="itin-subtitle" style="font-size:11px;color:var(--text-muted)"></div>
     </div>
-    <button class="btn btn-ghost" style="font-size:12px;padding:6px 14px" onclick="go('plan')">✏️ Editar</button>
+    <button class="btn btn-ghost" style="font-size:12px;padding:6px 14px" onclick="editCurrentTrip()">✏️ Editar</button>
   </nav>
   <div class="itin-wrap">
     <div class="itin-map" id="mapa-itinerario-contenedor"></div>
@@ -826,6 +826,9 @@ const DESTINATIONS = [
 let PLACES = {};
 let currentRenderedPlaces = [];
 let currentItinPlaces = [];
+let currentViewedTripId = null; // Guardar el viaje que se está viendo
+let editingTripId = null; // Guardar el ID si estamos en modo edición
+
 const ALL_INTERESTS_LIST = ['Gastronomía', 'Cultura', 'Arte y museos', 'Naturaleza', 'Aventura', 'Fiestas y festivales', 'Arquitectura', 'Fotografía', 'Compras locales', 'Historia'];
 
 function cargarLugares() {
@@ -904,6 +907,21 @@ function fillAndShowPlaceModal(p) {
 
 function closePlaceModal() {
   document.getElementById('place-modal').style.display = 'none';
+}
+
+// Nueva función para borrar campos autocompletados
+function clearAuthFields() {
+  document.getElementById('r-name').value = '';
+  document.getElementById('r-email').value = '';
+  document.getElementById('r-pw').value = '';
+  document.getElementById('r-pw-confirm').value = '';
+  document.getElementById('r-terms').checked = false;
+  
+  document.getElementById('l-email').value = '';
+  document.getElementById('l-pw').value = '';
+
+  document.querySelectorAll('.form-error').forEach(e => e.classList.remove('show'));
+  document.querySelectorAll('.reg-input').forEach(e => e.classList.remove('error'));
 }
 
 let currentUser = null;  
@@ -1000,6 +1018,7 @@ async function doLogin() {
 async function logout() {
   await signOut(auth);
   currentUser = null;
+  clearAuthFields(); // Limpiamos campos de inicio de sesión/registro
   resetPlanForm();
   closeProfileModal();
   go('home');
@@ -1175,6 +1194,7 @@ async function executeSecurityAction() {
             await deleteUser(user);
             alert("Tu cuenta y todos tus datos han sido eliminados. ¡Hasta pronto!");
             currentUser = null;
+            clearAuthFields(); // Limpiamos campos de inicio de sesión/registro
             resetPlanForm();
             closeProfileModal();
             go('home');
@@ -1311,6 +1331,8 @@ function applyFilters() {
 function openDest(id) {
   if (!requireAuth()) return;
   currentDest = id;
+  editingTripId = null; // Reseteamos la edición al abrir un destino
+  
   const d = DESTINATIONS.find(x => x.id === id);
   if (!d) return;
 
@@ -1406,8 +1428,50 @@ function resetPlanForm() {
     document.querySelectorAll('.budget-chip').forEach(c=>c.classList.remove('active'));
     document.querySelectorAll('.budget-chip')[1].classList.add('active');
     document.getElementById('rhythm-slider').value = 2;
+    document.getElementById('btn-do-generate').innerHTML = "✨ Generar mi itinerario ✨";
     updateRhythm();
     updateDays();
+}
+
+function startNewTripPlan() {
+    editingTripId = null;
+    resetPlanForm();
+    go('plan');
+}
+
+// Cargar en el formulario la información del viaje que estamos viendo para editarlo
+function editCurrentTrip() {
+    const t = currentUser.trips.find(x => x.id === currentViewedTripId);
+    if (!t) return;
+    
+    editingTripId = t.id;
+    currentDest = t.destId;
+    
+    document.getElementById('plan-arrival').value = t.arrival;
+    document.getElementById('plan-depart').value = t.depart;
+    planPeople = t.people;
+    document.getElementById('p-val').textContent = planPeople;
+    document.getElementById('p-lbl').textContent = planPeople + (planPeople === 1 ? ' persona' : ' personas');
+    
+    let bp = Math.round(t.totalBudget / (t.people * t.days));
+    document.getElementById('budget-val').value = bp;
+    document.querySelectorAll('.budget-chip').forEach(c => c.classList.remove('active'));
+    const chips = document.querySelectorAll('.budget-chip');
+    let found = false;
+    chips.forEach(c => {
+       if(c.textContent.includes(bp.toString())) { c.classList.add('active'); found = true; }
+    });
+    if(!found && chips.length > 0) chips[1].classList.add('active');
+    
+    const rMap = {'Relajado': 1, 'Moderado': 2, 'Intensivo': 3};
+    document.getElementById('rhythm-slider').value = rMap[t.rhythm] || 2;
+    updateRhythm();
+    updateDays();
+    
+    document.getElementById('plan-dest-title').textContent = t.destName;
+    document.getElementById('btn-do-generate').innerHTML = "✨ Guardar cambios ✨";
+    
+    go('plan');
 }
 
 let planPeople = 2;
@@ -1484,27 +1548,47 @@ async function generateItinerary() {
     const arrivalVal = document.getElementById('plan-arrival').value;
     const departVal = document.getElementById('plan-depart').value;
 
-    const newTrip = {
-      id: Date.now(),
-      destId: destObj.id,
-      destName: destObj.name,
-      img: destObj.img,
-      days: days,
-      people: planPeople,
-      totalBudget: totalBudget,
-      rhythm: rhythms[v],
-      arrival: arrivalVal,
-      depart: departVal
-    };
-
     if(!currentUser.trips) currentUser.trips = [];
-    currentUser.trips.push(newTrip);
+    
+    let targetTrip;
+    
+    if (editingTripId) {
+        // Actualizamos viaje existente
+        targetTrip = currentUser.trips.find(t => t.id === editingTripId);
+        if (targetTrip) {
+            targetTrip.days = days;
+            targetTrip.people = planPeople;
+            targetTrip.totalBudget = totalBudget;
+            targetTrip.rhythm = rhythms[v];
+            targetTrip.arrival = arrivalVal;
+            targetTrip.depart = departVal;
+        }
+    }
+    
+    if (!targetTrip) {
+        // Creamos nuevo viaje
+        targetTrip = {
+          id: Date.now(),
+          destId: destObj.id,
+          destName: destObj.name,
+          img: destObj.img,
+          days: days,
+          people: planPeople,
+          totalBudget: totalBudget,
+          rhythm: rhythms[v],
+          arrival: arrivalVal,
+          depart: departVal
+        };
+        currentUser.trips.push(targetTrip);
+    }
     
     if (auth.currentUser) {
       await updateDoc(doc(db, "users", auth.currentUser.uid), { trips: currentUser.trips });
     }
 
-    renderItineraryView(newTrip);
+    currentViewedTripId = targetTrip.id;
+    editingTripId = null; // Reseteamos variable de edición
+    renderItineraryView(targetTrip);
     go('itinerary');
   } finally {
     toggleLoading('btn-do-generate', false);
@@ -1554,6 +1638,7 @@ function openTrip(tripId) {
     const t = currentUser.trips.find(x => x.id === tripId);
     if(!t) return;
     currentDest = t.destId;
+    currentViewedTripId = t.id; // Guardar el viaje activo
     renderItineraryView(t);
     go('itinerary');
 }
@@ -1752,6 +1837,10 @@ window.openTrip = openTrip;
 window.openPlaceModal = openPlaceModal;
 window.openItinPlaceModal = openItinPlaceModal;
 window.closePlaceModal = closePlaceModal;
+
+window.startNewTripPlan = startNewTripPlan;
+window.editCurrentTrip = editCurrentTrip;
+window.clearAuthFields = clearAuthFields;
 
 cargarLugares();
 
